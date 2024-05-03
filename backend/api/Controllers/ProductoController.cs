@@ -47,7 +47,7 @@ namespace api.Controllers
             }
         }
 
-        [HttpPost("{depositoId:int},{proveedorId:int},{marcaId:int}")]
+        [HttpPost("{depositoId:int}/{proveedorId:int}/{marcaId:int}")]
         public async Task<IActionResult> Post([FromRoute] int depositoId, [FromRoute] int proveedorId, [FromRoute] int marcaId, CreateProductoDto productoDto)
         {
             if(!ModelState.IsValid) 
