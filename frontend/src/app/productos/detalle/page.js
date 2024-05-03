@@ -104,6 +104,7 @@ const Detalle = () => {
             <Link to="/productos" className="text-gray-500"> &lt; Stock &gt; </Link>
             </li>
             <li className="flex items-center">
+            <Photo src={producto[id].img_url}></Photo>
               <span className="text-gray-500">Detalles del producto</span>
             </li>
           </ol>
