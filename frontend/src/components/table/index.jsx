@@ -15,12 +15,9 @@ import data from '../../../data.json';
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
-  TableFoot,
   TableHead,
   TableHeaderCell,
-  TableRoot,
   TableRow,
   Button,
   TextInput,
