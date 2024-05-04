@@ -3,10 +3,8 @@
 import React from "react";
 import Photo from "../../../components/productimg";
 import producto from "../../../../data.json";
-import { Link, useParams } from 'react-router-dom'; // Importar Link desde react-router-dom
+import { Link, useParams } from 'react-router-dom';
 import Sidebar from "@/components/sidebar";
-import { RiArrowLeftWideLine } from "@remixicon/react";
-import { Button } from "@tremor/react";
 
 
 
@@ -88,7 +86,7 @@ const Detalle = () => {
     },
   ];
 
-  let { id } = useParams(); // Obtener el ID del parámetro de la URL
+  let { id } = useParams();
   id -= 1;
 
   return (
@@ -104,13 +102,14 @@ const Detalle = () => {
             <Link to="/productos" className="text-gray-500"> &lt; Stock &gt; </Link>
             </li>
             <li className="flex items-center">
-            <Photo src={producto[id].img_url}></Photo>
+            
               <span className="text-gray-500">Detalles del producto</span>
             </li>
           </ol>
         </nav>
         <div className=" grid grid-cols-3 mb-10">
           <div>
+          <Photo src={producto[id].img_url}></Photo>
           </div>
           <div>
             <p>Codigo: {producto[id].id}</p>
@@ -181,6 +180,5 @@ const Detalle = () => {
   );
 };
 
-//<Button><RiArrowLeftWideLine onClick={navigate('/productos')}></RiArrowLeftWideLine></Button>
 
 export default Detalle;
