@@ -5,18 +5,19 @@ import { useNavigate } from 'react-router-dom';
 
 export default function FormularioProductos() {
   // Definimos el estado para cada campo del formulario
-  const [codigo, setCodigo] = useState('');
-  const [nombre, setNombre] = useState('');
-  const [descripcion, setDescripcion] = useState('');
-  const [marca, setMarca] = useState('');
-  const [proveedor, setProveedor] = useState('');
-  const [cantidad, setCantidad] = useState('');
-  const [cantidadMinima, setCantidadMinima] = useState('');
-  const [costo, setCosto] = useState('');
-  const [iva, setIva] = useState('');
-  const [precioMayorista, setPrecioMayorista] = useState('');
-  const [precioMinorista, setPrecioMinorista] = useState('');
-  const [deposito, setDeposito] = useState('');
+  const [id_producto, setId_producto] = useState('');
+  const [str_nombre, setStr_nombre] = useState('');
+  const [str_descripcion, setStr_descripcion] = useState('');
+  const [fk_marca, setFk_marca] = useState('');
+  const [fk_categoria, setFk_categoria] = useState('');
+  const [fk_proveedor, setFk_proveedor] = useState('');
+  const [int_cantidad_actual, setInt_cantidad_actual] = useState('');
+  const [int_cantidad_minima, setInt_cantidad_minima] = useState('');
+  const [dc_costo_PPP, setDc_costo_PPP] = useState('');
+  const [int_iva, setInt_iva] = useState('');
+  const [dc_precio_mayorista, setDc_precio_mayorista] = useState('');
+  const [dc_precio_minorista, setDc_precio_minorista] = useState('');
+  const [fk_deposito, setFk_deposito] = useState('');
 
 
   // Función para manejar el envío del formulario
@@ -25,30 +26,34 @@ export default function FormularioProductos() {
     event.preventDefault();
     // Aquí podrías realizar alguna acción con los datos del formulario, como enviarlos a un servidor
     console.log({
-      codigo,
-      nombre,
-      descripcion,
-      marca,
-      proveedor,
-      cantidad,
-      cantidadMinima,
-      costo,
-      iva,
-      precioMayorista,
-      precioMinorista
+      id_producto,
+      str_nombre,
+      str_descripcion,
+      fk_marca,
+      fk_categoria,
+      fk_proveedor,
+      int_cantidad_actual,
+      int_cantidad_minima,
+      dc_costo_PPP,
+      int_iva,
+      dc_precio_mayorista,
+      dc_precio_minorista,
+      fk_deposito
     });
     // También puedes reiniciar los valores de los campos del formulario
-    setCodigo('');
-    setNombre('');
-    setDescripcion('');
-    setMarca('');
-    setProveedor('');
-    setCantidad('');
-    setCantidadMinima('');
-    setCosto('');
-    setIva('');
-    setPrecioMayorista('');
-    setPrecioMinorista('');
+    setId_producto('');
+    setStr_nombre('');
+    setStr_descripcion('');
+    setFk_marca('');
+    setFk_categoria('');
+    setFk_proveedor('');
+    setInt_cantidad_actual('');
+    setInt_cantidad_minima('');
+    setDc_costo_PPP('');
+    setInt_iva('');
+    setDc_precio_mayorista('');
+    setDc_precio_minorista('');
+    setFk_deposito('');
   };
 
   return (
@@ -57,7 +62,7 @@ export default function FormularioProductos() {
       <div className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
         <div className="col-span-full sm:col-span-3">
           <label
-            htmlFor="codigo"
+            htmlFor="id_producto"
             className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
           >
             Código
@@ -65,20 +70,20 @@ export default function FormularioProductos() {
           </label>
           <TextInput
             type="text"
-            id="codigo"
-            name="codigo"
-            autoComplete="codigo"
+            id="id_producto"
+            name="id_producto"
+            autoComplete="id_producto"
             placeholder="Codigo"
             className="mt-2"
-            value={codigo}
-            onChange={(e) => setCodigo(e.target.value)}
+            value={id_producto}
+            onChange={(e) => setId_producto(e.target.value)}
             required
           />
         </div>
 
         <div className="col-span-full sm:col-span-3">
           <label
-            htmlFor="nombre"
+            htmlFor="str_nombre"
             className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
           >
             Nombre
@@ -86,20 +91,20 @@ export default function FormularioProductos() {
           </label>
           <TextInput
             type="text"
-            id="nombre"
-            name="nombre"
-            autoComplete="nombre"
+            id="str_nombre"
+            name="str_nombre"
+            autoComplete="str_nombre"
             placeholder="nombre"
             className="mt-2"
-            value={nombre}
-            onChange={(e) => setNombre(e.target.value)}
+            value={str_nombre}
+            onChange={(e) => setStr_nombre(e.target.value)}
             required
           />
         </div>
 
         <div className="col-span-full sm:col-span-3">
           <label
-            htmlFor="descripcion"
+            htmlFor="str_descripcion"
             className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
           >
             Descripción
@@ -107,20 +112,20 @@ export default function FormularioProductos() {
           </label>
           <TextInput
             type="text"
-            id="descripcion"
-            name="descripcion"
-            autoComplete="descripcion"
+            id="str_descripcion"
+            name="str_descripcion"
+            autoComplete="str_descripcion"
             placeholder="Descripción"
             className="mt-2"
-            value={descripcion}
-            onChange={(e) => setDescripcion(e.target.value)}
+            value={str_descripcion}
+            onChange={(e) => setStr_descripcion(e.target.value)}
             required
           />
         </div>
 
         <div className="col-span-full sm:col-span-3">
           <label
-            htmlFor="marca"
+            htmlFor="fk_marca"
             className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
           >
             Marca
@@ -128,20 +133,41 @@ export default function FormularioProductos() {
           </label>
           <TextInput
             type="text"
-            id="marca"
-            name="marca"
-            autoComplete="marca"
+            id="fk_marca"
+            name="fk_marca"
+            autoComplete="fk_marca"
             placeholder="Marca"
             className="mt-2"
-            value={marca}
-            onChange={(e) => setMarca(e.target.value)}
+            value={fk_marca}
+            onChange={(e) => setFk_marca(e.target.value)}
             required
           />
         </div>
 
         <div className="col-span-full sm:col-span-3">
           <label
-            htmlFor="proveedor"
+            htmlFor="fk_categoria"
+            className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+          >
+            Categoria
+            <span className="text-red-500">*</span>
+          </label>
+          <TextInput
+            type="text"
+            id="fk_categoria"
+            name="fk_categoria"
+            autoComplete="fk_categoria"
+            placeholder="Categoria"
+            className="mt-2"
+            value={fk_categoria}
+            onChange={(e) => setFk_categoria(e.target.value)}
+            required
+          />
+        </div>
+
+        <div className="col-span-full sm:col-span-3">
+          <label
+            htmlFor="fk_proveedor"
             className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
           >
             Proveedor
@@ -149,20 +175,20 @@ export default function FormularioProductos() {
           </label>
           <TextInput
             type="text"
-            id="proveedor"
-            name="proveedor"
-            autoComplete="proveedor"
+            id="fk_proveedor"
+            name="fk_proveedor"
+            autoComplete="fk_proveedor"
             placeholder="Proveedor"
             className="mt-2"
-            value={proveedor}
-            onChange={(e) => setProveedor(e.target.value)}
+            value={fk_proveedor}
+            onChange={(e) => setFk_proveedor(e.target.value)}
             required
           />
         </div>
 
         <div className="col-span-full sm:col-span-3">
           <label
-            htmlFor="cantidad"
+            htmlFor="int_cantidad_actual"
             className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
           >
             Cantidad
@@ -170,21 +196,21 @@ export default function FormularioProductos() {
           </label>
           <NumberInput
             type="number"
-            id="cantidad"
-            name="cantidad"
-            autoComplete="cantidad"
+            id="int_cantidad_actual"
+            name="int_cantidad_actual"
+            autoComplete="int_cantidad_actual"
             placeholder="Cantidad"
             className="mt-2"
-            value={cantidad}
+            value={int_cantidad_actual}
             min={0}
-            onChange={(e) => setCantidad(e.target.value)}
+            onChange={(e) => setInt_cantidad_actual(e.target.value)}
             required
           />
         </div>
 
         <div className="col-span-full sm:col-span-3">
           <label
-            htmlFor="cantidadMinima"
+            htmlFor="int_cantidad_minima"
             className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
           >
             Cantidad Mínima
@@ -192,118 +218,118 @@ export default function FormularioProductos() {
           </label>
           <NumberInput
             type="number"
-            id="cantidadMinima"
-            name="cantidadMinima"
-            autoComplete="cantidadMinima"
+            id="int_cantidad_minima"
+            name="int_cantidad_minima"
+            autoComplete="int_cantidad_minima"
             placeholder="Cantidad Minima"
             className="mt-2"
-            value={cantidadMinima}
+            value={int_cantidad_minima}
             min={0}
-            onChange={(e) => setCantidadMinima(e.target.value)}
+            onChange={(e) => setInt_cantidad_minima(e.target.value)}
             required
           />
         </div>
 
         <div className="col-span-full sm:col-span-3">
           <label
-            htmlFor="costo"
+            htmlFor="dc_costo_PPP"
             className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
           >
             Costo
             <span className="text-red-500">*</span>
           </label>
           <NumberInput enableStepper={false}
-            id="costo"
-            name="costo"
-            autoComplete="costo"
+            id="dc_costo_PPP"
+            name="dc_costo_PPP"
+            autoComplete="dc_costo_PPP"
             placeholder="Gs."
             className="mt-2"
-            value={costo}
+            value={dc_costo_PPP}
             min={0}
-            onChange={(e) => setCosto(e.target.value)}
+            onChange={(e) => setDc_costo_PPP(e.target.value)}
             required
           />
         </div>
 
         <div className="col-span-full sm:col-span-3">
           <label
-            htmlFor="iva"
+            htmlFor="int_iva"
             className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
           >
             IVA
             <span className="text-red-500">*</span>
           </label>
           <NumberInput
-            id="iva"
-            name="iva"
-            autoComplete="iva"
-            value={iva}
+            id="int_iva"
+            name="int_iva"
+            autoComplete="int_iva"
+            value={int_iva}
             min={0}
             placeholder="IVA %"
             className="mt-2"
-            onChange={(e) => setIva(e.target.value)}
+            onChange={(e) => setInt_iva(e.target.value)}
             required
           />
         </div>
 
         <div className="col-span-full sm:col-span-3">
           <label
-            htmlFor="precioMayorista"
+            htmlFor="dc_precio_mayorista"
             className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
           >
-            Costo
+            Precio Mayorista
             <span className="text-red-500">*</span>
           </label>
           <NumberInput enableStepper={false}
-            id="precioMayorista"
-            name="precioMayorista"
-            autoComplete="precioMayorista"
+            id="dc_precio_mayorista"
+            name="dc_precio_mayorista"
+            autoComplete="dc_precio_mayorista"
             placeholder="Precio Mayorista"
             className="mt-2"
-            value={precioMayorista}
+            value={dc_precio_mayorista}
             min={0}
-            onChange={(e) => setPrecioMayorista(e.target.value)}
+            onChange={(e) => setDc_precio_mayorista(e.target.value)}
             required
           />
         </div>
 
         <div className="col-span-full sm:col-span-3">
           <label
-            htmlFor="precioMinorista"
+            htmlFor="dc_precio_minorista"
             className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
           >
             Precio Minorista
             <span className="text-red-500">*</span>
           </label>
           <NumberInput enableStepper={false}
-            id="precioMinorista"
-            name="precioMinorista"
-            autoComplete="precioMinorista"
+            id="dc_precio_minorista"
+            name="dc_precio_minorista"
+            autoComplete="dc_precio_minorista"
             placeholder="Precio Minorista"
             className="mt-2"
-            value={precioMinorista}
+            value={dc_precio_minorista}
             min={0}
-            onChange={(e) => setPrecioMinorista(e.target.value)}
+            onChange={(e) => setDc_precio_minorista(e.target.value)}
             required
           />
 
           <div className="col-span-full sm:col-span-3">
             <label
-              htmlFor="deposito"
+              htmlFor="fk_deposito"
               className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
             >
-              Deposito
+              Depósito
               <span className="text-red-500">*</span>
             </label>
             <NumberInput enableStepper={false}
-              id="deposito"
-              name="deposito"
-              autoComplete="deposito"
+              id="fk_deposito"
+              name="fk_deposito"
+              autoComplete="fk_deposito"
               placeholder="Deposito"
               className="mt-2"
-              value={deposito}
+              value={fk_deposito}
               min={0}
-              onChange={(e) => setDeposito(e.target.value)}
+              onChange={(e) => setFk_deposito(e.target.value)}
               required
             />
           </div>
@@ -319,18 +345,19 @@ export default function FormularioProductos() {
         // Lógica para descartar
         console.log("Formulario descartado");
         // Reiniciar los valores del formulario
-        setCodigo('');
-        setNombre('');
-        setDescripcion('');
-        setMarca('');
-        setProveedor('');
-        setCantidad('');
-        setCantidadMinima('');
-        setCosto('');
-        setIva('');
-        setPrecioMayorista('');
-        setPrecioMinorista('');
-        setDeposito('')
+        setId_producto('');
+        setStr_nombre('');
+        setStr_descripcion('');
+        setFk_marca('');
+        setFk_categoria('');
+        setFk_proveedor('');
+        setInt_cantidad_actual('');
+        setInt_cantidad_minima('');
+        setDc_costo_PPP('');
+        setInt_iva('');
+        setDc_precio_mayorista('');
+        setDc_precio_minorista('');
+        setFk_deposito('')
         navigate('/productos');
       }}>Descartar</Button>
     </form>
