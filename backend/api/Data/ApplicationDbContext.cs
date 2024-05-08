@@ -15,29 +15,31 @@ namespace api.Data
             
         }
 
-        public DbSet<Deposito> Depositos { get; set; }
-        public DbSet<Ferreteria> Ferreterias { get; set; }
-        public DbSet<Marca> Marcas { get; set; }
-        public DbSet<Motivos> Motivos { get; set; }
-        public DbSet<Movimiento> Movimientos { get; set; }
-        public DbSet<Producto> Productos { get; set; }
-        public DbSet<Proveedor> Proveedores { get; set; }
-        public DbSet<TipoDeMovimiento> TiposDeMovimientos { get; set; }
+        public DbSet<Deposito> depositos { get; set; }
+        public DbSet<Ferreteria> ferreterias { get; set; }
+        public DbSet<Marca> marcas { get; set; }
+        public DbSet<Motivos> motivos { get; set; }
+        public DbSet<Movimiento> movimientos { get; set; }
+        public DbSet<Producto> productos { get; set; }
+        public DbSet<Proveedor> proveedores { get; set; }
+        public DbSet<TipoDeMovimiento> tipos_de_movimientos { get; set; }
+        public DbSet<Categoria> categorias { get; set; }
+        public DbSet<DetalleDeMovimiento> detalles_de_movimientos { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
             
             modelBuilder.Entity<Movimiento>()
-                .HasOne(m => m.Deposito_Destino)
+                .HasOne(m => m.Deposito_origen)
                 .WithMany()
-                .HasForeignKey(m => m.Id)
+                .HasForeignKey(m => m.Fk_deposito_destino)
                 .OnDelete(DeleteBehavior.Restrict); // Esto asegura que no se elimine en cascada si eliminas un depósito
 
             modelBuilder.Entity<Movimiento>()
-                .HasOne(m => m.Deposito_Destino)
+                .HasOne(m => m.Deposito_destino)
                 .WithMany()
-                .HasForeignKey(m => m.Id)
+                .HasForeignKey(m => m.Fk_deposito_origen)
                 .OnDelete(DeleteBehavior.Restrict); // Esto asegura que no se elimine en cascada si eliminas un depósito
 
             // Otros ajustes de modelo aquí si es necesario

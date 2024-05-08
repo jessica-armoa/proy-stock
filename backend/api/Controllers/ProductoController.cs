@@ -80,7 +80,7 @@ namespace api.Controllers
             if(!ModelState.IsValid) 
                 return BadRequest(ModelState);
                 
-            var producto = await _productoRepo.UpdateAsync(id, updateDto.ToProductoFromUpdate());
+            var producto = await _productoRepo.UpdateAsync(id, updateDto);
             if(producto == null)
             {
                 return NotFound("El comentario que desea actualizar no existe");

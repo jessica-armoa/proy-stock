@@ -12,7 +12,7 @@ using api.Data;
 namespace api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240502015618_Init")]
+    [Migration("20240508151253_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -25,6 +25,31 @@ namespace api.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("api.Models.Categoria", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("Fk_proveedor")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ProveedorId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Str_descripcion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProveedorId");
+
+                    b.ToTable("categorias");
+                });
+
             modelBuilder.Entity("api.Models.Deposito", b =>
                 {
                     b.Property<int>("Id")
@@ -34,6 +59,9 @@ namespace api.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int?>("FerreteriaId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Fk_ferreteria")
                         .HasColumnType("int");
 
                     b.Property<string>("Str_direccion")
@@ -48,7 +76,7 @@ namespace api.Migrations
 
                     b.HasIndex("FerreteriaId");
 
-                    b.ToTable("Depositos");
+                    b.ToTable("depositos");
                 });
 
             modelBuilder.Entity("api.Models.DetalleDeMovimiento", b =>
@@ -59,7 +87,13 @@ namespace api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("Cantidad")
+                    b.Property<int?>("Fk_movimiento")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Fk_producto")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Int_cantidad")
                         .HasColumnType("int");
 
                     b.Property<int?>("MovimientoId")
@@ -74,7 +108,7 @@ namespace api.Migrations
 
                     b.HasIndex("ProductoId");
 
-                    b.ToTable("DetalleDeMovimiento");
+                    b.ToTable("detalles_de_movimientos");
                 });
 
             modelBuilder.Entity("api.Models.Ferreteria", b =>
@@ -99,7 +133,7 @@ namespace api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Ferreterias");
+                    b.ToTable("ferreterias");
                 });
 
             modelBuilder.Entity("api.Models.Marca", b =>
@@ -109,6 +143,9 @@ namespace api.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("Fk_proveedor")
+                        .HasColumnType("int");
 
                     b.Property<int?>("ProveedorId")
                         .HasColumnType("int");
@@ -121,7 +158,7 @@ namespace api.Migrations
 
                     b.HasIndex("ProveedorId");
 
-                    b.ToTable("Marcas");
+                    b.ToTable("marcas");
                 });
 
             modelBuilder.Entity("api.Models.Motivos", b =>
@@ -141,33 +178,46 @@ namespace api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Motivos");
+                    b.ToTable("motivos");
                 });
 
             modelBuilder.Entity("api.Models.Movimiento", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("Date_fecha")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("Deposito_DestinoId")
+                    b.Property<int?>("DepositoId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("Deposito_OrigenId")
+                    b.Property<int?>("Fk_deposito_destino")
                         .HasColumnType("int");
 
-                    b.Property<int?>("Tipo_De_MovimientoId")
+                    b.Property<int?>("Fk_deposito_origen")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Fk_tipo_de_movimiento")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Tipo_de_movimientoId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Deposito_OrigenId");
+                    b.HasIndex("DepositoId");
 
-                    b.HasIndex("Tipo_De_MovimientoId");
+                    b.HasIndex("Fk_deposito_destino");
 
-                    b.ToTable("Movimientos");
+                    b.HasIndex("Fk_deposito_origen");
+
+                    b.HasIndex("Tipo_de_movimientoId");
+
+                    b.ToTable("movimientos");
                 });
 
             modelBuilder.Entity("api.Models.Producto", b =>
@@ -188,6 +238,15 @@ namespace api.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int?>("DepositoId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Fk_deposito")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Fk_marca")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Fk_proveedor")
                         .HasColumnType("int");
 
                     b.Property<int>("Int_cantidad_actual")
@@ -225,7 +284,7 @@ namespace api.Migrations
 
                     b.HasIndex("ProveedorId");
 
-                    b.ToTable("Productos");
+                    b.ToTable("productos");
                 });
 
             modelBuilder.Entity("api.Models.Proveedor", b =>
@@ -254,7 +313,7 @@ namespace api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Proveedores");
+                    b.ToTable("proveedores");
                 });
 
             modelBuilder.Entity("api.Models.TipoDeMovimiento", b =>
@@ -268,6 +327,9 @@ namespace api.Migrations
                     b.Property<bool>("Bool_operacion")
                         .HasColumnType("bit");
 
+                    b.Property<int?>("Fk_motivo")
+                        .HasColumnType("int");
+
                     b.Property<int?>("MotivoId")
                         .HasColumnType("int");
 
@@ -275,7 +337,16 @@ namespace api.Migrations
 
                     b.HasIndex("MotivoId");
 
-                    b.ToTable("TiposDeMovimientos");
+                    b.ToTable("tipos_de_movimientos");
+                });
+
+            modelBuilder.Entity("api.Models.Categoria", b =>
+                {
+                    b.HasOne("api.Models.Proveedor", "Proveedor")
+                        .WithMany("Categorias")
+                        .HasForeignKey("ProveedorId");
+
+                    b.Navigation("Proveedor");
                 });
 
             modelBuilder.Entity("api.Models.Deposito", b =>
@@ -290,11 +361,11 @@ namespace api.Migrations
             modelBuilder.Entity("api.Models.DetalleDeMovimiento", b =>
                 {
                     b.HasOne("api.Models.Movimiento", "Movimiento")
-                        .WithMany("Detalle_De_Movimientos")
+                        .WithMany("Detalles_de_movimientos")
                         .HasForeignKey("MovimientoId");
 
                     b.HasOne("api.Models.Producto", "Producto")
-                        .WithMany("DetallesDeMovimientos")
+                        .WithMany("Detalles_De_Movimientos")
                         .HasForeignKey("ProductoId");
 
                     b.Navigation("Movimiento");
@@ -313,25 +384,29 @@ namespace api.Migrations
 
             modelBuilder.Entity("api.Models.Movimiento", b =>
                 {
-                    b.HasOne("api.Models.Deposito", "Deposito_Origen")
+                    b.HasOne("api.Models.Deposito", null)
                         .WithMany("Movimientos")
-                        .HasForeignKey("Deposito_OrigenId");
+                        .HasForeignKey("DepositoId");
 
-                    b.HasOne("api.Models.Deposito", "Deposito_Destino")
+                    b.HasOne("api.Models.Deposito", "Deposito_origen")
                         .WithMany()
-                        .HasForeignKey("Id")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .HasForeignKey("Fk_deposito_destino")
+                        .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("api.Models.TipoDeMovimiento", "Tipo_De_Movimiento")
+                    b.HasOne("api.Models.Deposito", "Deposito_destino")
+                        .WithMany()
+                        .HasForeignKey("Fk_deposito_origen")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("api.Models.TipoDeMovimiento", "Tipo_de_movimiento")
                         .WithMany("Movimientos")
-                        .HasForeignKey("Tipo_De_MovimientoId");
+                        .HasForeignKey("Tipo_de_movimientoId");
 
-                    b.Navigation("Deposito_Destino");
+                    b.Navigation("Deposito_destino");
 
-                    b.Navigation("Deposito_Origen");
+                    b.Navigation("Deposito_origen");
 
-                    b.Navigation("Tipo_De_Movimiento");
+                    b.Navigation("Tipo_de_movimiento");
                 });
 
             modelBuilder.Entity("api.Models.Producto", b =>
@@ -358,7 +433,7 @@ namespace api.Migrations
             modelBuilder.Entity("api.Models.TipoDeMovimiento", b =>
                 {
                     b.HasOne("api.Models.Motivos", "Motivo")
-                        .WithMany("TiposDeMovimientos")
+                        .WithMany("Tipo_de_movimientos")
                         .HasForeignKey("MotivoId");
 
                     b.Navigation("Motivo");
@@ -383,21 +458,23 @@ namespace api.Migrations
 
             modelBuilder.Entity("api.Models.Motivos", b =>
                 {
-                    b.Navigation("TiposDeMovimientos");
+                    b.Navigation("Tipo_de_movimientos");
                 });
 
             modelBuilder.Entity("api.Models.Movimiento", b =>
                 {
-                    b.Navigation("Detalle_De_Movimientos");
+                    b.Navigation("Detalles_de_movimientos");
                 });
 
             modelBuilder.Entity("api.Models.Producto", b =>
                 {
-                    b.Navigation("DetallesDeMovimientos");
+                    b.Navigation("Detalles_De_Movimientos");
                 });
 
             modelBuilder.Entity("api.Models.Proveedor", b =>
                 {
+                    b.Navigation("Categorias");
+
                     b.Navigation("Productos");
                 });
 

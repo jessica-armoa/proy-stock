@@ -11,6 +11,6 @@ namespace api.Models
         public string Str_nombre{ get; set; } = String.Empty;
         public string Str_ruc { get; set; } = String.Empty;
         public string Str_telefono { get; set; } = String.Empty;
-        public List<Deposito> Depositos { get; set; } = new List<Deposito>();
+        public List<Deposito> Depositos { get; set; } = [];
     }
 }

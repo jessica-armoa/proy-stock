@@ -12,11 +12,11 @@ namespace api.Models
         public string Str_ruta_imagen { get; set; } = String.Empty;
         public string Str_nombre { get; set; } = String.Empty;
         public string Str_descripcion { get; set; } = String.Empty;
-        public int? DepositoId { get; set; }
+        public int? Fk_deposito { get; set; }
         public Deposito? Deposito { get; set; }
-        public int? ProveedorId { get; set; }
+        public int? Fk_proveedor { get; set; }
         public Proveedor? Proveedor { get; set; }
-        public int? MarcaId { get; set; }
+        public int? Fk_marca { get; set; }
         public Marca? Marca { get; set; }
         public int Int_cantidad_actual { get; set; }
         public int Int_cantidad_minima { get; set; }
@@ -24,6 +24,6 @@ namespace api.Models
         public int Int_iva { get; set; }
         public decimal Dec_precio_mayorista { get; set; }
         public decimal Dec_precio_minorista { get; set; }
-        public List<DetalleDeMovimiento> DetallesDeMovimientos { get; set; } = new List<DetalleDeMovimiento>();
+        public List<DetalleDeMovimiento> Detalles_De_Movimientos { get; set; } = [];
     }
 }

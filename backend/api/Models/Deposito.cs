@@ -11,9 +11,9 @@ namespace api.Models
         public int Id { get; set; }
         public string Str_nombre { get; set; } = String.Empty;
         public string Str_direccion { get; set; } = String.Empty;
-        public int? FerreteriaId { get; set; }
+        public int? Fk_ferreteria { get; set; }
         public Ferreteria? Ferreteria { get; set; }
-        public List<Movimiento> Movimientos { get; set; } = new List<Movimiento>(); 
-        public List<Producto> Productos { get; set; } = new List<Producto>();
+        public List<Movimiento> Movimientos { get; set; } = [];
+        public List<Producto> Productos { get; set; } = [];
     }
 }

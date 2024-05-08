@@ -24,8 +24,12 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>{
     options.UseSqlServer(connectionString);
 });
 
+/*
+    AGREGAR LAS INTERFACES CREADAS!!!!!
+*/
 builder.Services.AddScoped<IFerreteriaRepository, FerreteriaRepository>();
 builder.Services.AddScoped<IProductoRepository, ProductoRepository>();
+builder.Services.AddScoped<IDepositoRepository, DepositoRepository>();
 
 var app = builder.Build();
 
