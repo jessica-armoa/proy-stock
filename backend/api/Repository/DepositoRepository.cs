@@ -37,7 +37,7 @@ namespace api.Repository
             return depositoModel;
         }
 
-        public async Task<bool> DepositoExist(int id)
+        public async Task<bool> DepositoExists(int id)
         {
             return await _context.depositos.AnyAsync(d => d.Id == id);
         }

@@ -30,6 +30,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>{
 builder.Services.AddScoped<IFerreteriaRepository, FerreteriaRepository>();
 builder.Services.AddScoped<IProductoRepository, ProductoRepository>();
 builder.Services.AddScoped<IDepositoRepository, DepositoRepository>();
+builder.Services.AddScoped<IProveedorRepository, ProveedorRepository>();
 
 var app = builder.Build();
 

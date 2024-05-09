@@ -14,6 +14,6 @@ namespace api.Interfaces
         Task<Deposito> CreateAsync(Deposito depositoModel);
         Task<Deposito?> UpdateAsync(int id, UpdateDepositoRequestDto depositoDto);
         Task<Deposito?> DeleteAsync(int id);
-        Task<bool> DepositoExist(int id);
+        Task<bool> DepositoExists(int id);
     }
 }
