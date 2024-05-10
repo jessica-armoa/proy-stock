@@ -13,10 +13,10 @@ namespace api.Mapper
         {
             return new FerreteriaDto
             {
-                id_ferreteria = ferreteriaModel.Id,
-                str_nombre = ferreteriaModel.Str_nombre,
-                str_ruc = ferreteriaModel.Str_ruc,
-                str_telefono = ferreteriaModel.Str_telefono
+                Id = ferreteriaModel.Id,
+                Str_nombre = ferreteriaModel.Str_nombre,
+                Str_ruc = ferreteriaModel.Str_ruc,
+                Str_telefono = ferreteriaModel.Str_telefono
             };
         }
     }

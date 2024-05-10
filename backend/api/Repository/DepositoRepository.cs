@@ -55,7 +55,7 @@ namespace api.Repository
             return await _context.depositos
             .Include(d => d.Movimientos)
             .Include(d => d.Productos)
-            .FirstOrDefaultAsync();
+            .FirstOrDefaultAsync(i => i.Id == id);
         }
 
         public async Task<Deposito?> UpdateAsync(int id, UpdateDepositoRequestDto depositoDto)
@@ -63,8 +63,8 @@ namespace api.Repository
             var depositoExistente = await _context.depositos.FirstOrDefaultAsync(d => d.Id == id);
             if(depositoExistente == null) return null;
 
-            depositoExistente.Str_nombre = depositoDto.str_nombre;
-            depositoExistente.Str_direccion = depositoDto.str_direccion;
+            depositoExistente.Str_nombre = depositoDto.Str_nombre;
+            depositoExistente.Str_direccion = depositoDto.Str_direccion;
 
             await _context.SaveChangesAsync();
             return depositoExistente;

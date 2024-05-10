@@ -9,7 +9,7 @@ namespace api.Models
     {
         public int Id { get; set; }
         public string Str_nombre { get; set; } = String.Empty;
-        public int? Fk_proveedor { get; set; }
+        public int? ProveedorId { get; set; }
         public Proveedor? Proveedor { get; set; }
         public List<Producto> Productos { get; set; } = [];
     }

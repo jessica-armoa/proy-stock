@@ -9,9 +9,9 @@ namespace api.Models
     {
         public int Id { get; set; }
         public int Int_cantidad { get; set; }
-        public int? Fk_movimiento { get; set; }
+        public int? MovimientoId { get; set; }
         public Movimiento? Movimiento { get; set; }
-        public int? Fk_producto { get; set; }
+        public int? ProductoId { get; set; }
         public Producto? Producto { get; set; }
     }
 }

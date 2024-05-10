@@ -13,9 +13,9 @@ namespace api.Mapper
         {
             return new CategoriaDto
             {
-                id_categoria = categoriaModel.Id,
-                str_descripcion = categoriaModel.Str_descripcion,
-                fk_proveedor = categoriaModel.Fk_proveedor
+                Id = categoriaModel.Id,
+                Str_descripcion = categoriaModel.Str_descripcion,
+                ProveedorId = categoriaModel.ProveedorId
             };
         }
     }

@@ -13,24 +13,24 @@ namespace api.Mapper
         {
             return new ProveedorDto
             {
-                id_proveedor = proveedorModel.Id,
-                str_nombre = proveedorModel.Str_nombre,
-                str_telefono = proveedorModel.Str_telefono,
-                str_direccion = proveedorModel.Str_direccion,
-                str_correo = proveedorModel.Str_correo,
-                productos = proveedorModel.Productos.Select(p => p.ToProductoDto()).ToList(),
-                categorias = proveedorModel.Categorias.Select(c => c.ToCategoriaDto()).ToList()
+                Id = proveedorModel.Id,
+                Str_nombre = proveedorModel.Str_nombre,
+                Str_telefono = proveedorModel.Str_telefono,
+                Str_direccion = proveedorModel.Str_direccion,
+                Str_correo = proveedorModel.Str_correo,
+                Productos = proveedorModel.Productos.Select(p => p.ToProductoDto()).ToList(),
+                Categorias = proveedorModel.Categorias.Select(c => c.ToCategoriaDto()).ToList()
             };
         }
 
-        public static Proveedor ToProveedorFromCreate(this CreateProveedorDto proveedorDto)
+        public static Proveedor ToProveedorFromCreate(this CreateProveedorRequestDto proveedorDto)
         {
             return new Proveedor
             {
-                Str_nombre = proveedorDto.str_nombre,
-                Str_telefono = proveedorDto.str_telefono,
-                Str_direccion = proveedorDto.str_direccion,
-                Str_correo = proveedorDto.str_correo
+                Str_nombre = proveedorDto.Str_nombre,
+                Str_telefono = proveedorDto.Str_telefono,
+                Str_direccion = proveedorDto.Str_direccion,
+                Str_correo = proveedorDto.Str_correo
             };
         }
 
@@ -38,10 +38,10 @@ namespace api.Mapper
         {
             return new Proveedor
             {
-                Str_nombre = proveedorDto.str_nombre,
-                Str_telefono = proveedorDto.str_telefono,
-                Str_direccion = proveedorDto.str_direccion,
-                Str_correo = proveedorDto.str_correo
+                Str_nombre = proveedorDto.Str_nombre,
+                Str_telefono = proveedorDto.Str_telefono,
+                Str_direccion = proveedorDto.Str_direccion,
+                Str_correo = proveedorDto.Str_correo
             };
         }
     }

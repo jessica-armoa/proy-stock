@@ -7,7 +7,7 @@ namespace api.Dtos.Deposito
 {
     public class CreateDepositoDto
     {
-        public string str_nombre { get; set; } = String.Empty;
-        public string str_direccion { get; set; } = String.Empty;
+        public string Str_nombre { get; set; } = String.Empty;
+        public string Str_direccion { get; set; } = String.Empty;
     }
 }

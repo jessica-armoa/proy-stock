@@ -14,20 +14,20 @@ namespace api.Mapper
         {
             return new ProductoDto
             {
-                id_producto = productoModel.Id,
-                str_ruta_imagen = productoModel.Str_ruta_imagen,
-                str_nombre = productoModel.Str_nombre,
-                str_descripcion = productoModel.Str_descripcion,
-                int_cantidad_actual = productoModel.Int_cantidad_actual,
-                int_cantidad_minima = productoModel.Int_cantidad_minima,
-                dec_costo_PPP = productoModel.Dec_costo_PPP,
-                int_iva = productoModel.Int_iva,
-                dec_precio_mayorista = productoModel.Dec_precio_mayorista,
-                dec_precio_minorista = productoModel.Dec_precio_minorista,
-                detallesDeMovimientos = productoModel.Detalles_De_Movimientos.Select(d => d.ToDetalleDeMovimientoDto()).ToList(),
-                fk_deposito = productoModel.Fk_deposito,
-                fk_proveedor = productoModel.Fk_proveedor,
-                fk_marca = productoModel.Fk_marca
+                Id = productoModel.Id,
+                Str_ruta_imagen = productoModel.Str_ruta_imagen,
+                Str_nombre = productoModel.Str_nombre,
+                Str_descripcion = productoModel.Str_descripcion,
+                Int_cantidad_actual = productoModel.Int_cantidad_actual,
+                Int_cantidad_minima = productoModel.Int_cantidad_minima,
+                Dec_costo_PPP = productoModel.Dec_costo_PPP,
+                Int_iva = productoModel.Int_iva,
+                Dec_precio_mayorista = productoModel.Dec_precio_mayorista,
+                Dec_precio_minorista = productoModel.Dec_precio_minorista,
+                DetallesDeMovimientos = productoModel.DetallesDeMovimientos.Select(d => d.ToDetalleDeMovimientoDto()).ToList(),
+                DepositoId = productoModel.DepositoId,
+                ProveedorId = productoModel.ProveedorId,
+                MarcaId = productoModel.MarcaId
             };
         }
 
@@ -35,18 +35,18 @@ namespace api.Mapper
         {
             return new Producto
             {
-                Str_ruta_imagen = productoDto.str_ruta_imagen,
-                Str_nombre = productoDto.str_nombre,
-                Str_descripcion = productoDto.str_descripcion,
-                Int_cantidad_actual = productoDto.int_cantidad_actual,
-                Int_cantidad_minima = productoDto.int_cantidad_minima,
-                Dec_costo_PPP = productoDto.dec_costo_PPP,
-                Int_iva = productoDto.int_iva,
-                Dec_precio_mayorista = productoDto.dec_precio_mayorista,
-                Dec_precio_minorista = productoDto.dec_precio_minorista,
-                Fk_deposito = depositoId,
-                Fk_proveedor = proveedorId,
-                Fk_marca = marcaId
+                Str_ruta_imagen = productoDto.Str_ruta_imagen,
+                Str_nombre = productoDto.Str_nombre,
+                Str_descripcion = productoDto.Str_descripcion,
+                Int_cantidad_actual = productoDto.Int_cantidad_actual,
+                Int_cantidad_minima = productoDto.Int_cantidad_minima,
+                Dec_costo_PPP = productoDto.Dec_costo_PPP,
+                Int_iva = productoDto.Int_iva,
+                Dec_precio_mayorista = productoDto.Dec_precio_mayorista,
+                Dec_precio_minorista = productoDto.Dec_precio_minorista,
+                DepositoId = depositoId,
+                ProveedorId = proveedorId,
+                MarcaId = marcaId
             };
         }
         
@@ -54,15 +54,15 @@ namespace api.Mapper
         {
             return new Producto
             {
-                Str_ruta_imagen = productoDto.str_ruta_imagen,
-                Str_nombre = productoDto.str_nombre,
-                Str_descripcion = productoDto.str_descripcion,
-                Int_cantidad_actual = productoDto.int_cantidad_actual,
-                Int_cantidad_minima = productoDto.int_cantidad_minima,
-                Dec_costo_PPP = productoDto.dec_costo_PPP,
-                Int_iva = productoDto.int_iva,
-                Dec_precio_mayorista = productoDto.dec_precio_mayorista,
-                Dec_precio_minorista = productoDto.dec_precio_minorista,
+                Str_ruta_imagen = productoDto.Str_ruta_imagen,
+                Str_nombre = productoDto.Str_nombre,
+                Str_descripcion = productoDto.Str_descripcion,
+                Int_cantidad_actual = productoDto.Int_cantidad_actual,
+                Int_cantidad_minima = productoDto.Int_cantidad_minima,
+                Dec_costo_PPP = productoDto.Dec_costo_PPP,
+                Int_iva = productoDto.Int_iva,
+                Dec_precio_mayorista = productoDto.Dec_precio_mayorista,
+                Dec_precio_minorista = productoDto.Dec_precio_minorista,
             };
         }
     }

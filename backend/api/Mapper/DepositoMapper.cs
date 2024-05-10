@@ -9,12 +9,12 @@ namespace api.Mapper
         {
             return new DepositoDto
             {
-                id_deposito = depositoModel.Id,
-                str_nombre = depositoModel.Str_nombre,
-                str_direccion = depositoModel.Str_direccion,
-                fk_ferreteria = depositoModel.Fk_ferreteria,
-                movimientos = depositoModel.Movimientos.Select(s => s.ToMovimientoDto()).ToList(),
-                productos = depositoModel.Productos.Select(p => p.ToProductoDto()).ToList()
+                Id = depositoModel.Id,
+                Str_nombre = depositoModel.Str_nombre,
+                Str_direccion = depositoModel.Str_direccion,
+                FerreteriaId = depositoModel.FerreteriaId,
+                Movimientos = depositoModel.Movimientos.Select(s => s.ToMovimientoDto()).ToList(),
+                Productos = depositoModel.Productos.Select(p => p.ToProductoDto()).ToList()
             };
         }
 
@@ -22,9 +22,9 @@ namespace api.Mapper
         {
             return new Deposito
             {
-                Str_nombre = depositoDto.str_nombre,
-                Str_direccion = depositoDto.str_direccion,
-                Fk_ferreteria = ferreteriaId
+                Str_nombre = depositoDto.Str_nombre,
+                Str_direccion = depositoDto.Str_direccion,
+                FerreteriaId = ferreteriaId
             };
         }
 
@@ -32,8 +32,8 @@ namespace api.Mapper
         {
             return new Deposito
             {
-                Str_nombre = depositoDto.str_nombre,
-                Str_direccion = depositoDto.str_direccion,
+                Str_nombre = depositoDto.Str_nombre,
+                Str_direccion = depositoDto.Str_direccion,
             };
         }
     }

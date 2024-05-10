@@ -39,12 +39,12 @@ namespace api.Repository
 
         public async Task<List<Producto>> GetAllAsync()
         {
-            return await _context.productos.Include(p => p.Detalles_De_Movimientos).ToListAsync();
+            return await _context.productos.Include(p => p.DetallesDeMovimientos).ToListAsync();
         }
 
         public async Task<Producto?> GetByIdAsync(int id)
         {
-            return await _context.productos.Include(p => p.Detalles_De_Movimientos).FirstOrDefaultAsync(i => i.Id == id);
+            return await _context.productos.Include(p => p.DetallesDeMovimientos).FirstOrDefaultAsync(i => i.Id == id);
         }
 
         public async Task<Producto?> GetByNombreAsync(string nombre)

@@ -7,8 +7,8 @@ namespace api.Dtos.Categoria
 {
     public class CategoriaDto
     {
-        public int id_categoria { get; set; }
-        public string str_descripcion { get; set; } = String.Empty;
-        public int? fk_proveedor { get; set; }
+        public int Id { get; set; }
+        public string Str_descripcion { get; set; } = String.Empty;
+        public int? ProveedorId { get; set; }
     }
 }

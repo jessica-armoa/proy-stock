@@ -9,12 +9,12 @@ namespace api.Models
     {
         public int Id { get; set; }
         public DateTime Date_fecha { get; set; } = DateTime.Now;
-        public int? Fk_tipo_de_movimiento { get; set; }
-        public TipoDeMovimiento? Tipo_de_movimiento{ get; set; }
-        public int? Fk_deposito_origen{ get; set; }
-        public Deposito? Deposito_origen { get; set; }
-        public int? Fk_deposito_destino { get; set; }
-        public Deposito? Deposito_destino { get; set; }
-        public List<DetalleDeMovimiento> Detalles_de_movimientos { get; set; } = [];
+        public int? TipoDeMovimientoId { get; set; }
+        public TipoDeMovimiento? TipoDeMovimiento{ get; set; }
+        public int? DepositoOrigenId{ get; set; }
+        public Deposito? DepositoOrigen { get; set; }
+        public int? DepositoDestinoId { get; set; }
+        public Deposito? DepositoDestino { get; set; }
+        public List<DetalleDeMovimiento> DetallesDeMovimientos { get; set; } = [];
     }
 }

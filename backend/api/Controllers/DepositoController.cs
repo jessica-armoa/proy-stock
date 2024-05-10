@@ -44,19 +44,19 @@ namespace api.Controllers
         }
 
         [HttpPost]
-        [Route("{proveedorId:int}")]
-        public async Task<IActionResult> Post([FromRoute] int proveedorId, CreateDepositoDto depositoDto)
+        [Route("{ferreteriaId:int}")]
+        public async Task<IActionResult> Post([FromRoute] int ferreteriaId, CreateDepositoDto depositoDto)
         {
             /*
             if(!ModelState.IsValid) 
                 return BadRequest(ModelState);
             */
-            if(!await _proveedorRepo.ProveedorExists(proveedorId))
+            if(!await _proveedorRepo.ProveedorExists(ferreteriaId))
             {
-                return BadRequest("El proveedor ingresado no existe!");
+                return BadRequest("La ferreteria ingresada no existe!");
             }
         
-            var depositoModel = depositoDto.ToDepositoFromCreate(proveedorId);
+            var depositoModel = depositoDto.ToDepositoFromCreate(ferreteriaId);
             await _depositoRepo.CreateAsync(depositoModel);
             return CreatedAtAction(nameof(GetById), new{id = depositoModel.Id}, depositoModel.ToDepositoDto());
         }

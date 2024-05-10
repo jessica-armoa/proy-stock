@@ -8,11 +8,11 @@ namespace api.Dtos.Movimiento
 {
     public class MovimientoDto
     {
-        public int id_movimiento { get; set; }
-        public DateTime date_fecha { get; set; } = DateTime.Now;
-        public int? fk_tipo_de_movimiento { get; set; }
-        public int? fk_deposito_origen{ get; set; }
-        public int? fk_deposito_destino { get; set; }
-        public List<DetalleDeMovimientoDto> detalles_de_movimientos { get; set; }
+        public int Id { get; set; }
+        public DateTime Date_fecha { get; set; } = DateTime.Now;
+        public int? TipoDeMovimientoId { get; set; }
+        public int? DepositoOrigenId { get; set; }
+        public int? DepositoDestinoId { get; set; }
+        public List<DetalleDeMovimientoDto> DetallesDeMovimientos { get; set; }
     }
 }

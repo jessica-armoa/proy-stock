@@ -35,12 +35,18 @@ namespace api.Repository
 
         public async Task<List<Proveedor>> GetAllAsync()
         {
-            return await _context.proveedores.ToListAsync();
+            return await _context.proveedores
+            .Include(p => p.Productos)
+            .Include(p => p.Categorias)
+            .ToListAsync();
         }
 
         public async Task<Proveedor?> GetByIdAsync(int id)
         {
-            return await _context.proveedores.FindAsync(id);
+            return await _context.proveedores
+            .Include(p => p.Productos)
+            .Include(p => p.Categorias)
+            .FirstOrDefaultAsync(p => p.Id == id);
         }
 
         public async Task<bool> ProveedorExists(int id)

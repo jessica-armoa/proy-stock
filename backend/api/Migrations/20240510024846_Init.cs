@@ -64,7 +64,6 @@ namespace api.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Str_nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Str_direccion = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Fk_ferreteria = table.Column<int>(type: "int", nullable: true),
                     FerreteriaId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -84,7 +83,6 @@ namespace api.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Bool_operacion = table.Column<bool>(type: "bit", nullable: false),
-                    Fk_motivo = table.Column<int>(type: "int", nullable: true),
                     MotivoId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -104,7 +102,6 @@ namespace api.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Str_descripcion = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Fk_proveedor = table.Column<int>(type: "int", nullable: true),
                     ProveedorId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -124,7 +121,6 @@ namespace api.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Str_nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Fk_proveedor = table.Column<int>(type: "int", nullable: true),
                     ProveedorId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -144,35 +140,34 @@ namespace api.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Date_fecha = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Fk_tipo_de_movimiento = table.Column<int>(type: "int", nullable: true),
-                    Tipo_de_movimientoId = table.Column<int>(type: "int", nullable: true),
-                    Fk_deposito_origen = table.Column<int>(type: "int", nullable: true),
-                    Fk_deposito_destino = table.Column<int>(type: "int", nullable: true),
+                    TipoDeMovimientoId = table.Column<int>(type: "int", nullable: true),
+                    DepositoOrigenId = table.Column<int>(type: "int", nullable: true),
+                    DepositoDestinoId = table.Column<int>(type: "int", nullable: true),
                     DepositoId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_movimientos", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_movimientos_depositos_DepositoDestinoId",
+                        column: x => x.DepositoDestinoId,
+                        principalTable: "depositos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
                         name: "FK_movimientos_depositos_DepositoId",
                         column: x => x.DepositoId,
                         principalTable: "depositos",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_movimientos_depositos_Fk_deposito_destino",
-                        column: x => x.Fk_deposito_destino,
+                        name: "FK_movimientos_depositos_DepositoOrigenId",
+                        column: x => x.DepositoOrigenId,
                         principalTable: "depositos",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_movimientos_depositos_Fk_deposito_origen",
-                        column: x => x.Fk_deposito_origen,
-                        principalTable: "depositos",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_movimientos_tipos_de_movimientos_Tipo_de_movimientoId",
-                        column: x => x.Tipo_de_movimientoId,
+                        name: "FK_movimientos_tipos_de_movimientos_TipoDeMovimientoId",
+                        column: x => x.TipoDeMovimientoId,
                         principalTable: "tipos_de_movimientos",
                         principalColumn: "Id");
                 });
@@ -186,11 +181,8 @@ namespace api.Migrations
                     Str_ruta_imagen = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Str_nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Str_descripcion = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Fk_deposito = table.Column<int>(type: "int", nullable: true),
                     DepositoId = table.Column<int>(type: "int", nullable: true),
-                    Fk_proveedor = table.Column<int>(type: "int", nullable: true),
                     ProveedorId = table.Column<int>(type: "int", nullable: true),
-                    Fk_marca = table.Column<int>(type: "int", nullable: true),
                     MarcaId = table.Column<int>(type: "int", nullable: true),
                     Int_cantidad_actual = table.Column<int>(type: "int", nullable: false),
                     Int_cantidad_minima = table.Column<int>(type: "int", nullable: false),
@@ -226,9 +218,7 @@ namespace api.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Int_cantidad = table.Column<int>(type: "int", nullable: false),
-                    Fk_movimiento = table.Column<int>(type: "int", nullable: true),
                     MovimientoId = table.Column<int>(type: "int", nullable: true),
-                    Fk_producto = table.Column<int>(type: "int", nullable: true),
                     ProductoId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -272,24 +262,24 @@ namespace api.Migrations
                 column: "ProveedorId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_movimientos_DepositoDestinoId",
+                table: "movimientos",
+                column: "DepositoDestinoId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_movimientos_DepositoId",
                 table: "movimientos",
                 column: "DepositoId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_movimientos_Fk_deposito_destino",
+                name: "IX_movimientos_DepositoOrigenId",
                 table: "movimientos",
-                column: "Fk_deposito_destino");
+                column: "DepositoOrigenId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_movimientos_Fk_deposito_origen",
+                name: "IX_movimientos_TipoDeMovimientoId",
                 table: "movimientos",
-                column: "Fk_deposito_origen");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_movimientos_Tipo_de_movimientoId",
-                table: "movimientos",
-                column: "Tipo_de_movimientoId");
+                column: "TipoDeMovimientoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_productos_DepositoId",

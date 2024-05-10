@@ -31,15 +31,15 @@ namespace api.Data
             base.OnModelCreating(modelBuilder);
             
             modelBuilder.Entity<Movimiento>()
-                .HasOne(m => m.Deposito_origen)
+                .HasOne(m => m.DepositoOrigen)
                 .WithMany()
-                .HasForeignKey(m => m.Fk_deposito_destino)
+                .HasForeignKey(m => m.DepositoDestinoId)
                 .OnDelete(DeleteBehavior.Restrict); // Esto asegura que no se elimine en cascada si eliminas un depósito
 
             modelBuilder.Entity<Movimiento>()
-                .HasOne(m => m.Deposito_destino)
+                .HasOne(m => m.DepositoDestino)
                 .WithMany()
-                .HasForeignKey(m => m.Fk_deposito_origen)
+                .HasForeignKey(m => m.DepositoOrigenId)
                 .OnDelete(DeleteBehavior.Restrict); // Esto asegura que no se elimine en cascada si eliminas un depósito
 
             // Otros ajustes de modelo aquí si es necesario
