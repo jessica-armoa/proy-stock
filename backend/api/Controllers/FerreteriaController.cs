@@ -25,7 +25,7 @@ namespace api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var ferreterias = await _context.Ferreterias.ToListAsync();
+            var ferreterias = await _context.ferreterias.ToListAsync();
             var ferreteriaDto = ferreterias.Select(f => f.ToFerreteriaDto());
             return Ok(ferreteriaDto);
         } 
