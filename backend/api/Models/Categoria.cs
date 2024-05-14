@@ -5,12 +5,11 @@ using System.Threading.Tasks;
 
 namespace api.Models
 {
-    public class Marca
+    public class Categoria
     {
         public int Id { get; set; }
-        public string Str_nombre { get; set; } = String.Empty;
+        public string Str_descripcion { get; set; } = String.Empty;
         public int? ProveedorId { get; set; }
         public Proveedor? Proveedor { get; set; }
-        public List<Producto> Productos { get; set; } = [];
     }
 }

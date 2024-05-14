@@ -11,6 +11,6 @@ namespace api.Models
         public bool Bool_operacion { get; set; }
         public int? MotivoId { get; set; }
         public Motivos? Motivo { get; set; }
-        public List<Movimiento> Movimientos { get; set; } = new List<Movimiento>();
+        public List<Movimiento> Movimientos { get; set; } = [];
     }
 }

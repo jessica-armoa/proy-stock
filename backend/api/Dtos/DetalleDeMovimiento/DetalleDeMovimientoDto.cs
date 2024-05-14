@@ -9,8 +9,8 @@ namespace api.Dtos.DetalleDeMovimiento
     public class DetalleDeMovimientoDto
     {
         public int Id { get; set; }
-        public int Cantidad { get; set; }
-        public int? Fk_movimiento{ get; set; }
-        public int? Fk_producto { get; set; }
+        public int Int_cantidad { get; set; }
+        public int? MovimientoId { get; set; }
+        public int? ProductoId { get; set; }
     }
 }
