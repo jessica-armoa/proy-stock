@@ -1,5 +1,5 @@
 // pages/login.js
-
+"use Client"
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 
