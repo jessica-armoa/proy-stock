@@ -13,6 +13,7 @@ import Dashboard from './page';
 import Movimientos from './movimientos/page';
 import Depositos from './depositos/page';
 import CrearProducto from './productos/CrearProducto';
+import Login from './login/page';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -27,6 +28,7 @@ export default function RootLayout({ children }) {
           <Route path="/movimientos" element={< Movimientos />} />
           <Route path="/depositos" element={< Depositos />} />
           <Route path="/productos/nuevo" element={< CrearProducto />} />
+          <Route path="/login" element={<Login/>}/>
         </Routes>
         </Router>
       <body className={inter.className}>

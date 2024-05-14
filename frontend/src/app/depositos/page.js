@@ -1,5 +1,6 @@
 import React from 'react'
 import Sidebar from '@/components/sidebar';
+import withAuth from '@/components/auth/withauth';
 
 const Depositos = () => {
   return (
@@ -13,4 +14,4 @@ const Depositos = () => {
   )
 }
 
-export default Depositos;
+export default withAuth(Depositos);
