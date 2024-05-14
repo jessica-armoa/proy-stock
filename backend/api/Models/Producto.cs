@@ -24,6 +24,6 @@ namespace api.Models
         public int Int_iva { get; set; }
         public decimal Dec_precio_mayorista { get; set; }
         public decimal Dec_precio_minorista { get; set; }
-        public List<DetalleDeMovimiento> DetallesDeMovimientos { get; set; } = new List<DetalleDeMovimiento>();
+        public List<DetalleDeMovimiento> DetallesDeMovimientos { get; set; } = [];
     }
 }
