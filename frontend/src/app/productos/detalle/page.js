@@ -13,6 +13,7 @@ import { Button } from "@tremor/react";
 
 
 const Detalle = () => {
+  console.log(producto[0].img_url)
   const data = [
     {
       date: "21/03/2024",
@@ -110,6 +111,7 @@ const Detalle = () => {
         </nav>
         <div className=" grid grid-cols-3 mb-10">
           <div>
+            <Photo> src={producto[id].img_url}</Photo>
           </div>
           <div>
             <p>Codigo: {producto[id].id}</p>
