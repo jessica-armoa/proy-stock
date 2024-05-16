@@ -1,4 +1,5 @@
 using api.Data;
+using api.Service;
 using api.Interfaces;
 using api.Repository;
 using Microsoft.EntityFrameworkCore;
@@ -61,6 +62,7 @@ builder.Services.AddAuthentication(options =>{
 
 builder.Services.AddScoped<IFerreteriaRepository, FerreteriaRepository>();
 builder.Services.AddScoped<IProductoRepository, ProductoRepository>();
+builder.Services.AddScoped<ITokenService, TokenService>();
 
 var app = builder.Build();
 

@@ -1,4 +1,5 @@
 using api.Models;
+using api.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using api.Dtos.Usuario;
@@ -10,10 +11,12 @@ namespace api.Controllers
   public class UsuariosController : ControllerBase
   {
     private readonly UserManager<Usuarios> _userManager;
+    private readonly ITokenService _tokenService;
 
-    public UsuariosController(UserManager<Usuarios> userManager)
+    public UsuariosController(UserManager<Usuarios> userManager, ITokenService tokenService)
     {
       _userManager = userManager;
+      _tokenService = tokenService;
     }
 
     [HttpPost("register")]
@@ -36,7 +39,13 @@ namespace api.Controllers
           var roleResult = await _userManager.AddToRoleAsync(usuario, "User");
           if (roleResult.Succeeded)
           {
-            return Ok("Usuario Creado");
+            return Ok(
+              new NuevoUsuarioDto{
+                UserName = usuario.UserName,
+                Email = usuario.Email,
+                Token = _tokenService.CreateToken(usuario)
+              }
+            );
           }
           else
           {
