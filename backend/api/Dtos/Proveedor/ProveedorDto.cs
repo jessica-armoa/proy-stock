@@ -1,4 +1,5 @@
 using api.Dtos.Categoria;
+using api.Dtos.Marca;
 using api.Dtos.Producto;
 
 namespace api.Dtos.Proveedor
@@ -12,5 +13,6 @@ namespace api.Dtos.Proveedor
         public string Str_correo { get; set; } = String.Empty;
         public List<ProductoDto> Productos { get; set; }
         public List<CategoriaDto> Categorias { get; set; } 
+        public List<MarcaDto> Marcas { get; set; }
     }
 }

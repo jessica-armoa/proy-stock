@@ -27,10 +27,7 @@ namespace api.Repository
         public async Task<Producto?> DeleteAsync(int id)
         {
             var productoModel = await _context.productos.FirstOrDefaultAsync(p => p.Id == id);
-            if(productoModel == null)
-            {
-                return null;
-            }
+            if(productoModel == null) return null;
 
             _context.productos.Remove(productoModel);
             await _context.SaveChangesAsync();
@@ -39,12 +36,22 @@ namespace api.Repository
 
         public async Task<List<Producto>> GetAllAsync()
         {
-            return await _context.productos.Include(p => p.DetallesDeMovimientos).ToListAsync();
+            return await _context.productos
+            .Include(p => p.DetallesDeMovimientos)
+            .Include(p => p.Deposito)
+            .Include(p => p.Proveedor)
+            .Include(p => p.Marca)
+            .ToListAsync();
         }
 
         public async Task<Producto?> GetByIdAsync(int id)
         {
-            return await _context.productos.Include(p => p.DetallesDeMovimientos).FirstOrDefaultAsync(i => i.Id == id);
+            return await _context.productos
+            .Include(p => p.DetallesDeMovimientos)
+            .Include(p => p.Deposito)
+            .Include(p => p.Proveedor)
+            .Include(p => p.Marca)
+            .FirstOrDefaultAsync(i => i.Id == id);
         }
 
         public async Task<Producto?> GetByNombreAsync(string nombre)
@@ -60,10 +67,7 @@ namespace api.Repository
         public async Task<Producto?> UpdateAsync(int id, Producto productoDto)
         {
             var productoExistente = await _context.productos.FirstOrDefaultAsync(s => s.Id == id);
-            if(productoExistente == null)
-            {
-                return null;
-            }
+            if(productoExistente == null) return null;
 
             productoExistente.Str_ruta_imagen = productoDto.Str_ruta_imagen;
             productoExistente.Str_nombre = productoDto.Str_nombre;

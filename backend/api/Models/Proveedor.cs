@@ -14,5 +14,6 @@ namespace api.Models
         public string Str_correo { get; set; } = String.Empty;
         public List<Producto> Productos { get; set; } = [];
         public List<Categoria> Categorias { get; set; } = [];
+        public List<Marca> Marcas { get; set; } = [];
     }
 }

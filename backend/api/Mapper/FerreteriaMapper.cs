@@ -16,7 +16,28 @@ namespace api.Mapper
                 Id = ferreteriaModel.Id,
                 Str_nombre = ferreteriaModel.Str_nombre,
                 Str_ruc = ferreteriaModel.Str_ruc,
-                Str_telefono = ferreteriaModel.Str_telefono
+                Str_telefono = ferreteriaModel.Str_telefono,
+                Depositos = ferreteriaModel.Depositos.Select(d => d.ToDepositoDto()).ToList()
+            };
+        }
+
+        public static Ferreteria ToFerreteriaFromCreate(this CreateFerreteriaRequestDto ferreteriaDto)
+        {
+            return new Ferreteria
+            {
+                Str_nombre = ferreteriaDto.Str_nombre,
+                Str_ruc = ferreteriaDto.Str_ruc,
+                Str_telefono = ferreteriaDto.Str_telefono
+            };
+        }
+
+        public static Ferreteria ToFerreteriaFromUpdate(this UpdateFerreteriaRequestDto ferreteriaDto)
+        {
+            return new Ferreteria
+            {
+                Str_nombre = ferreteriaDto.Str_nombre,
+                Str_ruc = ferreteriaDto.Str_ruc,
+                Str_telefono = ferreteriaDto.Str_telefono
             };
         }
     }

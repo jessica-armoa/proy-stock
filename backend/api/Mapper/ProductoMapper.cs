@@ -26,12 +26,15 @@ namespace api.Mapper
                 Dec_precio_minorista = productoModel.Dec_precio_minorista,
                 DetallesDeMovimientos = productoModel.DetallesDeMovimientos.Select(d => d.ToDetalleDeMovimientoDto()).ToList(),
                 DepositoId = productoModel.DepositoId,
+                DepositoNombre = productoModel.Deposito?.Str_nombre,
                 ProveedorId = productoModel.ProveedorId,
-                MarcaId = productoModel.MarcaId
+                ProveedorNombre = productoModel.Proveedor?.Str_nombre,
+                MarcaId = productoModel.MarcaId,
+                MarcaNombre = productoModel.Marca?.Str_nombre
             };
         }
 
-        public static Producto ToProductoFromCreate(this CreateProductoDto productoDto, int depositoId, int proveedorId, int marcaId)
+        public static Producto ToProductoFromCreate(this CreateProductoRequestDto productoDto, int depositoId, int proveedorId, int marcaId)
         {
             return new Producto
             {

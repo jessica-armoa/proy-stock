@@ -16,29 +16,53 @@ namespace api.Repository
         {
             _context = context;
         }
-        public Task<Ferreteria> CreateAsync(Ferreteria ferreteriaModel)
+        public async Task<Ferreteria> CreateAsync(Ferreteria ferreteriaModel)
         {
-            throw new NotImplementedException();
+            await _context.ferreterias.AddAsync(ferreteriaModel);
+            await _context.SaveChangesAsync();
+            return ferreteriaModel;
         }
 
-        public Task<Ferreteria?> DeleteAsync(int id)
+        public async Task<Ferreteria?> DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            var ferreteriaModel = await _context.ferreterias.FirstOrDefaultAsync(f => f.Id == id);
+            if(ferreteriaModel == null) return null;
+
+            _context.ferreterias.Remove(ferreteriaModel);
+            await _context.SaveChangesAsync();
+            return ferreteriaModel;
+        }
+
+        public async Task<bool> FerreteriaExists(int id)
+        {
+            return await _context.ferreterias.AnyAsync(f => f.Id == id);
         }
 
         public async Task<List<Ferreteria>> GetAllAsync()
         {
-            return await _context.ferreterias.ToListAsync();
+            return await _context.ferreterias
+            .Include(f => f.Depositos)
+            .ToListAsync();
         }
 
-        public Task<Ferreteria?> GetByIdAsync(int id)
+        public async Task<Ferreteria?> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _context.ferreterias
+            .Include(f => f.Depositos)
+            .FirstOrDefaultAsync(f => f.Id == id);
         }
 
-        public Task<Ferreteria?> UpdateAsync(int id, Ferreteria FerreteriaModel)
+        public async Task<Ferreteria?> UpdateAsync(int id, Ferreteria ferreteriaModel)
         {
-            throw new NotImplementedException();
+            var ferreteriaExistente = await _context.ferreterias.FirstOrDefaultAsync(f => f.Id == id);
+            if(ferreteriaExistente == null) return null;
+
+            ferreteriaExistente.Str_nombre = ferreteriaModel.Str_nombre;
+            ferreteriaExistente.Str_ruc = ferreteriaModel.Str_ruc;
+            ferreteriaExistente.Str_telefono = ferreteriaModel.Str_telefono;
+
+            await _context.SaveChangesAsync();
+            return ferreteriaExistente;
         }
     }
 }
