@@ -13,12 +13,12 @@ namespace api.Mapper
                 Str_nombre = depositoModel.Str_nombre,
                 Str_direccion = depositoModel.Str_direccion,
                 FerreteriaId = depositoModel.FerreteriaId,
-                Movimientos = depositoModel.Movimientos.Select(s => s.ToMovimientoDto()).ToList(),
+                Movimientos = depositoModel.Movimientos.Select(m => m.ToMovimientoDto()).ToList(),
                 Productos = depositoModel.Productos.Select(p => p.ToProductoDto()).ToList()
             };
         }
 
-        public static Deposito ToDepositoFromCreate(this CreateDepositoDto depositoDto, int ferreteriaId)
+        public static Deposito ToDepositoFromCreate(this CreateDepositoRequestDto depositoDto, int ferreteriaId)
         {
             return new Deposito
             {

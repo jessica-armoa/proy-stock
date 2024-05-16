@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace api.Dtos.Producto
 {
-    public class CreateProductoDto
+    public class CreateProductoRequestDto
     {
         [Required]
         [MaxLength(200, ErrorMessage = "La ruta de imagen no puede ser mayor de 200 caracteres")]

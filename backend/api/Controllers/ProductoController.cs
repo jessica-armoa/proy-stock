@@ -52,7 +52,7 @@ namespace api.Controllers
         }
 
         [HttpPost("{depositoId:int}/{proveedorId:int}/{marcaId:int}")]
-        public async Task<IActionResult> Post([FromRoute] int depositoId, [FromRoute] int proveedorId, [FromRoute] int marcaId, CreateProductoDto productoDto)
+        public async Task<IActionResult> Post([FromRoute] int depositoId, [FromRoute] int proveedorId, [FromRoute] int marcaId, CreateProductoRequestDto productoDto)
         {
             if(!ModelState.IsValid) 
                 return BadRequest(ModelState);

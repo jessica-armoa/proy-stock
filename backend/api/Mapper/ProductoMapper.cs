@@ -31,7 +31,7 @@ namespace api.Mapper
             };
         }
 
-        public static Producto ToProductoFromCreate(this CreateProductoDto productoDto, int depositoId, int proveedorId, int marcaId)
+        public static Producto ToProductoFromCreate(this CreateProductoRequestDto productoDto, int depositoId, int proveedorId, int marcaId)
         {
             return new Producto
             {
