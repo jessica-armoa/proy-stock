@@ -9,7 +9,7 @@ namespace api.Models
     {
         public int Id { get; set; }
         public string Str_motivo { get; set; } = String.Empty;
-        public bool Bool_perdida { get; set; }
-        public List<TipoDeMovimiento> TiposDeMovimientos { get; set; } = new List<TipoDeMovimiento>();
+        public bool Bool_perdida{ get; set; }
+        public List<TipoDeMovimiento> Tipo_de_movimientos { get; set; } = [];
     }
 }

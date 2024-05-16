@@ -24,8 +24,24 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>{
     options.UseSqlServer(connectionString);
 });
 
+builder.Services.AddCors(options =>
+    {
+        options.AddPolicy("CorsPolicy", builder =>
+        {
+            builder.AllowAnyOrigin()
+                   .AllowAnyMethod()
+                   .AllowAnyHeader();
+        });
+    });
+
+/*
+    AGREGAR LAS INTERFACES CREADAS!!!!!
+*/
 builder.Services.AddScoped<IFerreteriaRepository, FerreteriaRepository>();
 builder.Services.AddScoped<IProductoRepository, ProductoRepository>();
+builder.Services.AddScoped<IDepositoRepository, DepositoRepository>();
+builder.Services.AddScoped<IProveedorRepository, ProveedorRepository>();
+builder.Services.AddScoped<IMarcaRepository, MarcaRepository>();
 
 var app = builder.Build();
 
@@ -38,5 +54,5 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.MapControllers();
-
+app.UseCors("CorsPolicy");
 app.Run();

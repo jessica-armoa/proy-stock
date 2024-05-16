@@ -340,8 +340,8 @@ export default function FormularioProductos() {
 
 
 
-      <Button variant="primary" type="submit">Guardar</Button>
-      <Button variant="secondary" onClick={() => {
+      <Button variant="primary" type="submit" color='blue'>Guardar</Button>
+      <Button variant="secondary" color='blue' onClick={() => {
         // Lógica para descartar
         console.log("Formulario descartado");
         // Reiniciar los valores del formulario

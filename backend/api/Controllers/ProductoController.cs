@@ -14,9 +14,15 @@ namespace api.Controllers
     public class ProductoController : ControllerBase
     {
         private readonly IProductoRepository _productoRepo;
-        public ProductoController(IProductoRepository productoRepo)
+        private readonly IDepositoRepository _depositoRepo;
+        private readonly IProveedorRepository _proveedorRepo;
+        private readonly IMarcaRepository _marcaRepo;
+        public ProductoController(IProductoRepository productoRepo, IDepositoRepository depositoRepo, IProveedorRepository proveedorRepo, IMarcaRepository marcaRepo)
         {
             _productoRepo = productoRepo;
+            _depositoRepo = depositoRepo;
+            _proveedorRepo = proveedorRepo;
+            _marcaRepo = marcaRepo;
         }
 
         [HttpGet]
@@ -47,13 +53,13 @@ namespace api.Controllers
             }
         }
 
-        [HttpPost("{depositoId:int},{proveedorId:int},{marcaId:int}")]
-        public async Task<IActionResult> Post([FromRoute] int depositoId, [FromRoute] int proveedorId, [FromRoute] int marcaId, CreateProductoDto productoDto)
+        [HttpPost("{depositoId:int}/{proveedorId:int}/{marcaId:int}")]
+        public async Task<IActionResult> Post([FromRoute] int depositoId, [FromRoute] int proveedorId, [FromRoute] int marcaId, CreateProductoRequestDto productoDto)
         {
             if(!ModelState.IsValid) 
                 return BadRequest(ModelState);
 
-            /*if(!await _depositoRepo.DepositoExists(depositoId))
+            if(!await _depositoRepo.DepositoExists(depositoId))
             {
                 return BadRequest("El deposito ingresado no existe!");
             }
@@ -62,11 +68,11 @@ namespace api.Controllers
             {
                 return BadRequest("El proveedor ingresado no existe!");
             }
-
+            
             if(!await _marcaRepo.MarcaExists(marcaId))
             {
                 return BadRequest("La marca ingresada no existe!");
-            }*/
+            }
 
             var productoModel = productoDto.ToProductoFromCreate(depositoId, proveedorId, marcaId);
             await _productoRepo.CreateAsync(productoModel);
@@ -83,7 +89,7 @@ namespace api.Controllers
             var producto = await _productoRepo.UpdateAsync(id, updateDto.ToProductoFromUpdate());
             if(producto == null)
             {
-                return NotFound("El comentario que desea actualizar no existe");
+                return NotFound("El producto que desea actualizar no existe");
             }
 
             return Ok(producto.ToProductoDto());
@@ -99,7 +105,7 @@ namespace api.Controllers
             var productoModel = await _productoRepo.DeleteAsync(id);
             if(productoModel == null)
             {
-                return NotFound("El producto ingresado no existe!");
+                return NotFound("El producto que desea eliminar no existe!!");
             }
 
             return Ok(productoModel); //No es necesario traer algo, puede ser vacio

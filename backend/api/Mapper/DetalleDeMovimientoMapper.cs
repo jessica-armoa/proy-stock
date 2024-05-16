@@ -14,9 +14,9 @@ namespace api.Mapper
             return new DetalleDeMovimientoDto
             {
                 Id = detalleDeMovimientoModel.Id,
-                Cantidad = detalleDeMovimientoModel.Cantidad,
-                Fk_movimiento = detalleDeMovimientoModel.MovimientoId,
-                Fk_producto = detalleDeMovimientoModel.ProductoId
+                Int_cantidad = detalleDeMovimientoModel.Int_cantidad,
+                MovimientoId = detalleDeMovimientoModel.MovimientoId,
+                ProductoId = detalleDeMovimientoModel.ProductoId
             };
         }
     }

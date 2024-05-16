@@ -19,51 +19,55 @@ namespace api.Repository
         }
         public async Task<Producto> CreateAsync(Producto productoModel)
         {
-            await _context.Productos.AddAsync(productoModel);
+            await _context.productos.AddAsync(productoModel);
             await _context.SaveChangesAsync();
             return productoModel;
         }
 
         public async Task<Producto?> DeleteAsync(int id)
         {
-            var productoModel = await _context.Productos.FirstOrDefaultAsync(p => p.Id == id);
-            if(productoModel == null)
-            {
-                return null;
-            }
+            var productoModel = await _context.productos.FirstOrDefaultAsync(p => p.Id == id);
+            if(productoModel == null) return null;
 
-            _context.Productos.Remove(productoModel);
+            _context.productos.Remove(productoModel);
             await _context.SaveChangesAsync();
             return productoModel;
         }
 
         public async Task<List<Producto>> GetAllAsync()
         {
-            return await _context.Productos.Include(p => p.DetallesDeMovimientos).ToListAsync();
+            return await _context.productos
+            .Include(p => p.DetallesDeMovimientos)
+            .Include(p => p.Deposito)
+            .Include(p => p.Proveedor)
+            .Include(p => p.Marca)
+            .ToListAsync();
         }
 
         public async Task<Producto?> GetByIdAsync(int id)
         {
-            return await _context.Productos.Include(p => p.DetallesDeMovimientos).FirstOrDefaultAsync(i => i.Id == id);
+            return await _context.productos
+            .Include(p => p.DetallesDeMovimientos)
+            .Include(p => p.Deposito)
+            .Include(p => p.Proveedor)
+            .Include(p => p.Marca)
+            .FirstOrDefaultAsync(i => i.Id == id);
         }
 
         public async Task<Producto?> GetByNombreAsync(string nombre)
         {
-            return await _context.Productos.FirstOrDefaultAsync(s => s.Str_nombre == nombre);
+            return await _context.productos.FirstOrDefaultAsync(s => s.Str_nombre == nombre);
         }
 
         public async Task<bool> ProductoExists(int id)
         {
-            return await _context.Productos.AnyAsync(s => s.Id == id);
+            return await _context.productos.AnyAsync(s => s.Id == id);
         }
 
         public async Task<Producto?> UpdateAsync(int id, Producto productoDto)
         {
-            var productoExistente = await _context.Productos.FirstOrDefaultAsync(s => s.Id == id);
-            if(productoExistente == null)
-            {
-                return null;
-            }
+            var productoExistente = await _context.productos.FirstOrDefaultAsync(s => s.Id == id);
+            if(productoExistente == null) return null;
 
             productoExistente.Str_ruta_imagen = productoDto.Str_ruta_imagen;
             productoExistente.Str_nombre = productoDto.Str_nombre;

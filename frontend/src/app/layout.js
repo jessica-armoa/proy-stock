@@ -1,4 +1,5 @@
 'use client'
+
 // Importa BrowserRouter y otros componentes necesarios
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Detalle from '../../src/app/productos/detalle/page'; // Importa el componente de detalles
@@ -18,7 +19,7 @@ const inter = Inter({ subsets: ["latin"] });
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <Router> 
+      <Router>
         <Routes>
           <Route path="/productos/detalle/:id" element={<Detalle />} />
           <Route path="/productos" element={<Productos />} />
@@ -29,10 +30,10 @@ export default function RootLayout({ children }) {
         </Routes>
         </Router>
       <body className={inter.className}>
-        
-        
+
+
       </body>
-       
+
           </html>
   );
 }

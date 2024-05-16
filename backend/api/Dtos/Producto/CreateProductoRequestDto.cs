@@ -1,13 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace api.Dtos.Producto
 {
-    public class CreateProductoDto
+    public class CreateProductoRequestDto
     {
         [Required]
         [MaxLength(200, ErrorMessage = "La ruta de imagen no puede ser mayor de 200 caracteres")]
@@ -34,6 +29,5 @@ namespace api.Dtos.Producto
         public decimal Dec_precio_mayorista { get; set; }
 
         public decimal Dec_precio_minorista { get; set; }
-
     }
 }

@@ -13,7 +13,7 @@ namespace api.Models
         public string Str_direccion { get; set; } = String.Empty;
         public int? FerreteriaId { get; set; }
         public Ferreteria? Ferreteria { get; set; }
-        public List<Movimiento> Movimientos { get; set; } = new List<Movimiento>(); 
-        public List<Producto> Productos { get; set; } = new List<Producto>();
+        public List<Movimiento> Movimientos { get; set; } = [];
+        public List<Producto> Productos { get; set; } = [];
     }
 }
