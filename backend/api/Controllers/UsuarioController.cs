@@ -3,6 +3,7 @@ using api.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using api.Dtos.Usuario;
+using Microsoft.EntityFrameworkCore;
 
 namespace api.Controllers
 {
@@ -12,11 +13,35 @@ namespace api.Controllers
   {
     private readonly UserManager<Usuarios> _userManager;
     private readonly ITokenService _tokenService;
+    private readonly SignInManager<Usuarios> _signInManager;
 
-    public UsuariosController(UserManager<Usuarios> userManager, ITokenService tokenService)
+    public UsuariosController(UserManager<Usuarios> userManager, ITokenService tokenService, SignInManager<Usuarios> signInManager)
     {
       _userManager = userManager;
       _tokenService = tokenService;
+      _signInManager = signInManager;
+    }
+
+    [HttpPost("login")]
+    public async Task<IActionResult> Login(LoginDto loginDto){
+      if(!ModelState.IsValid){
+        return BadRequest(ModelState);
+      }
+      var user = await _userManager.Users.FirstOrDefaultAsync(x => x.UserName == loginDto.Username.ToLower());
+
+      if(user == null) return Unauthorized("Username invalido");
+
+      var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
+
+      if(!result.Succeeded) return Unauthorized("Usuario y/o contraseña incorrectos");
+
+      return Ok(
+        new NuevoUsuarioDto{
+          UserName = user.UserName,
+          Email = user.Email,
+          Token = _tokenService.CreateToken(user)
+        }
+      );
     }
 
     [HttpPost("register")]
@@ -62,78 +87,5 @@ namespace api.Controllers
       }
 
     }
-/*
-    [HttpGet("{id}")]
-    public async Task<ActionResult<CreateUsuarioDto>> ObtenerUsuario(string id)
-    {
-      var usuario = await _userManager.FindByIdAsync(id);
-
-      if (usuario == null)
-      {
-        return NotFound();
-      }
-
-      // Mapear el usuario a UsuarioDto
-      var usuarioDto = new UsuarioDto
-      {
-        Id = usuario.Id,
-        UserName = usuario.UserName,
-        // Mapear otras propiedades si es necesario
-      };
-
-      return Ok(usuarioDto);
-    }
-
-    [HttpPut("{id}")]
-    public async Task<IActionResult> ActualizarUsuario(string id, UsuarioDto usuarioDto)
-    {
-      if (id != usuarioDto.Id)
-      {
-        return BadRequest();
-      }
-
-      var usuario = await _userManager.FindByIdAsync(id);
-
-      if (usuario == null)
-      {
-        return NotFound();
-      }
-
-      usuario.UserName = usuarioDto.UserName;
-      // Actualizar otras propiedades si es necesario
-
-      var result = await _userManager.UpdateAsync(usuario);
-
-      if (result.Succeeded)
-      {
-        return NoContent();
-      }
-      else
-      {
-        return BadRequest(result.Errors);
-      }
-    }
-
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> EliminarUsuario(string id)
-    {
-      var usuario = await _userManager.FindByIdAsync(id);
-
-      if (usuario == null)
-      {
-        return NotFound();
-      }
-
-      var result = await _userManager.DeleteAsync(usuario);
-
-      if (result.Succeeded)
-      {
-        return NoContent();
-      }
-      else
-      {
-        return BadRequest(result.Errors);
-      }
-    }*/
   }
 }
