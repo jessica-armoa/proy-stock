@@ -2,41 +2,61 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using api.Data;
 using api.Interfaces;
 using api.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace api.Repository
 {
     public class MarcaRepository : IMarcaRepository
     {
-        public Task<Marca> CreateAsync(Marca marcaModel)
+        private readonly ApplicationDbContext _context;
+        public MarcaRepository(ApplicationDbContext context)
         {
-            throw new NotImplementedException();
+            _context = context;
+        }
+        public async Task<Marca> CreateAsync(Marca marcaModel)
+        {
+            await _context.marcas.AddAsync(marcaModel);
+            await _context.SaveChangesAsync();
+            return marcaModel;
         }
 
-        public Task<Marca?> DeleteAsync(int id)
+        public async Task<Marca?> DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            var marcaModel = await _context.marcas.FirstOrDefaultAsync(m => m.Id == id);
+            if(marcaModel == null) return null;
+
+            _context.Remove(marcaModel);
+            await _context.SaveChangesAsync();
+            return marcaModel;
         }
 
-        public Task<List<Marca>> GetAllAsync()
+        public async Task<List<Marca>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _context.marcas.Include(m => m.Productos).ToListAsync();
         }
 
-        public Task<Marca?> GetByIdAsync(int id)
+        public async Task<Marca?> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _context.marcas.Include(m => m.Productos).FirstOrDefaultAsync(m => m.Id == id);
         }
 
-        public Task<bool> MarcaExists(int id)
+        public async Task<bool> MarcaExists(int id)
         {
-            throw new NotImplementedException();
+            return await _context.marcas.AnyAsync(m => m.Id == id);
         }
 
-        public Task<Marca?> UpdateAsync(int id, Marca marcaModel)
+        public async Task<Marca?> UpdateAsync(int id, Marca marcaModel)
         {
-            throw new NotImplementedException();
+            var marcaExistente = await _context.marcas.FirstOrDefaultAsync(m => m.Id == id);
+            if(marcaExistente == null) return null;
+
+            marcaExistente.Str_nombre = marcaModel.Str_nombre;
+
+            await _context.SaveChangesAsync();
+            return marcaExistente;
         }
     }
 }

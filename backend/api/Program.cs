@@ -41,6 +41,7 @@ builder.Services.AddScoped<IFerreteriaRepository, FerreteriaRepository>();
 builder.Services.AddScoped<IProductoRepository, ProductoRepository>();
 builder.Services.AddScoped<IDepositoRepository, DepositoRepository>();
 builder.Services.AddScoped<IProveedorRepository, ProveedorRepository>();
+builder.Services.AddScoped<IMarcaRepository, MarcaRepository>();
 
 var app = builder.Build();
 

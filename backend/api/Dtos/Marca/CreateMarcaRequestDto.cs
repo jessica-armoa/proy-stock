@@ -8,6 +8,5 @@ namespace api.Dtos.Marca
     public class CreateMarcaRequestDto
     {
         public string Str_nombre { get; set; } = String.Empty;
-        public int? ProveedorId { get; set; }
     }
 }
