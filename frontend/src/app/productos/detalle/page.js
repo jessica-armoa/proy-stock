@@ -7,7 +7,7 @@ import { Link, useParams } from "react-router-dom";
 import Sidebar from "@/components/sidebar";
 import { useState, useEffect } from "react";
 import ProductsController from "../../../libs/ProductsController";
-import withAuth from "@/components/auth/withauth";
+import withAuth from "@/components/auth/withAuth";
 
 const Detalle = () => {
   let { id } = useParams();
@@ -98,7 +98,7 @@ const Detalle = () => {
   const columns = [
     {
       accessorKey: "date",
-      header: "Cód.Fecha",
+      header: "Fecha",
     },
     {
       accessorKey: "movement",

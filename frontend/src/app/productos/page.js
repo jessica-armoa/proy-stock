@@ -7,7 +7,7 @@ import Sidebar from "@/components/sidebar";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import ProductsController from "../../libs/ProductsController";
-import withAuth from "@/components/auth/withauth";
+import withAuth from "@/components/auth/withAuth";
 
 const Productos = () => {
   const navigate = useNavigate();
@@ -30,12 +30,12 @@ const Productos = () => {
       widthClass: "w-large",
     },
     {
-      accessorKey: "marcaId",
+      accessorKey: "marcaNombre",
       header: "Marca",
       widthClass: "w-medium",
     },
     {
-      accessorKey: "proveedorId",
+      accessorKey: "proveedorNombre",
       header: "Proveedor",
     },
     {
@@ -43,23 +43,26 @@ const Productos = () => {
       header: "Cant.",
       numericInputType: "range",
       inputClass: "w-small",
-      //widthClass: "w-medium",
+      widthClass: "w-medium",
     },
     {
-      accessorKey: "depositoId",
+      accessorKey: "depositoNombre",
       header: "Depósito",
     },
     {
       accessorKey: "dec_costo_PPP",
       header: "Costo",
+      search: false
     },
     {
       accessorKey: "dec_precio_mayorista",
       header: "Mayorista",
+      search: false
     },
     {
       accessorKey: "dec_precio_minorista",
       header: "Minorista",
+      search: false
     },
     {
       header: "Acciones",
@@ -96,7 +99,7 @@ const Productos = () => {
             {products.length <= 0 ? (
               <p>No hay productos</p>
             ) : (
-              <DataTable data={products} columns={columns} />
+              <DataTable data={products} columns={columns} pageurl={`/productos/detalle/`} />
             )}
           </div>
         </div>

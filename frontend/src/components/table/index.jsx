@@ -32,7 +32,7 @@ import {
 import { Link } from "react-router-dom";
 import Filter from "../FilterFunction";
 
-function DataTable({ columns, data }) {
+function DataTable({ columns, data, pageurl }) {
   const [sorting, setSorting] = useState([]);
   const [filtering, setFiltering] = useState("");
   const [columnFilters, setColumnFilters] = React.useState([]);
@@ -117,7 +117,7 @@ function DataTable({ columns, data }) {
             <TableRow key={row.id} {...row.getRowProps}>
               {row.getVisibleCells().map((cell) => (
                 <TableCell className="p-2 text-wrap">
-                  <Link to={`/productos/detalle/${row.original.id}`}>
+                  <Link to={`${pageurl}${row.original.id}`}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </Link>
                 </TableCell>
