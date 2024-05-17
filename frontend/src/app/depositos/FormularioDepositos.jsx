@@ -18,11 +18,13 @@ export default function FormularioDepositos() {
                 "str_direccion": str_direccion
             }
 
-            const response = await DepositosConfig.createDeposito(deposito);
             console.log({
                 str_nombre,
                 str_direccion
             });
+
+            const response = await DepositosConfig.createDeposito(1, deposito);
+            
 
             // También puedes reiniciar los valores de los campos del formulario
             setStr_nombre('');
@@ -69,7 +71,7 @@ export default function FormularioDepositos() {
                         id="str_direccion"
                         name="str_direccion"
                         autoComplete="str_direccion"
-                        placeholder="Nombre de Deposito"
+                        placeholder="Dirección del Depósito"
                         className="mt-2"
                         value={str_direccion}
                         onChange={(e) => setStr_direccion(e.target.value)}

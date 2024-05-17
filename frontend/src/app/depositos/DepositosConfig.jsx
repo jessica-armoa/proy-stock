@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const api = "http://localhost:5282/api/depositos";
+const api = "http://localhost:5282/api/deposito";
 
 class DepositosConfig{
     getDeposito(){
@@ -11,8 +11,8 @@ class DepositosConfig{
         return axios.get(`${api}/${id}`);
     }
 
-    createDeposito(deposito){
-        return axios.post(api, deposito);
+    createDeposito(ferreteriaId, deposito){
+        return axios.post(`${api}/${ferreteriaId}`, deposito);
     }
 
     updateDeposito(id){
