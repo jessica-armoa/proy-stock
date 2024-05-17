@@ -27,20 +27,18 @@ export default function FormularioProveedores() {
             };
 
             //const proveedorTojson = JSON.stringify(proveedor);
-            console.log({
-                str_nombre,
-                str_telefono,
-                str_direccion,
-                str_correo
-            });
+            console.log(proveedor);
 
             const response = await ProveedoresConfig.createProveedor(proveedor);
             
+
             // También puedes reiniciar los valores de los campos del formulario
+            
             setStr_nombre('');
             setStr_telefono('');
             setStr_direccion('');
             setStr_correo('');
+            
         } catch (error) {
             console.error('Error al enviar los datos del formulario: ', error);
         }
