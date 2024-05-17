@@ -28,7 +28,7 @@ namespace api.Repository
 
         public async Task<List<Ferreteria>> GetAllAsync()
         {
-            return await _context.Ferreterias.ToListAsync();
+            return await _context.ferreterias.ToListAsync();
         }
 
         public Task<Ferreteria?> GetByIdAsync(int id)

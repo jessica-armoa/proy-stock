@@ -12,6 +12,7 @@ namespace api.Models
         public string Str_telefono { get; set; } = String.Empty;
         public string Str_direccion { get; set; } = String.Empty;
         public string Str_correo { get; set; } = String.Empty;
-        public List<Producto> Productos { get; set; } = new List<Producto>();
+        public List<Producto> Productos { get; set; } = [];
+        public List<Categoria> Categorias { get; set; } = [];
     }
 }
