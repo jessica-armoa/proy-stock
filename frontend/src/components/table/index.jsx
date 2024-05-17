@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 
+
 import {
   RiArrowLeftSLine,
   RiArrowRightSLine,
@@ -70,7 +71,7 @@ function DataTable({ columns, data }) {
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
                 <TableHeaderCell
-                  className="p-2"
+                  className={("p-2 "+(columns[header.index].widthClass) ?? "")}
                   key={header.id}
                   onClick={header.column.getToggleSortingHandler()}
                 >
@@ -101,11 +102,11 @@ function DataTable({ columns, data }) {
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
-                <TableHeaderCell key={header.id}>
+                <TableHeaderCell key={header.id} className={("p-2 "+(columns[header.index].widthClass) ?? "")}>
                   <div>
-                    <Filter column={header.column} table={table} />
+                    <Filter column={header.column} table={table} numericInputType={columns[header.index].numericInputType ?? 'single'} placeholder={"Filtrar "+columns[header.index].header} display={columns[header.index].search ?? true} inputClass={columns[header.index].inputClass ?? 'w-fit-content'}/>
                   </div>
-                </TableHeaderCell>
+                </TableHeaderCell>           
               ))}
             </TableRow>
           ))}
@@ -115,7 +116,7 @@ function DataTable({ columns, data }) {
           {table.getRowModel().rows.map((row) => (
             <TableRow key={row.id} {...row.getRowProps}>
               {row.getVisibleCells().map((cell) => (
-                <TableCell className="p-2">
+                <TableCell className="p-2 text-wrap">
                   <Link to={`/productos/detalle/${row.original.id}`}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </Link>

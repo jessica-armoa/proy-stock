@@ -16,6 +16,7 @@ const Productos = () => {
     {
       accessorKey: "id",
       header: "Cód.",
+      search: false
     },
     {
       accessorKey: "str_nombre",
@@ -24,10 +25,13 @@ const Productos = () => {
     {
       accessorKey: "str_descripcion",
       header: "Descripción",
+      //inputClass: "w-large",
+      widthClass: "w-large",
     },
     {
       accessorKey: "marcaId",
       header: "Marca",
+      widthClass: "w-medium",
     },
     {
       accessorKey: "proveedorId",
@@ -36,6 +40,9 @@ const Productos = () => {
     {
       accessorKey: "int_cantidad_actual",
       header: "Cant.",
+      numericInputType: "range",
+      inputClass: "w-small",
+      //widthClass: "w-medium",
     },
     {
       accessorKey: "depositoId",
@@ -55,6 +62,7 @@ const Productos = () => {
     },
     {
       header: "Acciones",
+      search: false      
     },
   ];
 
@@ -70,7 +78,7 @@ const Productos = () => {
     <div>
       <div className="flex h-screen w-full bg-ui-background p-2 text-ui-text">
         <Sidebar />
-        <div className="flex flex-col w-full h-full p-5 rounded-lg bg-ui-cardbg">
+        <div className="flex flex-col w-content h-full p-5 rounded-lg bg-ui-cardbg">
           <h1 className="mb-4 text-l font-semibold normal-case tracking-tight">
             Productos
           </h1>

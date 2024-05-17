@@ -7,6 +7,27 @@
   max-width: 200px;
 }
 
+.w-content {
+  min-width: 500px;
+  max-width: 1500px;
+}
+
+.w-small {
+  min-width: 60px;
+  max-width: 60px;
+}
+.w-medium {
+  min-width: 140px;
+  max-width: 140px;
+}
+.w-large {
+  min-width: 180px;
+  max-width: 180px;
+}
+.w-fit-content {
+  min-width: fit-content;
+}
+
 /*:root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
