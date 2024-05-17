@@ -7,6 +7,7 @@ import { Link, useParams } from "react-router-dom";
 import Sidebar from "@/components/sidebar";
 import { useState, useEffect } from "react";
 import ProductsController from "../../../libs/ProductsController";
+import withAuth from "@/components/auth/withauth";
 
 const Detalle = () => {
   let { id } = useParams();
@@ -182,4 +183,4 @@ const Detalle = () => {
   );
 };
 
-export default Detalle;
+export default  withAuth(Detalle);

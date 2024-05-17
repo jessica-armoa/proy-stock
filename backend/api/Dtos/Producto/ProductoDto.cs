@@ -14,8 +14,11 @@ namespace api.Dtos.Producto
         public string Str_nombre { get; set; } = String.Empty;
         public string Str_descripcion { get; set; } = String.Empty;
         public int? DepositoId { get; set; }
+        public String DepositoNombre { get; set; } = String.Empty;
         public int? ProveedorId { get; set; }
+        public String ProveedorNombre { get; set; } = String.Empty;
         public int? MarcaId { get; set; }
+        public String MarcaNombre { get; set; } = String.Empty;
         public int Int_cantidad_actual { get; set; }
         public int Int_cantidad_minima { get; set; }
         public decimal Dec_costo_PPP { get; set; }

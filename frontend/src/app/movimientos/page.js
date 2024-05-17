@@ -1,6 +1,6 @@
 import React from 'react'
 import Sidebar from '@/components/sidebar';
-
+import withAuth from '@/components/auth/withauth';
 const Movimientos = () => {
   return (
     <div className="flex h-screen w-full bg-ui-background p-2 text-ui-text">
@@ -13,4 +13,4 @@ const Movimientos = () => {
   )
 }
 
-export default Movimientos;
+export default  withAuth(Movimientos);

@@ -19,7 +19,8 @@ namespace api.Mapper
                 Str_direccion = proveedorModel.Str_direccion,
                 Str_correo = proveedorModel.Str_correo,
                 Productos = proveedorModel.Productos.Select(p => p.ToProductoDto()).ToList(),
-                Categorias = proveedorModel.Categorias.Select(c => c.ToCategoriaDto()).ToList()
+                Categorias = proveedorModel.Categorias.Select(c => c.ToCategoriaDto()).ToList(),
+                Marcas = proveedorModel.Marcas.Select(m => m.ToMarcaDto()).ToList()
             };
         }
 
