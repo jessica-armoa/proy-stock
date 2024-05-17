@@ -25,7 +25,7 @@ const Depositos = () => {
       header: "Encargado",
     },
     {
-      accessorKey: "str_telefono",
+      accessorKey: "str_ferreteriaTelefono",
       header: "Teléfono",
       //inputClass: "w-large",
       widthClass: "w-large",
