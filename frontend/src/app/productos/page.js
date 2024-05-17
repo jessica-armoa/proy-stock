@@ -7,6 +7,7 @@ import Sidebar from "@/components/sidebar";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import ProductsController from "../../libs/ProductsController";
+import withAuth from "@/components/auth/withauth";
 
 const Productos = () => {
   const navigate = useNavigate();
@@ -96,4 +97,4 @@ const Productos = () => {
   );
 };
 
-export default Productos;
+export default withAuth(Productos);

@@ -1,4 +1,4 @@
-import Sidebar from '@/components/sidebar';
+/*import Sidebar from '@/components/sidebar';
 import { Card, ProgressBar } from '@tremor/react';
 
 export default function Dashboard() {
@@ -27,4 +27,22 @@ export default function Dashboard() {
     
     
   );
-}
+}*/
+// src/app/page.js
+"use client"; 
+
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+
+const Home = () => {
+  const router = useRouter();
+
+  useEffect(() => {
+    router.push('/login');
+  }, [router]);
+
+  return null;
+};
+
+export default Home;
+

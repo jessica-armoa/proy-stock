@@ -1,18 +1,16 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using api.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization.Infrastructure;
 
 namespace api.Data
 {
-    public class ApplicationDbContext : DbContext
-    {
-        public ApplicationDbContext(DbContextOptions dbContextOptions) 
+    public class ApplicationDbContext : IdentityDbContext<Usuarios>{
+        public ApplicationDbContext(DbContextOptions dbContextOptions)
         : base(dbContextOptions)
         {
-            
+
         }
 
         public DbSet<Deposito> depositos { get; set; }
@@ -29,7 +27,7 @@ namespace api.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            
+
             modelBuilder.Entity<Movimiento>()
                 .HasOne(m => m.DepositoOrigen)
                 .WithMany()
@@ -43,6 +41,20 @@ namespace api.Data
                 .OnDelete(DeleteBehavior.Restrict); // Esto asegura que no se elimine en cascada si eliminas un depósito
 
             // Otros ajustes de modelo aquí si es necesario
+            List<IdentityRole> roles = new List<IdentityRole>{
+                new IdentityRole
+                {
+                    Name = "Admin",
+                    NormalizedName = "ADMIN"
+                },
+                new IdentityRole
+                {
+                    Name = "User",
+                    NormalizedName = "USER"
+                },
+            };
+
+            modelBuilder.Entity<IdentityRole>().HasData(roles);
 
             base.OnModelCreating(modelBuilder);
         }
