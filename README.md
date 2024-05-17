@@ -19,7 +19,9 @@ Este archivo README proporciona instrucciones sobre cómo configurar el archivo 
 
    - Abre el archivo `.env` en un editor de texto y configura las variables de entorno según sea necesario. Asegúrate de reemplazar `Tu cadena de conexion a la base de datos` con la cadena de conexión real de tu base de datos.
 
-
+   ```bash
+   dotnet tool install --global dotnet-ef
+   ```
 
    ```bash
    dotnet ef database update
