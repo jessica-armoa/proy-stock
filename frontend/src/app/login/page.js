@@ -3,18 +3,31 @@
 
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import AuthController from '../../libs/UsuariosController';
+
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (username === 'user' && password === 'password') {
-      localStorage.setItem('isAuthenticated', 'true');
-      navigate("/productos");
-    } else {
-      alert('Credenciales inválidas');
+    try {
+      console.log("Hola");
+      const response = await AuthController.login({ "username": username, "password": password });
+      console.log(response.data);
+      localStorage.setItem("Token", response.data.token);
+      localStorage.setItem("isAuthenticated", true);
+      navigate('/productos');
+    } catch (err) {console.error("Login error:", err);
+      if (err.response) {
+        setError(err.response.data);
+      } else if (err.request) {
+        setError('No response received from server');
+      } else {
+        setError('Error setting up request');
+      }
     }
   };
 
@@ -43,6 +56,11 @@ const Login = () => {
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
+          {error && (
+            <div className="mb-4 text-red-600">
+              {error}
+            </div>
+          )}
           <button
             type="submit"
             className="w-full bg-indigo-500 text-white p-3 rounded-lg font-semibold hover:bg-indigo-600"
