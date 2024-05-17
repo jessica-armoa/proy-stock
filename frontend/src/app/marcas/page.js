@@ -15,7 +15,7 @@ const Marcas = () => {
                     <div className='mt-8 flex items-center justify-end space-x-2'>
                         <Button variant="primary" color='blue' onClick={() => navigate('/marcas/nuevo')}>Nueva Marca</Button>
                     </div>
-                    <div><DataTable /></div>
+                    <div><DataTable/></div>
                 </div>
             </div>
 
