@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const api = "http://localhost:5282/api/marca"
+const api = "http://localhost:5282/api/marca";
 
 class MarcasConfig{
     getMarca(){
@@ -11,8 +11,8 @@ class MarcasConfig{
         return axios.get(`${api}/${id}`);
     }
 
-    createMarca(marca){
-        return axios.post(api, marca);
+    createMarca(proveedorId, marca){
+        return axios.post(`${api}/${proveedorId}`, marca);
     }
 
     updateMarca(id){
