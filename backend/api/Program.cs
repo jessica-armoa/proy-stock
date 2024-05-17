@@ -88,17 +88,27 @@ builder.Services.AddAuthentication(options =>{
     };
 });
 
-var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+/*var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: MyAllowSpecificOrigins,
                       policy =>
                       {
-                          policy.WithOrigins("http://example.com",
-                                              "http://www.contoso.com");
+                          policy.WithOrigins("http://localhost:3000/*",
+                                              "http://localhost:5282/api/*");
                       });
-});
+});*/
+
+builder.Services.AddCors(options =>
+    {
+        options.AddPolicy("CorsPolicy", builder =>
+        {
+            builder.AllowAnyOrigin()
+                   .AllowAnyMethod()
+                   .AllowAnyHeader();
+        });
+    });
 
 /*
     AGREGAR LAS INTERFACES CREADAS!!!!!
@@ -126,5 +136,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-app.UseCors(MyAllowSpecificOrigins);
+//app.UseCors(MyAllowSpecificOrigins);
+app.UseCors("CorsPolicy");
 app.Run();
