@@ -13,6 +13,8 @@ namespace api.Mapper
                 Str_nombre = depositoModel.Str_nombre,
                 Str_direccion = depositoModel.Str_direccion,
                 FerreteriaId = depositoModel.FerreteriaId,
+                Str_ferreteriaNombre = depositoModel.Ferreteria?.Str_nombre,
+                Str_ferreteriaTelefono = depositoModel.Ferreteria?.Str_telefono,
                 Movimientos = depositoModel.Movimientos.Select(m => m.ToMovimientoDto()).ToList(),
                 Productos = depositoModel.Productos.Select(p => p.ToProductoDto()).ToList()
             };
