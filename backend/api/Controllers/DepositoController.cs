@@ -14,11 +14,11 @@ namespace api.Controllers
     public class DepositoController : ControllerBase
     {
         private readonly IDepositoRepository _depositoRepo;
-        private readonly IProveedorRepository _proveedorRepo;
-        public DepositoController(IDepositoRepository depositoRepo, IProveedorRepository proveedorRepo)
+        private readonly IFerreteriaRepository _ferreteriaRepo;
+        public DepositoController(IDepositoRepository depositoRepo, IFerreteriaRepository ferreteriaRepo)
         {
             _depositoRepo = depositoRepo;
-            _proveedorRepo = proveedorRepo;
+            _ferreteriaRepo = ferreteriaRepo;
         }
 
         [HttpGet]
@@ -45,13 +45,13 @@ namespace api.Controllers
 
         [HttpPost]
         [Route("{ferreteriaId:int}")]
-        public async Task<IActionResult> Post([FromRoute] int ferreteriaId, CreateDepositoDto depositoDto)
+        public async Task<IActionResult> Post([FromRoute] int ferreteriaId, CreateDepositoRequestDto depositoDto)
         {
             /*
             if(!ModelState.IsValid) 
                 return BadRequest(ModelState);
             */
-            if(!await _proveedorRepo.ProveedorExists(ferreteriaId))
+            if(!await _ferreteriaRepo.FerreteriaExists(ferreteriaId))
             {
                 return BadRequest("La ferreteria ingresada no existe!");
             }

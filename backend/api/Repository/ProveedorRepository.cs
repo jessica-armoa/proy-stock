@@ -38,6 +38,7 @@ namespace api.Repository
             return await _context.proveedores
             .Include(p => p.Productos)
             .Include(p => p.Categorias)
+            .Include(p => p.Marcas)
             .ToListAsync();
         }
 
@@ -46,6 +47,7 @@ namespace api.Repository
             return await _context.proveedores
             .Include(p => p.Productos)
             .Include(p => p.Categorias)
+            .Include(p => p.Marcas)
             .FirstOrDefaultAsync(p => p.Id == id);
         }
 
