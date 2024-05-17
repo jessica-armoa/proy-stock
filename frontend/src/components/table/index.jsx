@@ -60,11 +60,6 @@ function DataTable({ columns, data, pageurl }) {
 
   return (
     <div>
-      <TextInput
-        className="max-w-sm"
-        placeholder={placeHolder}
-        onChange={(e) => setFiltering(e.target.value)}
-      ></TextInput>
       <Table className="my-5">
         <TableHead>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -157,3 +152,12 @@ function DataTable({ columns, data, pageurl }) {
 }
 
 export default DataTable;
+
+/*
+<TextInput
+        className="max-w-sm"
+        placeholder={placeHolder}
+        onChange={(e) => setFiltering(e.target.value)}
+      ></TextInput>
+      
+*/
