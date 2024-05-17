@@ -47,6 +47,7 @@ namespace api.Repository
             return await _context.depositos
             .Include(d => d.Movimientos)
             .Include(d => d.Productos)
+            .Include(d => d.Ferreteria)
             .ToListAsync();
         }
 
@@ -55,6 +56,7 @@ namespace api.Repository
             return await _context.depositos
             .Include(d => d.Movimientos)
             .Include(d => d.Productos)
+            .Include(d => d.Ferreteria)
             .FirstOrDefaultAsync(i => i.Id == id);
         }
 
