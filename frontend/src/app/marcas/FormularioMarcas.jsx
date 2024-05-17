@@ -83,7 +83,7 @@ export default function FormularioMarcas() {
                     <select id="proveedorId" value={proveedorId} onChange={(e) => setProveedorId(parseInt(e.target.value))}>
                         <option value={0}>Seleccionar proveedor</option>
                         {proveedores.map(proveedor => (
-                            <option key={proveedor.id} value={proveedor.id}>{proveedor.nombre}</option>
+                            <option key={proveedor.id} value={proveedor.id}>{proveedor.str_nombre}</option>
                         ))}
                     </select>
 
