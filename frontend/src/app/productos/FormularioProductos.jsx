@@ -90,16 +90,17 @@ export default function FormularioProductos() {
       });
 
       const producto = {
-        "str_imagen": str_imagen,
+        "str_ruta_imagen": str_imagen,
         "str_nombre": str_nombre,
         "str_descripcion": str_descripcion,
         "int_cantidad_actual": int_cantidad_actual,
         "int_cantidad_minima": int_cantidad_minima,
-        "dc_costo_PPP": dc_costo_PPP,
+        "dec_costo_PPP": dc_costo_PPP,
         "int_iva": int_iva,
-        "dc_precio_mayorista": dc_precio_mayorista,
-        "dc_precio_minorista": dc_precio_minorista,
+        "dec_precio_mayorista": dc_precio_mayorista,
+        "dec_precio_minorista": dc_precio_minorista
       }
+
 
       const productoAgregado = await ProductosConfig.createProducto(1, fk_proveedor, fk_marca, producto);
       // También puedes reiniciar los valores de los campos del formulario
@@ -379,7 +380,7 @@ export default function FormularioProductos() {
             required
           />
 
-          {/* <div className="col-span-full sm:col-span-3">
+           <div className="col-span-full sm:col-span-3">
             <label
               htmlFor="fk_deposito"
               className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
@@ -389,7 +390,7 @@ export default function FormularioProductos() {
             </label>
 
             <select id="fk_deposito" value={fk_deposito} onChange={(e) => setFk_deposito(e.target.value)}>
-              <option value={1}>Seleccionar Depósito</option>
+              <option value={0}>Seleccionar Depósito</option>
               {depositos.map(deposito => (
                 <option key={deposito.id} value={deposito.id}>{deposito.str_nombre}</option>
               ))}
@@ -400,8 +401,8 @@ export default function FormularioProductos() {
               {depositos.map(deposito => (
                 <SelectItem key={deposito.id} value={deposito.id}>{deposito.str_nombre}</SelectItem>
               ))}
-            </Select>
-          </div>*/}
+            </Select>*/}
+          </div>
 
         </div>
       </div>
@@ -418,7 +419,7 @@ export default function FormularioProductos() {
         setStr_nombre('');
         setStr_descripcion('');
         setFk_marca(0);
-        setFk_categoria(0);
+        //setFk_categoria(0);
         setFk_proveedor(0);
         setInt_cantidad_actual(0);
         setInt_cantidad_minima(0);
