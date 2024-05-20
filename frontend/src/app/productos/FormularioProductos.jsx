@@ -1,60 +1,125 @@
 "use client";
-import React, { useState } from 'react';
-import { Button, NumberInput, TextInput } from '@tremor/react';
+import React, { useEffect, useState } from 'react';
+import { Button, NumberInput, TextInput, Select, SelectItem } from '@tremor/react';
 import { useNavigate } from 'react-router-dom';
+import ProveedoresConfig from '../proveedores/ProveedoresConfig';
+import MarcasConfig from '../marcas/MarcasConfig';
+import DepositosConfig from '../depositos/DepositosConfig';
+import ProductosConfig from './ProductosConfig';
 
 export default function FormularioProductos() {
   // Definimos el estado para cada campo del formulario
-  const [id_producto, setId_producto] = useState('');
+  const [str_imagen, setStr_imagen] = useState('');
   const [str_nombre, setStr_nombre] = useState('');
   const [str_descripcion, setStr_descripcion] = useState('');
-  const [fk_marca, setFk_marca] = useState('');
-  const [fk_categoria, setFk_categoria] = useState('');
-  const [fk_proveedor, setFk_proveedor] = useState('');
-  const [int_cantidad_actual, setInt_cantidad_actual] = useState('');
-  const [int_cantidad_minima, setInt_cantidad_minima] = useState('');
-  const [dc_costo_PPP, setDc_costo_PPP] = useState('');
-  const [int_iva, setInt_iva] = useState('');
-  const [dc_precio_mayorista, setDc_precio_mayorista] = useState('');
-  const [dc_precio_minorista, setDc_precio_minorista] = useState('');
-  const [fk_deposito, setFk_deposito] = useState('');
+  //const [fk_marca, setFk_marca] = useState('');
+  //const [fk_categoria, setFk_categoria] = useState(''); // no se tiene categoria en el api
+  //const [fk_proveedor, setFk_proveedor] = useState('');
+  const [int_cantidad_actual, setInt_cantidad_actual] = useState(0);
+  const [int_cantidad_minima, setInt_cantidad_minima] = useState(0);
+  const [dc_costo_PPP, setDc_costo_PPP] = useState(0);
+  const [int_iva, setInt_iva] = useState(0);
+  const [dc_precio_mayorista, setDc_precio_mayorista] = useState(0);
+  const [dc_precio_minorista, setDc_precio_minorista] = useState(0);
+  //const [fk_deposito, setFk_deposito] = useState(0);
+
+  const [fk_proveedor, setFk_proveedor] = useState(0);
+  const [proveedores, setProveedores] = useState([]);
+  useEffect(() => {
+    const extraccionProveedores = async () => {
+      try {
+        const respuestaProveedores = await ProveedoresConfig.getProveedor();
+        setProveedores(respuestaProveedores.data);
+      } catch (error) {
+        console.error('Error al obtener lista de proveedores: ', error);
+      }
+    }
+    extraccionProveedores();
+  }, []);
+
+  const [fk_marca, setFk_marca] = useState(0);
+  const [marcas, setMarcas] = useState([]);
+  useEffect(() => {
+    const extraccionMarcas = async () => {
+      try {
+        const respuestaMarcas = await MarcasConfig.getMarca();
+        setMarcas(respuestaMarcas.data);
+      } catch (error) {
+        console.error('Error al obtener lista de marcas: ', error);
+      }
+    }
+    extraccionMarcas();
+  }, []);
+
+  const [fk_deposito, setFk_deposito] = useState(0);
+  const [depositos, setDepositos] = useState([]);
+  useEffect(() => {
+    const extraccionDepositos = async () => {
+      try {
+        const respuestaDepositos = await DepositosConfig.getDeposito();
+        setDepositos(respuestaDepositos.data);
+      } catch (error) {
+        console.error('Error al obtener lista de marcas: ', error);
+      }
+    }
+    extraccionDepositos();
+  }, []);
+
 
 
   // Función para manejar el envío del formulario
   const navigate = useNavigate()
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    // Aquí podrías realizar alguna acción con los datos del formulario, como enviarlos a un servidor
-    console.log({
-      id_producto,
-      str_nombre,
-      str_descripcion,
-      fk_marca,
-      fk_categoria,
-      fk_proveedor,
-      int_cantidad_actual,
-      int_cantidad_minima,
-      dc_costo_PPP,
-      int_iva,
-      dc_precio_mayorista,
-      dc_precio_minorista,
-      fk_deposito
-    });
-    // También puedes reiniciar los valores de los campos del formulario
-    setId_producto('');
-    setStr_nombre('');
-    setStr_descripcion('');
-    setFk_marca('');
-    setFk_categoria('');
-    setFk_proveedor('');
-    setInt_cantidad_actual('');
-    setInt_cantidad_minima('');
-    setDc_costo_PPP('');
-    setInt_iva('');
-    setDc_precio_mayorista('');
-    setDc_precio_minorista('');
-    setFk_deposito('');
-  };
+    try {
+      // Aquí podrías realizar alguna acción con los datos del formulario, como enviarlos a un servidor
+      console.log({
+        str_imagen,
+        str_nombre,
+        str_descripcion,
+        fk_marca,
+        //fk_categoria,
+        fk_proveedor,
+        int_cantidad_actual,
+        int_cantidad_minima,
+        dc_costo_PPP,
+        int_iva,
+        dc_precio_mayorista,
+        dc_precio_minorista,
+        fk_deposito
+      });
+
+      const producto = {
+        "str_imagen": str_imagen,
+        "str_nombre": str_nombre,
+        "str_descripcion": str_descripcion,
+        "int_cantidad_actual": int_cantidad_actual,
+        "int_cantidad_minima": int_cantidad_minima,
+        "dc_costo_PPP": dc_costo_PPP,
+        "int_iva": int_iva,
+        "dc_precio_mayorista": dc_precio_mayorista,
+        "dc_precio_minorista": dc_precio_minorista,
+      }
+
+      const productoAgregado = await ProductosConfig.createProducto(1, fk_proveedor, fk_marca, producto);
+      // También puedes reiniciar los valores de los campos del formulario
+      setStr_imagen('');
+      setStr_nombre('');
+      setStr_descripcion('');
+      setFk_marca(0);
+      //setFk_categoria('');
+      setFk_proveedor(0);
+      setInt_cantidad_actual(0);
+      setInt_cantidad_minima(0);
+      setDc_costo_PPP(0);
+      setInt_iva(0);
+      setDc_precio_mayorista(0);
+      setDc_precio_minorista(0);
+      setFk_deposito(0);
+    } catch (error) {
+      console.error('Error al enviar los datos del formulario: ', error);
+    }
+  }
 
   return (
     <form onSubmit={handleSubmit}>
@@ -62,21 +127,21 @@ export default function FormularioProductos() {
       <div className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
         <div className="col-span-full sm:col-span-3">
           <label
-            htmlFor="id_producto"
+            htmlFor="str_imagen"
             className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
           >
-            Código
+            Imagen
             <span className="text-red-500">*</span>
           </label>
           <TextInput
             type="text"
-            id="id_producto"
-            name="id_producto"
-            autoComplete="id_producto"
-            placeholder="Codigo"
+            id="str_imagen"
+            name="str_imagen"
+            autoComplete="str_imagen"
+            placeholder="Imagen"
             className="mt-2"
-            value={id_producto}
-            onChange={(e) => setId_producto(e.target.value)}
+            value={str_imagen}
+            onChange={(e) => setStr_imagen(e.target.value)}
             required
           />
         </div>
@@ -131,20 +196,21 @@ export default function FormularioProductos() {
             Marca
             <span className="text-red-500">*</span>
           </label>
-          <TextInput
-            type="text"
-            id="fk_marca"
-            name="fk_marca"
-            autoComplete="fk_marca"
-            placeholder="Marca"
-            className="mt-2"
-            value={fk_marca}
-            onChange={(e) => setFk_marca(e.target.value)}
-            required
-          />
+          <select id="fk_marca" value={fk_marca} onChange={(e) => setFk_marca(parseInt(e.target.value))}>
+            <option value={0}>Seleccionar Marca</option>
+            {marcas.map(marca => (
+              <option key={marca.id} value={marca.id}>{marca.str_nombre}</option>
+            ))}
+          </select>
+
+          {/*<Select id="fk_marca" value={fk_marca} placeholder="Seleccionar Marca" onValueChange={(e) => setFk_marca((e.target.value))}>
+            {marcas.map(marca => (
+              <SelectItem key={marca.id} value={marca.id}>{marca.str_nombre}</SelectItem>
+            ))}
+          </Select>*/}
         </div>
 
-        <div className="col-span-full sm:col-span-3">
+        {/* <div className="col-span-full sm:col-span-3"> 
           <label
             htmlFor="fk_categoria"
             className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
@@ -163,7 +229,7 @@ export default function FormularioProductos() {
             onChange={(e) => setFk_categoria(e.target.value)}
             required
           />
-        </div>
+        </div>*/}
 
         <div className="col-span-full sm:col-span-3">
           <label
@@ -173,17 +239,17 @@ export default function FormularioProductos() {
             Proveedor
             <span className="text-red-500">*</span>
           </label>
-          <TextInput
-            type="text"
-            id="fk_proveedor"
-            name="fk_proveedor"
-            autoComplete="fk_proveedor"
-            placeholder="Proveedor"
-            className="mt-2"
-            value={fk_proveedor}
-            onChange={(e) => setFk_proveedor(e.target.value)}
-            required
-          />
+          <select id="fk_proveedor" value={fk_proveedor} onChange={(e) => setFk_proveedor(parseInt(e.target.value))}>
+            <option value={0}>Seleccionar proveedor</option>
+            {proveedores.map(proveedor => (
+              <option key={proveedor.id} value={proveedor.id}>{proveedor.str_nombre}</option>
+            ))}
+          </select>
+          {/*<Select id="fk_proveedor" value={fk_proveedor} placeholder='Seleccionar Proveedor' onValueChange={(e) => setFk_proveedor(parseInt(e.target.value))}>
+            {proveedores.map(proveedor => (
+              <SelectItem key={proveedor.id} value={proveedor.id}>{proveedor.str_nombre}</SelectItem>
+            ))}
+          </Select>*/}
         </div>
 
         <div className="col-span-full sm:col-span-3">
@@ -313,7 +379,7 @@ export default function FormularioProductos() {
             required
           />
 
-          <div className="col-span-full sm:col-span-3">
+          {/* <div className="col-span-full sm:col-span-3">
             <label
               htmlFor="fk_deposito"
               className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
@@ -321,18 +387,21 @@ export default function FormularioProductos() {
               Depósito
               <span className="text-red-500">*</span>
             </label>
-            <NumberInput enableStepper={false}
-              id="fk_deposito"
-              name="fk_deposito"
-              autoComplete="fk_deposito"
-              placeholder="Deposito"
-              className="mt-2"
-              value={fk_deposito}
-              min={0}
-              onChange={(e) => setFk_deposito(e.target.value)}
-              required
-            />
-          </div>
+
+            <select id="fk_deposito" value={fk_deposito} onChange={(e) => setFk_deposito(e.target.value)}>
+              <option value={1}>Seleccionar Depósito</option>
+              {depositos.map(deposito => (
+                <option key={deposito.id} value={deposito.id}>{deposito.str_nombre}</option>
+              ))}
+            </select>
+
+            {/*  <Select id="fk_deposito" value={fk_deposito} placeholder='Seleccionar Depósito' onValueChange={(e) => setFk_deposito(1)}>
+
+              {depositos.map(deposito => (
+                <SelectItem key={deposito.id} value={deposito.id}>{deposito.str_nombre}</SelectItem>
+              ))}
+            </Select>
+          </div>*/}
 
         </div>
       </div>
@@ -345,19 +414,19 @@ export default function FormularioProductos() {
         // Lógica para descartar
         console.log("Formulario descartado");
         // Reiniciar los valores del formulario
-        setId_producto('');
+        setStr_imagen('');
         setStr_nombre('');
         setStr_descripcion('');
-        setFk_marca('');
-        setFk_categoria('');
-        setFk_proveedor('');
-        setInt_cantidad_actual('');
-        setInt_cantidad_minima('');
-        setDc_costo_PPP('');
-        setInt_iva('');
-        setDc_precio_mayorista('');
-        setDc_precio_minorista('');
-        setFk_deposito('')
+        setFk_marca(0);
+        setFk_categoria(0);
+        setFk_proveedor(0);
+        setInt_cantidad_actual(0);
+        setInt_cantidad_minima(0);
+        setDc_costo_PPP(0);
+        setInt_iva(0);
+        setDc_precio_mayorista(0);
+        setDc_precio_minorista(0);
+        setFk_deposito(0);
         navigate('/productos');
       }}>Descartar</Button>
     </form>
