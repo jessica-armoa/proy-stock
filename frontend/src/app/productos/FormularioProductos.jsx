@@ -101,7 +101,7 @@ export default function FormularioProductos() {
         "dc_precio_minorista": dc_precio_minorista,
       }
 
-      const productoAgregado = await ProductosConfig.createProducto(1, fk_proveedor, fk_marca, producto);
+      const productoAgregado = await ProductosConfig.createProducto(fk_deposito, fk_proveedor, fk_marca, producto);
       // También puedes reiniciar los valores de los campos del formulario
       setStr_imagen('');
       setStr_nombre('');
@@ -379,7 +379,7 @@ export default function FormularioProductos() {
             required
           />
 
-          {/* <div className="col-span-full sm:col-span-3">
+           <div className="col-span-full sm:col-span-3">
             <label
               htmlFor="fk_deposito"
               className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
@@ -389,7 +389,7 @@ export default function FormularioProductos() {
             </label>
 
             <select id="fk_deposito" value={fk_deposito} onChange={(e) => setFk_deposito(e.target.value)}>
-              <option value={1}>Seleccionar Depósito</option>
+              <option value={0}>Seleccionar Depósito</option>
               {depositos.map(deposito => (
                 <option key={deposito.id} value={deposito.id}>{deposito.str_nombre}</option>
               ))}
@@ -400,8 +400,8 @@ export default function FormularioProductos() {
               {depositos.map(deposito => (
                 <SelectItem key={deposito.id} value={deposito.id}>{deposito.str_nombre}</SelectItem>
               ))}
-            </Select>
-          </div>*/}
+            </Select>*/}
+          </div>
 
         </div>
       </div>
