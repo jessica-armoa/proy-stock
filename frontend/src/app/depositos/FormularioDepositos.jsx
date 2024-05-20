@@ -40,7 +40,7 @@ export default function FormularioDepositos() {
                 str_direccion
             });
 
-            const response = await DepositosConfig.createDeposito(fk_ferreteria, deposito);
+            const response = await DepositosConfig.createDeposito(1, deposito);
 
 
             // También puedes reiniciar los valores de los campos del formulario
@@ -97,7 +97,7 @@ export default function FormularioDepositos() {
                     />
                 </div>
 
-                <div className="col-span-full sm:col-span-3">
+                {/* <div className="none col-span-full sm:col-span-3">
                     <label
                         htmlFor="fk_ferreteria"
                         className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
@@ -111,7 +111,7 @@ export default function FormularioDepositos() {
                             <option key={ferreteria.id} value={ferreteria.id}>{ferreteria.str_nombre}</option>
                         ))}
                     </select>
-                </div>
+                </div>*/}
 
 
 
