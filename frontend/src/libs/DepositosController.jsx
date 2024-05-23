@@ -1,12 +1,12 @@
 import axios from "axios";
 
-const api = process.env.NEXT_PUBLIC_API_URL+"deposito/";
+const api = process.env.NEXT_PUBLIC_API_URL+"api/deposito";
 
 class DepositosController {
   getDepositos() {
     return axios.get(api);
   }
-/*
+
   getProduct(id) {
     return axios.get(`${api}${id}`);
   }
@@ -21,7 +21,7 @@ class DepositosController {
 
   deleteProduct(id) {
     return axios.delete(`${api}/${id}`);
-  }*/
+  }
 }
 
 export default new DepositosController();

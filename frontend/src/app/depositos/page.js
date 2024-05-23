@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import Swal from 'sweetalert2';
 import DepositosController from "../../libs/DepositosController";
 import dynamic from 'next/dynamic'; 
+import DepositosConfig from "./DepositosConfig";
 
 const Sidebar = dynamic(() => import("@/components/sidebar"), { ssr: false });
 const DataTable = dynamic(() => import("@/components/table"), { ssr: false });
@@ -37,7 +38,7 @@ const Depositos = () => {
       cancelButtonText: 'Cancelar'
     }).then((result) => {
       if (result.isConfirmed) {
-        DepositosController.deleteDeposito(id)
+        DepositosConfig.deleteDeposito(id)
           .then(() => {
             setDepositos(depositos.filter(deposito => deposito.id !== id));
             Swal.fire(
@@ -65,7 +66,8 @@ const Depositos = () => {
   };
 
   const handleSave = () => {
-    DepositosController.updateDeposito(currentDeposito.id, currentDeposito)
+    console.log(currentDeposito)
+    DepositosConfig.updateDeposito(currentDeposito.id, currentDeposito)
       .then(() => {
         setDepositos(depositos.map(deposito => (deposito.id === currentDeposito.id ? currentDeposito : deposito)));
         setModalIsOpen(false);
@@ -116,16 +118,36 @@ const Depositos = () => {
       cell: ({ row }) => (
         <div className="flex space-x-2">
           <button
-            className="px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-700"
-          onClick={(event) => handleEdit(row.original, event)}
+            className="px-4 py-2 bg-cyan-400 text-white rounded hover:bg-cyan-500"
+            onClick={(event) => handleEdit(row.original, event)}
           >
-            Editar
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+              class="size-5"
+            >
+              <path d="m5.433 13.917 1.262-3.155A4 4 0 0 1 7.58 9.42l6.92-6.918a2.121 2.121 0 0 1 3 3l-6.92 6.918c-.383.383-.84.685-1.343.886l-3.154 1.262a.5.5 0 0 1-.65-.65Z" />
+              <path d="M3.5 5.75c0-.69.56-1.25 1.25-1.25H10A.75.75 0 0 0 10 3H4.75A2.75 2.75 0 0 0 2 5.75v9.5A2.75 2.75 0 0 0 4.75 18h9.5A2.75 2.75 0 0 0 17 15.25V10a.75.75 0 0 0-1.5 0v5.25c0 .69-.56 1.25-1.25 1.25h-9.5c-.69 0-1.25-.56-1.25-1.25v-9.5Z" />
+            </svg>
+         
           </button>
           <button
             className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-700"
             onClick={(event) => handleDelete(row.original.id, event)}
           >
-            Borrar
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+              class="size-5"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M8.75 1A2.75 2.75 0 0 0 6 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 1 0 .23 1.482l.149-.022.841 10.518A2.75 2.75 0 0 0 7.596 19h4.807a2.75 2.75 0 0 0 2.742-2.53l.841-10.52.149.023a.75.75 0 0 0 .23-1.482A41.03 41.03 0 0 0 14 4.193V3.75A2.75 2.75 0 0 0 11.25 1h-2.5ZM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69-.56-1.25-1.25-1.25h-2.5c-.69 0-1.25.56-1.25 1.25v.325C8.327 4.025 9.16 4 10 4ZM8.58 7.72a.75.75 0 0 0-1.5.06l.3 7.5a.75.75 0 1 0 1.5-.06l-.3-7.5Zm4.34.06a.75.75 0 1 0-1.5-.06l-.3 7.5a.75.75 0 1 0 1.5.06l.3-7.5Z"
+                clip-rule="evenodd"
+              />
+            </svg>
           </button>
         </div>
       ),
@@ -167,6 +189,8 @@ const Depositos = () => {
                   <div className="mb-4">
                     <label className="block text-sm font-medium text-gray-700">
                       Nombre:
+                      <span className="text-red-700">*
+                      </span>
                       <input
                         type="text"
                         name="str_nombre"
@@ -179,6 +203,8 @@ const Depositos = () => {
                   <div className="mb-4">
                     <label className="block text-sm font-medium text-gray-700">
                       Encargado:
+                      <span className="text-red-700">*
+                      </span>
                       <input
                         type="text"
                         name="str_encargado"
@@ -191,6 +217,8 @@ const Depositos = () => {
                   <div className="mb-4">
                     <label className="block text-sm font-medium text-gray-700">
                       Teléfono:
+                      <span className="text-red-700">*
+                      </span>
                       <input
                         type="text"
                         name="str_ferreteriaTelefono"
@@ -203,6 +231,8 @@ const Depositos = () => {
                   <div className="mb-4">
                     <label className="block text-sm font-medium text-gray-700">
                       Dirección:
+                      <span className="text-red-700">*
+                      </span>
                       <input
                         type="text"
                         name="str_direccion"
@@ -217,16 +247,16 @@ const Depositos = () => {
             </div>
             <div className="flex justify-end p-4 border-t">
               <button
-                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 mr-2"
-                onClick={handleSave}
-              >
-                Guardar
-              </button>
-              <button
                 className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-700"
                 onClick={() => setModalIsOpen(false)}
               >
                 Cancelar
+              </button>
+              <button
+                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 ml-2"
+                onClick={handleSave}
+              >
+                Guardar
               </button>
             </div>
           </div>

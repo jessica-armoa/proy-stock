@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import AuthController from '../../libs/UsuariosController';
 
 const Login = () => {
+  console.log(process.env.NEXT_PUBLIC_API_URL)
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');

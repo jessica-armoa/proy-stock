@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const api = process.env.NEXT_PUBLIC_API_URL+"producto/";
+const api = process.env.NEXT_PUBLIC_API_URL+"api/producto";
 
 class ProductsController {
   getProducts() {
@@ -15,8 +15,12 @@ class ProductsController {
     return axios.post(api, product);
   }
 
-  updateProduct(id) {
-    return axios.put(`${api}${id}`);
+  updateProduct(id,producto) {
+    return axios.put(`${api}/${id}`, producto, {
+      headers: {
+          'Content-Type': 'application/json'
+      }
+  });
   }
 
   deleteProduct(id) {
