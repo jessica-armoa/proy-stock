@@ -53,7 +53,7 @@ const Sidebar = () => {
         }
       </div>
       <div className='p-3'>
-        <button className='w-full bg-red-500 text-white p-2 rounded'
+        <button className='w-full bg-red-500 text-white p-2 rounded mt-500'
         onClick={handleLogout}>
           Cerrar sesión
         </button>
