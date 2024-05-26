@@ -135,9 +135,8 @@ const Detalle = () => {
             <nav className="text-sm" aria-label="Breadcrumb">
               <ol className="list-none p-0 inline-flex space-x-1">
                 <li className="flex items-center">
-                  <Link to="/productos" className="text-gray-500">
-                    {" "}
-                    &lt; Stock &gt;{" "}
+                  <Link to="/productos" className="text-gray-500 flex items-center">
+                    <span class="material-symbols-outlined">chevron_left</span>{" "} Stock &gt;{" "}
                   </Link>
                 </li>
                 <li className="flex items-center">
@@ -183,4 +182,4 @@ const Detalle = () => {
   );
 };
 
-export default  withAuth(Detalle);
+export default withAuth(Detalle);

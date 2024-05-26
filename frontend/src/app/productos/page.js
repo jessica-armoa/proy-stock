@@ -96,12 +96,11 @@ const Productos = () => {
       <div className="flex h-screen w-full bg-ui-background p-2 text-ui-text">
         <Sidebar />
         <div className="flex flex-col w-content h-full p-5 rounded-lg bg-ui-cardbg">
-          <h1 className="mb-4 text-l font-semibold normal-case tracking-tight">
+          <h1 className="text-l font-semibold normal-case tracking-tight">
             Productos
           </h1>
           
           <div className="flex items-center justify-end space-x-2">
-          <ExportPDF data={products} whatToExport={columns} title={"Detalle de Stock"} fileName="reporte_stock"></ExportPDF>
             <Button
               variant="primary"
               color="blue"

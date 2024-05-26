@@ -1,5 +1,8 @@
 "use client";
 import React from "react";
+import ExportPDF from "../exportpdf";
+import ExportCSV from "../exportcsv";
+
 import {
   RiArrowLeftSLine,
   RiArrowRightSLine,
@@ -30,8 +33,8 @@ import {
 
 import { Link } from "react-router-dom";
 import Filter from "../FilterFunction";
+import { SelectData, SelectHero } from "../selectData";
 
-//import ExportPDF from "@/components/exportpdf";
 
 function DataTable({ columns, data, pageurl }) {
   const [sorting, setSorting] = useState([]);
@@ -52,17 +55,33 @@ function DataTable({ columns, data, pageurl }) {
     state: {
       sorting,
       globalFilter: filtering,
-      columnFilters: columnFilters,
+      columnFilters,
     },
     onColumnFiltersChange: setColumnFilters,
     onSortingChange: setSorting,
     onGlobalFilterChange: setFiltering,
   });
 
+  const clearAllFilters = () => {
+    setColumnFilters([]);
+    setFiltering("");
+  };
+
+
+  const hasFilters = table.getState().columnFilters.length > 0 || table.getState().globalFilter;
+
+  const filteredData = hasFilters ? table.getRowModel().rows.map(row => row.original) : data;
+
+
   return (
     <div>
-      
-      <Table className="my-5">
+      <div className="flex justify-end mt-5">
+      <SelectData></SelectData>
+      <Button onClick={clearAllFilters} variant="light" color="blue" className="mx-3">Limpiar Filtros</Button>
+      <ExportPDF data={filteredData} whatToExport={columns} title={"Detalle de Stock"} fileName="reporte_stock_pdf"></ExportPDF>
+      <ExportCSV data={filteredData} whatToExport={columns} fileName="reporte_stock_pdf"></ExportCSV>
+      </div>
+      <Table>
         <TableHead>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
@@ -78,14 +97,14 @@ function DataTable({ columns, data, pageurl }) {
                       asc: (
                         <Button
                           className="remixicon size-2 color-primary bg-none border-none color-blue"
-                          variant="secondary"
+                          variant="light"
                           icon={RiArrowUpSFill}
                         />
                       ),
                       desc: (
                         <Button
                           className="remixicon size-2 color-primary bg-none border-none"
-                          variant="secondary"
+                          variant="light"
                           icon={RiArrowDownSFill}
                         />
                       ),
@@ -137,7 +156,7 @@ function DataTable({ columns, data, pageurl }) {
           ))}
         </TableBody>
       </Table>
-      <div className="flex justify-center space-x-5">
+      <div className="flex justify-center space-x-5 p-3">
         <Button
           icon={RiArrowLeftSLine}
           iconPosition="left"
@@ -168,12 +187,3 @@ function DataTable({ columns, data, pageurl }) {
 }
 
 export default DataTable;
-
-/*
-<TextInput
-        className="max-w-sm"
-        placeholder={placeHolder}
-        onChange={(e) => setFiltering(e.target.value)}
-      ></TextInput>
-      
-*/

@@ -20,7 +20,7 @@ const ExportPDF = ({ data,whatToExport,title,fileName="ReportePDF",theme="stripe
       theme={theme}
     >
       {(handleExport) => (
-        <Button variant="light" color="violet" className="p-5" {...handleExport}>Descargar PDF</Button>
+        <Button variant="light" color="violet" className="mx-3" {...handleExport}>Descargar PDF</Button>
       )}
     </ExportAsPdf>
   );
