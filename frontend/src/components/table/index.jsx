@@ -1,5 +1,7 @@
 "use client";
 import React from "react";
+import ExportPDF from "../exportpdf";
+import ExportCSV from "../exportcsv";
 
 import {
   RiArrowLeftSLine,
@@ -7,6 +9,7 @@ import {
   RiArrowUpSFill,
   RiArrowDownSFill,
 } from "@remixicon/react";
+
 import {
   flexRender,
   getCoreRowModel,
@@ -30,8 +33,10 @@ import {
 
 import { Link } from "react-router-dom";
 import Filter from "../FilterFunction";
+import { SelectData, SelectHero } from "../selectData";
 
-function DataTable({ columns, data }) {
+
+function DataTable({ columns, data, pageurl }) {
   const [sorting, setSorting] = useState([]);
   const [filtering, setFiltering] = useState("");
   const [columnFilters, setColumnFilters] = React.useState([]);
@@ -50,27 +55,39 @@ function DataTable({ columns, data }) {
     state: {
       sorting,
       globalFilter: filtering,
-      columnFilters: columnFilters,
+      columnFilters,
     },
     onColumnFiltersChange: setColumnFilters,
     onSortingChange: setSorting,
     onGlobalFilterChange: setFiltering,
   });
 
+  const clearAllFilters = () => {
+    setColumnFilters([]);
+    setFiltering("");
+  };
+
+
+  const hasFilters = table.getState().columnFilters.length > 0 || table.getState().globalFilter;
+
+  const filteredData = hasFilters ? table.getRowModel().rows.map(row => row.original) : data;
+
+
   return (
     <div>
-      <TextInput
-        className="max-w-sm"
-        placeholder={placeHolder}
-        onChange={(e) => setFiltering(e.target.value)}
-      ></TextInput>
-      <Table className="my-5">
+      <div className="flex justify-end mt-5">
+      <SelectData></SelectData>
+      <Button onClick={clearAllFilters} variant="light" color="blue" className="mx-3">Limpiar Filtros</Button>
+      <ExportPDF data={filteredData} whatToExport={columns} title={"Detalle de Stock"} fileName="reporte_stock_pdf"></ExportPDF>
+      <ExportCSV data={filteredData} whatToExport={columns} fileName="reporte_stock_pdf"></ExportCSV>
+      </div>
+      <Table>
         <TableHead>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
                 <TableHeaderCell
-                  className="p-2"
+                  className={"p-2 " + columns[header.index].widthClass ?? ""}
                   key={header.id}
                   onClick={header.column.getToggleSortingHandler()}
                 >
@@ -80,14 +97,14 @@ function DataTable({ columns, data }) {
                       asc: (
                         <Button
                           className="remixicon size-2 color-primary bg-none border-none color-blue"
-                          variant="secondary"
+                          variant="light"
                           icon={RiArrowUpSFill}
                         />
                       ),
                       desc: (
                         <Button
                           className="remixicon size-2 color-primary bg-none border-none"
-                          variant="secondary"
+                          variant="light"
                           icon={RiArrowDownSFill}
                         />
                       ),
@@ -101,9 +118,23 @@ function DataTable({ columns, data }) {
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
-                <TableHeaderCell key={header.id}>
+                <TableHeaderCell
+                  key={header.id}
+                  className={"p-2 " + columns[header.index].widthClass ?? ""}
+                >
                   <div>
-                    <Filter column={header.column} table={table} />
+                    <Filter
+                      column={header.column}
+                      table={table}
+                      numericInputType={
+                        columns[header.index].numericInputType ?? "single"
+                      }
+                      placeholder={"Filtrar " + columns[header.index].header}
+                      display={columns[header.index].search ?? true}
+                      inputClass={
+                        columns[header.index].inputClass ?? "w-fit-content"
+                      }
+                    />
                   </div>
                 </TableHeaderCell>
               ))}
@@ -115,8 +146,8 @@ function DataTable({ columns, data }) {
           {table.getRowModel().rows.map((row) => (
             <TableRow key={row.id} {...row.getRowProps}>
               {row.getVisibleCells().map((cell) => (
-                <TableCell className="p-2">
-                  <Link to={`/productos/detalle/${row.original.id}`}>
+                <TableCell className="p-2 text-wrap" key={cell.id}>
+                  <Link to={`${pageurl}${row.original.id}`}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </Link>
                 </TableCell>
@@ -125,7 +156,7 @@ function DataTable({ columns, data }) {
           ))}
         </TableBody>
       </Table>
-      <div className="flex justify-center space-x-5">
+      <div className="flex justify-center space-x-5 p-3">
         <Button
           icon={RiArrowLeftSLine}
           iconPosition="left"
