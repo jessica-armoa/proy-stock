@@ -1,5 +1,5 @@
 import Sidebar from "@/components/sidebar";
-import FormularioProductos from "../../components/FormularioProductos";
+import FormularioProductos from "./FormularioProductos";
 
 
 export default function CrearProducto(){
@@ -11,6 +11,5 @@ export default function CrearProducto(){
           <FormularioProductos/>
       </div>
         </div>
-        
     )
 }

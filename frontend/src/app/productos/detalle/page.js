@@ -7,7 +7,7 @@ import { Link, useParams } from "react-router-dom";
 import Sidebar from "@/components/sidebar";
 import { useState, useEffect } from "react";
 import ProductsController from "../../../libs/ProductsController";
-import withAuth from "@/components/auth/withauth";
+import withAuth from "@/components/auth/withAuth";
 
 const Detalle = () => {
   let { id } = useParams();
@@ -98,7 +98,7 @@ const Detalle = () => {
   const columns = [
     {
       accessorKey: "date",
-      header: "Cód.Fecha",
+      header: "Fecha",
     },
     {
       accessorKey: "movement",
@@ -130,14 +130,13 @@ const Detalle = () => {
     <div>
       <div className="flex h-screen w-full bg-ui-background p-2 text-ui-text">
         <Sidebar />
-        <div className="flex flex-col w-full h-full p-5 rounded-lg bg-ui-cardbg">
+        <div className="flex flex-col w-content h-full p-5 rounded-lg bg-ui-cardbg">
           <div className="container mx-auto">
             <nav className="text-sm" aria-label="Breadcrumb">
               <ol className="list-none p-0 inline-flex space-x-1">
                 <li className="flex items-center">
-                  <Link to="/productos" className="text-gray-500">
-                    {" "}
-                    &lt; Stock &gt;{" "}
+                  <Link to="/productos" className="text-gray-500 flex items-center">
+                    <span class="material-symbols-outlined">chevron_left</span>{" "} Stock &gt;{" "}
                   </Link>
                 </li>
                 <li className="flex items-center">
@@ -183,4 +182,4 @@ const Detalle = () => {
   );
 };
 
-export default  withAuth(Detalle);
+export default withAuth(Detalle);
