@@ -1,6 +1,8 @@
 import React from 'react'
 import Sidebar from '@/components/sidebar';
 import { useNavigate } from 'react-router-dom';
+import DataTable from "@/components/table";
+import { Button } from '@tremor/react';
 
 const Marcas = () => {
     const navigate = useNavigate();

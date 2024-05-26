@@ -4,6 +4,7 @@ import Sidebar from '@/components/sidebar';
 import withAuth from '@/components/auth/withAuth';
 import { Button } from '@tremor/react';
 import { useNavigate } from 'react-router-dom'; 
+import DataTable from "@/components/table";
 
 const Movimientos = () => {
   const navigate = useNavigate();
