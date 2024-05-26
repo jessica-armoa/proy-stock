@@ -3,13 +3,12 @@ import React from 'react';
 import Sidebar from '@/components/sidebar';
 import withAuth from '@/components/auth/withAuth';
 import { Button } from '@tremor/react';
-import { useNavigate } from 'react-router-dom'; // Assuming you are using react-router
+import { useNavigate } from 'react-router-dom'; 
 
 const Movimientos = () => {
   const navigate = useNavigate();
   const movimientos = [];
-  const columns = []; // Define your columns for the DataTable
-
+  const columns = []; 
   return (
     <div className="flex h-screen w-full bg-ui-background p-2 text-ui-text">
       <Sidebar />
