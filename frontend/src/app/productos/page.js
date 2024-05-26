@@ -8,16 +8,29 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import ProductsController from "../../libs/ProductsController";
 import withAuth from "@/components/auth/withAuth";
+import ExportPDF from "@/components/exportpdf";
+
 
 const Productos = () => {
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
-
+  /*const headers= [
+    "Cód.",
+    "Producto",
+    "Descripción",
+    "Marca",
+    "Proveedor",
+    "Cant",
+    "Depósito",
+    "Costo",
+    "Precio May.",
+    "Precio Min.",
+  ];*/
   const columns = [
     {
       accessorKey: "id",
       header: "Cód.",
-      search: false
+      search: false,
     },
     {
       accessorKey: "str_nombre",
@@ -52,21 +65,21 @@ const Productos = () => {
     {
       accessorKey: "dec_costo_PPP",
       header: "Costo",
-      search: false
+      search: false,
     },
     {
       accessorKey: "dec_precio_mayorista",
       header: "Mayorista",
-      search: false
+      search: false,
     },
     {
       accessorKey: "dec_precio_minorista",
       header: "Minorista",
-      search: false
+      search: false,
     },
     {
       header: "Acciones",
-      search: false      
+      search: false,
     },
   ];
 
@@ -86,7 +99,9 @@ const Productos = () => {
           <h1 className="mb-4 text-l font-semibold normal-case tracking-tight">
             Productos
           </h1>
+          
           <div className="flex items-center justify-end space-x-2">
+          <ExportPDF data={products} whatToExport={columns} title={"Detalle de Stock"} fileName="reporte_stock"></ExportPDF>
             <Button
               variant="primary"
               color="blue"
@@ -99,7 +114,11 @@ const Productos = () => {
             {products.length <= 0 ? (
               <p>No hay productos</p>
             ) : (
-              <DataTable data={products} columns={columns} pageurl={`/productos/detalle/`} />
+              <DataTable
+                data={products}
+                columns={columns}
+                pageurl={`/productos/detalle/`}
+              />
             )}
           </div>
         </div>

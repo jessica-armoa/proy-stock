@@ -1,13 +1,12 @@
 "use client";
 import React from "react";
-
-
 import {
   RiArrowLeftSLine,
   RiArrowRightSLine,
   RiArrowUpSFill,
   RiArrowDownSFill,
 } from "@remixicon/react";
+
 import {
   flexRender,
   getCoreRowModel,
@@ -31,6 +30,8 @@ import {
 
 import { Link } from "react-router-dom";
 import Filter from "../FilterFunction";
+
+//import ExportPDF from "@/components/exportpdf";
 
 function DataTable({ columns, data, pageurl }) {
   const [sorting, setSorting] = useState([]);
@@ -60,13 +61,14 @@ function DataTable({ columns, data, pageurl }) {
 
   return (
     <div>
+      
       <Table className="my-5">
         <TableHead>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
                 <TableHeaderCell
-                  className={("p-2 "+(columns[header.index].widthClass) ?? "")}
+                  className={"p-2 " + columns[header.index].widthClass ?? ""}
                   key={header.id}
                   onClick={header.column.getToggleSortingHandler()}
                 >
@@ -97,11 +99,25 @@ function DataTable({ columns, data, pageurl }) {
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
-                <TableHeaderCell key={header.id} className={("p-2 "+(columns[header.index].widthClass) ?? "")}>
+                <TableHeaderCell
+                  key={header.id}
+                  className={"p-2 " + columns[header.index].widthClass ?? ""}
+                >
                   <div>
-                    <Filter column={header.column} table={table} numericInputType={columns[header.index].numericInputType ?? 'single'} placeholder={"Filtrar "+columns[header.index].header} display={columns[header.index].search ?? true} inputClass={columns[header.index].inputClass ?? 'w-fit-content'}/>
+                    <Filter
+                      column={header.column}
+                      table={table}
+                      numericInputType={
+                        columns[header.index].numericInputType ?? "single"
+                      }
+                      placeholder={"Filtrar " + columns[header.index].header}
+                      display={columns[header.index].search ?? true}
+                      inputClass={
+                        columns[header.index].inputClass ?? "w-fit-content"
+                      }
+                    />
                   </div>
-                </TableHeaderCell>           
+                </TableHeaderCell>
               ))}
             </TableRow>
           ))}
@@ -111,7 +127,7 @@ function DataTable({ columns, data, pageurl }) {
           {table.getRowModel().rows.map((row) => (
             <TableRow key={row.id} {...row.getRowProps}>
               {row.getVisibleCells().map((cell) => (
-                <TableCell className="p-2 text-wrap">
+                <TableCell className="p-2 text-wrap" key={cell.id}>
                   <Link to={`${pageurl}${row.original.id}`}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </Link>
