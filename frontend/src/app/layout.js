@@ -1,39 +1,30 @@
-'use client'
+"use client";
 
-// Importa BrowserRouter y otros componentes necesarios
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Detalle from '../../src/app/productos/detalle/page'; // Importa el componente de detalles
-import DataTable from '../../src/components/table'; // Tu componente actual donde está la tabla
+//import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+//import Detalle from "./productos/detalle";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import "./globalicons.css";
-import Sidebar from "@/components/sidebar";
-import Productos from './productos/page';
 import Dashboard from './page';
-import Movimientos from './movimientos/page';
-import Depositos from './depositos/page';
+/*import Productos from './productos';
+import Movimientos from './movimientos';
+import Depositos from './depositos'
 import CrearProducto from './productos/CrearProducto';
-
+import Marcas from './marcas';
+import CrearMarca from './marcas/CrearMarca';
+import CrearFerreteria from './ferreterias/CrearFerreteria';
+import Ferreterias from './ferreterias';
+import Login from './login';
+import CrearDeposito from "./depositos/CrearDeposito";
+*/
 const inter = Inter({ subsets: ["latin"] });
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <Router>
-        <Routes>
-          <Route path="/productos/detalle/:id" element={<Detalle />} />
-          <Route path="/productos" element={<Productos />} />
-          <Route path="/" element={< Dashboard />} />
-          <Route path="/movimientos" element={< Movimientos />} />
-          <Route path="/depositos" element={< Depositos />} />
-          <Route path="/productos/nuevo" element={< CrearProducto />} />
-        </Routes>
-        </Router>
       <body className={inter.className}>
-
-
+        <main>{children}</main>
       </body>
-
-          </html>
+    </html>
   );
 }
