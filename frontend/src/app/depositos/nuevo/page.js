@@ -1,7 +1,7 @@
-import Sidebar from "@/components/sidebar";
-import React, { useState } from 'react';
 import FormularioDepositos from "./FormularioDepositos";
 
+import dynamic from 'next/dynamic';// Dynamic imports
+const Sidebar = dynamic(() => import("@/components/sidebar"), { ssr: false });
 
 export default function CrearDeposito() {
     return (

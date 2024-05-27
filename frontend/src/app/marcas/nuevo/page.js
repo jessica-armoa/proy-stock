@@ -1,7 +1,7 @@
-import Sidebar from "@/components/sidebar";
 import FormularioMarcas from "./FormularioMarcas";
-import React, { useState } from 'react';
 
+import dynamic from 'next/dynamic';// Dynamic imports
+const Sidebar = dynamic(() => import("@/components/sidebar"), { ssr: false });
 
 export default function CrearMarca() {
     return (

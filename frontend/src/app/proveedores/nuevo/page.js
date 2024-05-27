@@ -1,6 +1,7 @@
-import Sidebar from "@/components/sidebar";
 import FormularioProveedores from "./FormularioProveedores";
 
+import dynamic from 'next/dynamic';// Dynamic imports
+const Sidebar = dynamic(() => import("@/components/sidebar"), { ssr: false });
 
 export default function CrearProveedor() {
     return (

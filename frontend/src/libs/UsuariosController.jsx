@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const api = "http://localhost:5282/api/usuario/login";
+const api = process.env.NEXT_PUBLIC_API_URL+"usuario/login";
 
 class AuthController {
   login(credentials) {

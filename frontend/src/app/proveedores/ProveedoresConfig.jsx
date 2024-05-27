@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const api = "http://localhost:5282/api/proveedor"
+const api = process.env.NEXT_PUBLIC_API_URL+"proveedor"
 
 class ProveedoresConfig{
     getProveedor(){

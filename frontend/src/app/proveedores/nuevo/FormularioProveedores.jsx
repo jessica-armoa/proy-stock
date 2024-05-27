@@ -1,12 +1,13 @@
 "use client";
 import React, { useState } from 'react';
 import { Button, NumberInput, TextInput } from '@tremor/react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import ProveedoresConfig from './ProveedoresConfig';
+import ProveedoresConfig from '../ProveedoresConfig';
 
+import { useRouter } from 'next/navigation';
 
 export default function FormularioProveedores() {
+
+    const router = useRouter();
 
     const [str_nombre, setStr_nombre] = useState('');
     const [str_telefono, setStr_telefono] = useState('');
@@ -131,7 +132,7 @@ export default function FormularioProveedores() {
                     />
                 </div>
                 <Button variant="primary" type="submit">Guardar</Button>
-                <Button variant="secondary" onClick={() => {
+                <Button variant="secondary" type="button" onClick={() => {
                     // Lógica para descartar
                     console.log("Formulario descartado");
                     // Reiniciar los valores del formulario
@@ -139,6 +140,7 @@ export default function FormularioProveedores() {
                     setStr_telefono('');
                     setStr_direccion('');
                     setStr_correo('');
+                    router.push('/proveedores');
                 }}>Descartar</Button>
             </div>
         </form>
