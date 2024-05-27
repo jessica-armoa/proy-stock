@@ -1,13 +1,15 @@
 'use client'
 import React from 'react';
-import Sidebar from '@/components/sidebar';
 import withAuth from '@/components/auth/withAuth';
 import { Button } from '@tremor/react';
-import { useNavigate } from 'react-router-dom'; 
-import DataTable from "@/components/table";
+import { useRouter } from 'next/navigation'
+
+import dynamic from 'next/dynamic';// Dynamic imports
+const Sidebar = dynamic(() => import("@/components/sidebar"), { ssr: false });
+const DataTable = dynamic(() => import("@/components/table"), { ssr: false });
 
 const Movimientos = () => {
-  const navigate = useNavigate();
+  const router = useRouter();
   const movimientos = [];
   const columns = []; 
   return (
@@ -19,7 +21,7 @@ const Movimientos = () => {
           <Button
             variant="primary"
             color="blue"
-            onClick={() => navigate("/depositos/nuevo")}
+            onClick={() => router.push('/depositos/nuevo')}
           >
             Nuevo Movimiento
           </Button>

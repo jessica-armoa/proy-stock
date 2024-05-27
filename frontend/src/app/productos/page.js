@@ -2,30 +2,20 @@
 
 import React from "react";
 import { Button } from "@tremor/react";
-import DataTable from "@/components/table";
-import Sidebar from "@/components/sidebar";
-import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import ProductsController from "../../libs/ProductsController";
 import withAuth from "@/components/auth/withAuth";
 import ExportPDF from "@/components/exportpdf";
+import { useRouter } from 'next/navigation'
+//import DataTable from "@/components/table";
 
+import dynamic from 'next/dynamic';// Dynamic imports
+const Sidebar = dynamic(() => import("@/components/sidebar"), { ssr: false });
+const DataTable = dynamic(() => import("@/components/table"), { ssr: false });
 
 const Productos = () => {
-  const navigate = useNavigate();
+  const router = useRouter();
   const [products, setProducts] = useState([]);
-  /*const headers= [
-    "Cód.",
-    "Producto",
-    "Descripción",
-    "Marca",
-    "Proveedor",
-    "Cant",
-    "Depósito",
-    "Costo",
-    "Precio May.",
-    "Precio Min.",
-  ];*/
   const columns = [
     {
       accessorKey: "id",
@@ -104,7 +94,7 @@ const Productos = () => {
             <Button
               variant="primary"
               color="blue"
-              onClick={() => navigate("/productos/nuevo")}
+              onClick={() => router.push("/productos/nuevo")}
             >
               Nuevo Producto
             </Button>
