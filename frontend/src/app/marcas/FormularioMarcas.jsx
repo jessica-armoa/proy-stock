@@ -2,8 +2,9 @@
 import React, { useEffect, useState } from 'react';
 import { Button, NumberInput, TextInput } from '@tremor/react';
 import MarcasConfig from './MarcasConfig';
-import { useNavigate } from 'react-router-dom';
 import ProveedoresConfig from '../proveedores/ProveedoresConfig';
+
+import { useRouter } from 'next/navigation';
 
 export default function FormularioMarcas() {
 
@@ -11,7 +12,7 @@ export default function FormularioMarcas() {
     const [proveedorId, setProveedorId] = useState(0);
     const [proveedores, setProveedores] = useState([]);
 
-    const navigate = useNavigate();
+    const router = useRouter();
 
     useEffect(() => {
         const extraccionProveedores = async () => {

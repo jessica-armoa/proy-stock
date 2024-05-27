@@ -2,16 +2,19 @@
 
 import React from "react";
 import { Button } from "@tremor/react";
-import DataTable from "@/components/table";
-import Sidebar from "@/components/sidebar";
-import { useNavigate } from "react-router-dom";
+//import DataTable from "@/components/table";
+//import Sidebar from "@/components/sidebar";
+import { useRouter } from 'next/navigation';
 import { useState, useEffect } from "react";
 import DepositosController from "../../libs/DepositosController";
-import withAuth from "@/components/auth/withAuth";
+//import withAuth from "@/components/auth/withAuth";
 
+import dynamic from 'next/dynamic';// Dynamic imports
+const Sidebar = dynamic(() => import("@/components/sidebar"), { ssr: false });
+const DataTable = dynamic(() => import("@/components/table"), { ssr: false });
 
 const Depositos = () => {
-  const navigate = useNavigate();
+  const router = useRouter();
   const [depositos, setDepositos] = useState([]);
 
   const columns = [
@@ -59,7 +62,7 @@ const Depositos = () => {
             <Button
               variant="primary"
               color="blue"
-              onClick={() => navigate("/depositos/nuevo")}
+              onClick={() => router.push("/depositos/nuevo")}
             >
               Nuevo Depósito
             </Button>
@@ -77,5 +80,5 @@ const Depositos = () => {
   )
 }
 
-export default withAuth(Depositos);
+export default Depositos;
 

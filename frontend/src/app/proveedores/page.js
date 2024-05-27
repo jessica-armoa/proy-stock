@@ -2,15 +2,15 @@
 
 import React from 'react'
 import { Button } from '@tremor/react';
-import DataTable from '@/components/table';
 import Photo from '@/components/productimg';
-import Sidebar from '@/components/sidebar';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation'
 
+import dynamic from 'next/dynamic';// Dynamic imports
+const Sidebar = dynamic(() => import("@/components/sidebar"), { ssr: false });
+const DataTable = dynamic(() => import("@/components/table"), { ssr: false });
 
 const Proveedores = () => {
-    const navigate = useNavigate()
-
+    const router = useRouter();
     return (
 
         <div>
@@ -19,7 +19,7 @@ const Proveedores = () => {
                 <div className="flex flex-col w-full h-full p-5 rounded-lg bg-ui-cardbg">
                     <h1 className='mb-4 text-l font-semibold normal-case tracking-tight'>Productos</h1>
                     <div className='mt-8 flex items-center justify-end space-x-2'>
-                        <Button variant="primary" color='blue' onClick={() => navigate('/proveedores/nuevo')}>Nuevo Proveedor</Button>
+                        <Button variant="primary" color='blue' onClick={() => router.push('/proveedores/nuevo')}>Nuevo Proveedor</Button>
                     </div>
                     <div><DataTable /></div>
                 </div>
