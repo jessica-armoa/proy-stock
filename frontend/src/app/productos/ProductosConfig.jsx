@@ -1,7 +1,7 @@
 import axios from "axios";
 
-const api = "http://localhost:5282/api/producto";
-
+const api = process.env.NEXT_PUBLIC_API_URL+"producto";
+console.log(api);
 class ProductosConfig{
     getProducto(){
         return axios.get(api);

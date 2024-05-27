@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const api = "http://localhost:5282/api/deposito";
+const api = process.env.NEXT_PUBLIC_API_URL+"deposito";
 
 class DepositosConfig{
     getDeposito(){

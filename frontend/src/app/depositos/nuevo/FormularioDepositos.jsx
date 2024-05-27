@@ -1,10 +1,14 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import { Button, NumberInput, TextInput } from '@tremor/react';
-import DepositosConfig from './DepositosConfig';
-import FerreteriasConfig from '../ferreterias/FerreteriasConfig';
+import DepositosConfig from '../DepositosConfig';
+import FerreteriasConfig from '../../ferreterias/FerreteriasConfig';
+
+import { useRouter } from 'next/navigation';
 
 export default function FormularioDepositos() {
+
+    const router = useRouter();
 
     const [str_nombre, setStr_nombre] = useState('');
     const [str_direccion, setStr_direccion] = useState('');
@@ -116,13 +120,14 @@ export default function FormularioDepositos() {
 
 
                 <Button variant="primary" type="submit">Guardar</Button>
-                <Button variant="secondary" onClick={() => {
+                <Button variant="secondary" type="button" onClick={() => {
                     // Lógica para descartar
                     console.log("Formulario descartado");
                     // Reiniciar los valores del formulario
                     setStr_nombre('');
                     setStr_direccion('');
                     setFk_ferreteria(0);
+                    router.push('/depositos');
                 }}>Descartar</Button>
             </div>
         </form>

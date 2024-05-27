@@ -1,25 +1,34 @@
 "use client";
 
-import React from "react";
-import Photo from "../../../components/productimg";
-import DataTable from "@/components/table";
-import { Link, useParams } from "react-router-dom";
-import Sidebar from "@/components/sidebar";
-import { useState, useEffect } from "react";
-import ProductsController from "../../../libs/ProductsController";
+import React, { useState, useEffect } from "react";
+import { useRouter, usePathname } from "next/navigation";
+import dynamic from "next/dynamic";
+import ProductsController from "../../../../libs/ProductsController";
 import withAuth from "@/components/auth/withAuth";
+//import Photo from "../../../../components/productimg";
 
-const Detalle = () => {
-  let { id } = useParams();
-  console.log("ID:", id);
+// Dynamic imports
+const Sidebar = dynamic(() => import("@/components/sidebar"), { ssr: false });
+const DataTable = dynamic(() => import("@/components/table"), { ssr: false });
+const Photo = dynamic(() => import("@/components/productimg"), { ssr: false });
+
+
+const Detalle = ({params}) => { //params lee los parametros de la url, en este caso de los subdirectorios, en este tenemos el dir [id]
+  
+  const router = useRouter();
+
+  const {id} = params;
+
+  //console.log("ID:", id);
   const [product, setProduct] = useState({});
+
   useEffect(() => {
     if (product) {
       ProductsController.getProduct(id).then((response) => {
         setProduct(response.data);
       });
     }
-  }, []);
+  }, [id]);
 
   const data = [
     {
@@ -135,9 +144,9 @@ const Detalle = () => {
             <nav className="text-sm" aria-label="Breadcrumb">
               <ol className="list-none p-0 inline-flex space-x-1">
                 <li className="flex items-center">
-                  <Link to="/productos" className="text-gray-500 flex items-center">
-                    <span class="material-symbols-outlined">chevron_left</span>{" "} Stock &gt;{" "}
-                  </Link>
+                  <div className="clickable text-gray-500 flex items-center" onClick={() => router.push("/productos")}>
+                    <span className="material-symbols-outlined">chevron_left</span>{" "} Stock &gt;{" "}
+                  </div>
                 </li>
                 <li className="flex items-center">
                   <span className="text-gray-500">Detalles del producto</span>
