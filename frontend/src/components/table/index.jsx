@@ -33,7 +33,7 @@ import {
 
 import { Link } from "react-router-dom";
 import Filter from "../FilterFunction";
-import { SelectData, SelectHero } from "../selectData";
+//import { SelectData, SelectHero } from "../selectData";
 
 
 function DataTable({ columns, data, pageurl }) {
