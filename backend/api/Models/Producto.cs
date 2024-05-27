@@ -20,6 +20,7 @@ namespace api.Models
         public Marca? Marca { get; set; }
         public int Int_cantidad_actual { get; set; }
         public int Int_cantidad_minima { get; set; }
+        public decimal Dec_costo { get; set; }
         public decimal Dec_costo_PPP { get; set; }
         public int Int_iva { get; set; }
         public decimal Dec_precio_mayorista { get; set; }

@@ -27,7 +27,7 @@ namespace api.Repository
         public async Task<Producto?> DeleteAsync(int id)
         {
             var productoModel = await _context.productos.FirstOrDefaultAsync(p => p.Id == id);
-            if(productoModel == null) return null;
+            if (productoModel == null) return null;
 
             _context.productos.Remove(productoModel);
             await _context.SaveChangesAsync();
@@ -67,20 +67,44 @@ namespace api.Repository
         public async Task<Producto?> UpdateAsync(int id, Producto productoDto)
         {
             var productoExistente = await _context.productos.FirstOrDefaultAsync(s => s.Id == id);
-            if(productoExistente == null) return null;
+            if (productoExistente == null) return null;
 
             productoExistente.Str_ruta_imagen = productoDto.Str_ruta_imagen;
             productoExistente.Str_nombre = productoDto.Str_nombre;
             productoExistente.Str_descripcion = productoDto.Str_descripcion;
             productoExistente.Int_cantidad_actual = productoDto.Int_cantidad_actual;
             productoExistente.Int_cantidad_minima = productoDto.Int_cantidad_minima;
-            productoExistente.Dec_costo_PPP = productoDto.Dec_costo_PPP;
+            productoExistente.Dec_costo_PPP = productoDto.Dec_costo;
             productoExistente.Int_iva = productoDto.Int_iva;
             productoExistente.Dec_precio_mayorista = productoDto.Dec_precio_mayorista;
             productoExistente.Dec_precio_minorista = productoDto.Dec_precio_minorista;
 
             await _context.SaveChangesAsync();
             return productoExistente;
+        }
+
+        public async Task ActualizarCostoPPPAsync()
+        {
+            // Obtener todos los productos
+            var productos = await _context.productos.ToListAsync();
+
+            if (!productos.Any())
+            {
+                throw new InvalidOperationException("No se encontraron productos.");
+            }
+
+            // Calcular el costo PPP
+            var costoTotal = productos.Sum(p => p.Dec_costo);
+            var costoPPP = costoTotal / productos.Count;
+
+            // Actualizar el atributo costo_PPP de cada producto
+            foreach (var producto in productos)
+            {
+                producto.Dec_costo_PPP = costoPPP;
+            }
+
+            // Guardar los cambios en la base de datos
+            await _context.SaveChangesAsync();
         }
     }
 }

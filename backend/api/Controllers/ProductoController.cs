@@ -29,8 +29,8 @@ namespace api.Controllers
         public async Task<IActionResult> GetAll()
         {
             var productos = await _productoRepo.GetAllAsync();
-            var productoDto = productos.Select(p => p.ToProductoDto());
-            return Ok(productoDto);
+            var productosDto = productos.Select(p => p.ToProductoDto());
+            return Ok(productosDto);
         }
 
         [HttpGet]
@@ -109,6 +109,21 @@ namespace api.Controllers
             }
 
             return Ok(productoModel); //No es necesario traer algo, puede ser vacio
+        }
+
+         [HttpPost("actualizar-costo-ppp")]
+        public async Task<IActionResult> ActualizarCostoPPP()
+        {
+            // Obtener todos los productos
+            try
+            {
+                await _productoRepo.ActualizarCostoPPPAsync();
+                return Ok("Costo PPP actualizado correctamente!!");
+            }
+            catch(InvalidOperationException ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
     }
 }
