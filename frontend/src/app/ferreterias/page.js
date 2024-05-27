@@ -18,7 +18,7 @@ const Ferreterias = () => {
         <div className='mt-8 flex items-center justify-end space-x-2'>
           <Button variant="primary" color='blue' onClick={() => router.push('/ferreterias/nuevo')}>Nueva Ferreteria</Button>
         </div>
-        <div><DataTable/></div>
+        <div></div>
       </div>
     </div>
 

@@ -2,10 +2,10 @@
 import React, { useEffect, useState } from 'react';
 import { Button, NumberInput, TextInput, Select, SelectItem } from '@tremor/react';
 import { useRouter } from 'next/navigation';
-import ProveedoresConfig from '../proveedores/ProveedoresConfig';
-import MarcasConfig from '../marcas/MarcasConfig';
-import DepositosConfig from '../depositos/DepositosConfig';
-import ProductosConfig from './ProductosConfig';
+import ProveedoresConfig from '../../proveedores/ProveedoresConfig';
+import MarcasConfig from '../../marcas/MarcasConfig';
+import DepositosConfig from '../../depositos/DepositosConfig';
+import ProductosConfig from '../ProductosConfig';
 
 export default function FormularioProductos() {
   // Definimos el estado para cada campo del formulario
@@ -410,7 +410,7 @@ export default function FormularioProductos() {
 
 
       <Button variant="primary" type="submit" color='blue'>Guardar</Button>
-      <Button variant="secondary" color='blue' onClick={() => {
+      <Button variant="secondary" type="button" color='blue' onClick={() => {
         // Lógica para descartar
         console.log("Formulario descartado");
         // Reiniciar los valores del formulario

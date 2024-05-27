@@ -1,11 +1,13 @@
 "use client";
 import React, { useState } from 'react';
 import { Button, NumberInput, TextInput } from '@tremor/react';
-import { useNavigate } from 'react-router-dom';
-import FerreteriasConfig from './FerreteriasConfig';
+import FerreteriasConfig from '../FerreteriasConfig';
 
+import { useRouter } from 'next/navigation';
 
 export default function FormularioFerreteria() {
+
+    const router = useRouter();
 
     const [str_nombre, setStr_nombre] = useState('');
     const [str_ruc, setStr_ruc] = useState('');
@@ -109,13 +111,14 @@ export default function FormularioFerreteria() {
 
             </div>
             <Button variant="primary" type="submit">Guardar</Button>
-            <Button variant="secondary" onClick={() => {
+            <Button variant="secondary" type="button" onClick={() => {
                 // Lógica para descartar
                 console.log("Formulario descartado");
                 // Reiniciar los valores del formulario
                 setStr_nombre('');
                 setStr_ruc('');
                 setStr_telefono('');
+                router.push('/ferreterias');
             }}>Descartar</Button>    
         </form >
     )

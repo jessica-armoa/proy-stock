@@ -7,7 +7,6 @@ import { useRouter } from 'next/navigation'
 
 import dynamic from 'next/dynamic';// Dynamic imports
 const Sidebar = dynamic(() => import("@/components/sidebar"), { ssr: false });
-const DataTable = dynamic(() => import("@/components/table"), { ssr: false });
 
 const Proveedores = () => {
     const router = useRouter();
@@ -21,7 +20,7 @@ const Proveedores = () => {
                     <div className='mt-8 flex items-center justify-end space-x-2'>
                         <Button variant="primary" color='blue' onClick={() => router.push('/proveedores/nuevo')}>Nuevo Proveedor</Button>
                     </div>
-                    <div><DataTable /></div>
+                    <div></div>
                 </div>
             </div>
 
