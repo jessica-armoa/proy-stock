@@ -24,7 +24,7 @@ const Marcas = () => {
                             Nueva Marca
                         </Button>
                     </div>
-                    <div><DataTable /></div>
+                    <div></div>
                 </div>
             </div>
 
