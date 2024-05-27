@@ -1,10 +1,11 @@
 'use client'
 import React from 'react'
-import Sidebar from '@/components/sidebar';
-import DataTable from "@/components/table";
 import { Button } from '@tremor/react';
 import { useRouter } from 'next/navigation'
 
+import dynamic from 'next/dynamic';// Dynamic imports
+const Sidebar = dynamic(() => import("@/components/sidebar"), { ssr: false });
+//const DataTable = dynamic(() => import("@/components/table"), { ssr: false });
 
 const Marcas = () => {
     const router = useRouter();

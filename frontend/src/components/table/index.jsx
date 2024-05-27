@@ -31,12 +31,14 @@ import {
   TextInput,
 } from "@tremor/react";
 
-import { Link } from "react-router-dom";
+//import { Link } from "next/link";
+import { useRouter } from 'next/navigation'
 import Filter from "../FilterFunction";
 //import { SelectData, SelectHero } from "../selectData";
 
 
 function DataTable({ columns, data, pageurl }) {
+  const router = useRouter();
   const [sorting, setSorting] = useState([]);
   const [filtering, setFiltering] = useState("");
   const [columnFilters, setColumnFilters] = React.useState([]);
@@ -146,9 +148,9 @@ function DataTable({ columns, data, pageurl }) {
             <TableRow key={row.id} {...row.getRowProps}>
               {row.getVisibleCells().map((cell) => (
                 <TableCell className="p-2 text-wrap" key={cell.id}>
-                  <Link to={`${pageurl}${row.original.id}`}>
+                  <div className="clickable" onClick={() => router.push(`${pageurl}${row.original.id}`)}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </Link>
+                  </div>
                 </TableCell>
               ))}
             </TableRow>

@@ -2,15 +2,14 @@
 "use client";
 
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import AuthController from '../../libs/UsuariosController';
 
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const navigate = useNavigate();
-
+  const router = useRouter();
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -25,7 +24,8 @@ const Login = () => {
       console.log(response.data);
       localStorage.setItem("Token", response.data.token);
       localStorage.setItem("isAuthenticated", true);
-      navigate('/productos');
+      //navigate('/productos');
+      router.push("/productos");
     } catch (err) {
       if (err.response) {
         setError(err.response.data);

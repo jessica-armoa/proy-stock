@@ -2,10 +2,10 @@
 
 import React from "react";
 import SidebarItem from "./items";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from 'next/navigation';
 
 const Sidebar = () => {
-  const navigate = useNavigate();
+  const router = useRouter();
   const menuItems = [
     { name: "Dashboard", path: "/", icon: "space_dashboard", subItems: [] },
 
@@ -38,7 +38,7 @@ const Sidebar = () => {
 
   const handleLogout = () => {
     localStorage.clear();
-    navigate("/login");
+    router.push("/login");
   };
 
   return (
