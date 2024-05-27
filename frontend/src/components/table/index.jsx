@@ -33,7 +33,7 @@ import {
 
 import { Link } from "react-router-dom";
 import Filter from "../FilterFunction";
-import { SelectData, SelectHero } from "../selectData";
+//import { SelectData, SelectHero } from "../selectData";
 
 
 function DataTable({ columns, data, pageurl }) {
@@ -76,7 +76,6 @@ function DataTable({ columns, data, pageurl }) {
   return (
     <div>
       <div className="flex justify-end mt-5">
-      <SelectData></SelectData>
       <Button onClick={clearAllFilters} variant="light" color="blue" className="mx-3">Limpiar Filtros</Button>
       <ExportPDF data={filteredData} whatToExport={columns} title={"Detalle de Stock"} fileName="reporte_stock_pdf"></ExportPDF>
       <ExportCSV data={filteredData} whatToExport={columns} fileName="reporte_stock_pdf"></ExportCSV>
