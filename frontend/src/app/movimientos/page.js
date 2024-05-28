@@ -11,7 +11,7 @@ const DataTable = dynamic(() => import("@/components/table"), { ssr: false });
 const Movimientos = () => {
   const router = useRouter();
   const movimientos = [];
-  const columns = []; 
+  const columns = [];
   return (
     <div className="flex h-screen w-full bg-ui-background p-2 text-ui-text">
       <Sidebar />
