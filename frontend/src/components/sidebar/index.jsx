@@ -1,11 +1,20 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import SidebarItem from "./items";
 import { useRouter } from 'next/navigation';
 
 const Sidebar = () => {
   const router = useRouter();
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const userData = localStorage.getItem("user");
+    if (userData) {
+      setUser(JSON.parse(userData));
+    }
+  }, []);
+
   const menuItems = [
     { name: "Dashboard", path: "/", icon: "space_dashboard", subItems: [] },
 
@@ -52,6 +61,18 @@ const Sidebar = () => {
         })}
       </div>
       <div className="mt-auto">
+        {user && (
+          <div className="mb-3 p-3 rounded-lg bg-gray-100">
+            <div className="font-bold">{user.userName}</div>
+            <div className="text-sm text-gray-600">
+              {user.role === 'Admin' ? (
+                user.role
+              ) : (
+                `${user.role} ${user.deposito}`
+              )}
+            </div>
+          </div>
+        )}
         <button
           className="flex items-center p-3 m-1 rounded-lg hover:bg-blue-100 cursor-pointer hover:text-ui-active justify-between"
           onClick={handleLogout}
