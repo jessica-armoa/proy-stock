@@ -15,6 +15,6 @@ namespace api.Interfaces
         Task<Deposito?> UpdateAsync(int id, UpdateDepositoRequestDto depositoDto);
         Task<Deposito?> DeleteAsync(int id);
         Task<bool> DepositoExists(int id);
-        Task<Producto> GetProductoEnDepositoAsync(int depositoId, int productoId);
+        Task<Producto?> GetProductoEnDepositoAsync(int? depositoId, string producto_nombre);
     }
 }

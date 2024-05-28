@@ -71,10 +71,9 @@ namespace api.Repository
             await _context.SaveChangesAsync();
             return depositoExistente;
         }
-        public async Task<Producto> GetProductoEnDepositoAsync(int depositoId, int productoId)
+        public async Task<Producto> GetProductoEnDepositoAsync(int? depositoId, string producto_nombre)
         {
-            return await _context.productos
-                .FirstOrDefaultAsync(p => p.DepositoId == depositoId && p.Id == productoId);
+            return await _context.productos.FirstOrDefaultAsync(p => p.DepositoId == depositoId && p.Str_nombre == producto_nombre);
         }
     }
 }
