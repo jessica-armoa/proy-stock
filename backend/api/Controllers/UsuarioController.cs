@@ -35,11 +35,15 @@ namespace api.Controllers
 
       if(!result.Succeeded) return Unauthorized("Usuario y/o contraseña incorrectos");
 
+      var roles = await _userManager.GetRolesAsync(user);
+      var role = roles.FirstOrDefault();
+
       return Ok(
         new NuevoUsuarioDto{
           UserName = user.UserName,
           Email = user.Email,
-          Token = _tokenService.CreateToken(user)
+          Token = _tokenService.CreateToken(user),
+          Role = role
         }
       );
     }
@@ -61,14 +65,18 @@ namespace api.Controllers
 
         if (result.Succeeded)
         {
-          var roleResult = await _userManager.AddToRoleAsync(usuario, "User");
+          var roleResult = await _userManager.AddToRoleAsync(usuario, "Admin");
           if (roleResult.Succeeded)
           {
+            var roles = await _userManager.GetRolesAsync(usuario);
+            var role = roles.FirstOrDefault();
+
             return Ok(
               new NuevoUsuarioDto{
                 UserName = usuario.UserName,
                 Email = usuario.Email,
-                Token = _tokenService.CreateToken(usuario)
+                Token = _tokenService.CreateToken(usuario),
+                Role = role
               }
             );
           }
