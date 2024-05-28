@@ -16,11 +16,11 @@ class ProductsController {
   }
 
   updateProduct(id) {
-    return axios.put(`${api}/${id}`);
+    return axios.put(`${api}${id}`);
   }
 
   deleteProduct(id) {
-    return axios.delete(`${api}/${id}`);
+    return axios.delete(`${api}${id}`);
   }
 }
 
