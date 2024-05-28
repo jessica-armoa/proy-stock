@@ -2,8 +2,8 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Card, Dialog, DialogPanel, NumberInput, TextInput } from '@tremor/react';
 import { RiArrowDownSLine, RiCloseLine } from '@remixicon/react';
-import DepositosConfig from './DepositosConfig';
-import FerreteriasConfig from '../ferreterias/FerreteriasConfig';
+import DepositosConfig from '../DepositosConfig';
+import FerreteriasConfig from '../../ferreterias/FerreteriasConfig';
 
 export default function FormularioDepositos() {
 
