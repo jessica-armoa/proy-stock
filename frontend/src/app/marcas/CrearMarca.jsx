@@ -1,6 +1,8 @@
+"use client";
 import Sidebar from "@/components/sidebar";
 import FormularioMarcas from "./FormularioMarcas";
 import React, { useState } from 'react';
+import DataTable from "@/components/table";
 
 
 export default function CrearMarca() {

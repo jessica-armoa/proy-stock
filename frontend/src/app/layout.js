@@ -20,6 +20,7 @@ import Proveedores from './proveedores/page';
 import CrearProveedor from './proveedores/CrearProveedor';
 import CrearFerreteria from './ferreterias/CrearFerreteria';
 import Ferreterias from './ferreterias/page';
+import CrearMovimiento from './movimientos/CrearMovimiento';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -39,6 +40,7 @@ export default function RootLayout({ children }) {
           <Route path="/marcas/nuevo" element={< CrearMarca />} />
 
           <Route path="/movimientos" element={< Movimientos />} />
+          <Route path='/movimientos/nuevo' element={<CrearMovimiento />} />
 
           <Route path="/productos/detalle/:id" element={<Detalle />} />
           <Route path="/productos" element={<Productos />} />

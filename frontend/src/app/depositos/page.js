@@ -1,6 +1,8 @@
-import React from 'react'
+"use client"
+import React from 'react';
 import Sidebar from '@/components/sidebar';
 import { useNavigate } from 'react-router-dom';
+import Button from '@tremor/react';
 
 const Depositos = () => {
   
