@@ -1,7 +1,6 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import { Button, NumberInput, TextInput, Select, SelectItem, SearchSelect, SearchSelectItem, Divider } from '@tremor/react';
-import { useNavigate } from 'react-router-dom';
 import ProveedoresConfig from '../proveedores/ProveedoresConfig';
 import MarcasConfig from '../marcas/MarcasConfig';
 import DepositosConfig from '../depositos/DepositosConfig';

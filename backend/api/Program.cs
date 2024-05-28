@@ -54,7 +54,7 @@ builder.Services.AddControllers().AddNewtonsoftJson(options => {
 });
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>{
-    string connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");//"Data Source=stockdb.clakio4kgb5y.us-east-2.rds.amazonaws.com;Initial Catalog=stockdb;User ID=admin;Password=adminstockdb;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+    string connectionString = "Data Source=stockdb.clakio4kgb5y.us-east-2.rds.amazonaws.com;Initial Catalog=stockdb;User ID=admin;Password=adminstockdb;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";//Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
     options.UseSqlServer(connectionString);
 });
 

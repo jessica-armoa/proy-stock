@@ -211,6 +211,9 @@ namespace api.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Str_nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Str_direccion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Str_telefono = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Str_encargado = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Str_telefonoEncargado = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FerreteriaId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -333,6 +336,7 @@ namespace api.Migrations
                     MarcaId = table.Column<int>(type: "int", nullable: true),
                     Int_cantidad_actual = table.Column<int>(type: "int", nullable: false),
                     Int_cantidad_minima = table.Column<int>(type: "int", nullable: false),
+                    Dec_costo = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Dec_costo_PPP = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Int_iva = table.Column<int>(type: "int", nullable: false),
                     Dec_precio_mayorista = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
@@ -388,9 +392,9 @@ namespace api.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "1377c60e-128a-4fb8-8bff-fb31ee5a78ff", null, "Admin", "ADMIN" },
-                    { "4a7fea9f-19eb-4c99-bed1-aea91ab8a109", null, "Encargado", "ENCARGADO" },
-                    { "a588a598-a634-45bf-8e89-34bec0d7696d", null, "User", "USER" }
+                    { "6801e97d-094d-44f9-85e0-3cfe8ccb0363", null, "Encargado", "ENCARGADO" },
+                    { "bfec5579-4339-46e7-9116-ec0f909414c4", null, "User", "USER" },
+                    { "f82665cd-2f5e-4bb9-891d-07f10b33ac7d", null, "Admin", "ADMIN" }
                 });
 
             migrationBuilder.CreateIndex(
