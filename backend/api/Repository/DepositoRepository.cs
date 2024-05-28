@@ -27,7 +27,7 @@ namespace api.Repository
         public async Task<Deposito?> DeleteAsync(int id)
         {
             var depositoModel = await _context.depositos.FirstOrDefaultAsync(d => d.Id == id);
-            if(depositoModel == null)
+            if (depositoModel == null)
             {
                 return null;
             }
@@ -63,13 +63,17 @@ namespace api.Repository
         public async Task<Deposito?> UpdateAsync(int id, UpdateDepositoRequestDto depositoDto)
         {
             var depositoExistente = await _context.depositos.FirstOrDefaultAsync(d => d.Id == id);
-            if(depositoExistente == null) return null;
+            if (depositoExistente == null) return null;
 
             depositoExistente.Str_nombre = depositoDto.Str_nombre;
             depositoExistente.Str_direccion = depositoDto.Str_direccion;
 
             await _context.SaveChangesAsync();
             return depositoExistente;
+        }
+        public async Task<Producto> GetProductoEnDepositoAsync(int? depositoId, string producto_nombre)
+        {
+            return await _context.productos.FirstOrDefaultAsync(p => p.DepositoId == depositoId && p.Str_nombre == producto_nombre);
         }
     }
 }

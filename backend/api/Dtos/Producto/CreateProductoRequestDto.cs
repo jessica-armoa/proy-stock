@@ -21,6 +21,7 @@ namespace api.Dtos.Producto
         [Required]
         [Range(1, 100)]
         public int Int_cantidad_minima { get; set; }
+        public decimal Dec_costo { get; set; }
 
         public decimal Dec_costo_PPP { get; set; }
 

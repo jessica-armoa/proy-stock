@@ -35,12 +35,18 @@ namespace api.Repository
 
         public async Task<List<Marca>> GetAllAsync()
         {
-            return await _context.marcas.Include(m => m.Productos).ToListAsync();
+            return await _context.marcas
+            .Include(m => m.Productos)
+            .Include(m => m.Proveedor)
+            .ToListAsync();
         }
 
         public async Task<Marca?> GetByIdAsync(int id)
         {
-            return await _context.marcas.Include(m => m.Productos).FirstOrDefaultAsync(m => m.Id == id);
+            return await _context.marcas
+            .Include(m => m.Productos)
+            .Include(m => m.Proveedor)
+            .FirstOrDefaultAsync(m => m.Id == id);
         }
 
         public async Task<bool> MarcaExists(int id)
