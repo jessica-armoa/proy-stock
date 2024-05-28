@@ -74,7 +74,8 @@ namespace api.Repository
             productoExistente.Str_descripcion = productoDto.Str_descripcion;
             productoExistente.Int_cantidad_actual = productoDto.Int_cantidad_actual;
             productoExistente.Int_cantidad_minima = productoDto.Int_cantidad_minima;
-            productoExistente.Dec_costo_PPP = productoDto.Dec_costo;
+            productoExistente.Dec_costo = productoDto.Dec_costo;
+            productoExistente.Dec_costo_PPP = productoDto.Dec_costo_PPP;
             productoExistente.Int_iva = productoDto.Int_iva;
             productoExistente.Dec_precio_mayorista = productoDto.Dec_precio_mayorista;
             productoExistente.Dec_precio_minorista = productoDto.Dec_precio_minorista;
@@ -87,23 +88,23 @@ namespace api.Repository
         {
             // Obtener todos los productos
             var productos = await _context.productos.ToListAsync();
+            var depositos = await _context.depositos.Include(d => d.Productos).Include(d => d.Movimientos).ToListAsync();
 
             if (!productos.Any())
             {
                 throw new InvalidOperationException("No se encontraron productos.");
             }
 
-            // Calcular el costo PPP
-            var costoTotal = productos.Sum(p => p.Dec_costo);
-            var costoPPP = costoTotal / productos.Count;
-
-            // Actualizar el atributo costo_PPP de cada producto
-            foreach (var producto in productos)
+            foreach(var deposito in depositos)
             {
-                producto.Dec_costo_PPP = costoPPP;
+                var costoTotal = deposito.Productos.Sum(p => p.Dec_costo);
+                var costoPPP = costoTotal / deposito.Productos.Count;
+                foreach(var producto in deposito.Productos)
+                {
+                    producto.Dec_costo_PPP = costoPPP;
+                }
             }
 
-            // Guardar los cambios en la base de datos
             await _context.SaveChangesAsync();
         }
     }
