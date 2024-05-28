@@ -21,5 +21,24 @@ namespace api.Mapper
                 DetallesDeMovimientos = movimientoModel.DetallesDeMovimientos.Select(m => m.ToDetalleDeMovimientoDto()).ToList()
             };
         }
+
+        public static Movimiento ToMovimientoFromCreate(this CreateMovimientoRequestDto movimientoDto, int tipodemovimientoId, int depositoOrigen, int depositoDestino)
+        {
+            return new Movimiento
+            {
+                Date_fecha = movimientoDto.Date_fecha,
+                TipoDeMovimientoId = tipodemovimientoId,
+                DepositoOrigenId = depositoOrigen,
+                DepositoDestinoId = depositoDestino
+            };
+        }
+
+        public static Movimiento ToMovimientoFromUpdate(this UpdateMovimientoRequestDto movimientoDto)
+        {
+            return new Movimiento
+            {
+                Date_fecha = movimientoDto.Date_fecha
+            };
+        }
     }
 }

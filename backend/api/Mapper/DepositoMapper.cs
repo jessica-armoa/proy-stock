@@ -12,6 +12,9 @@ namespace api.Mapper
                 Id = depositoModel.Id,
                 Str_nombre = depositoModel.Str_nombre,
                 Str_direccion = depositoModel.Str_direccion,
+                Str_telefono = depositoModel.Str_telefono,
+                Str_encargado = depositoModel.Str_encargado,
+                Str_telefonoEncargado = depositoModel.Str_telefonoEncargado,
                 FerreteriaId = depositoModel.FerreteriaId,
                 Str_ferreteriaNombre = depositoModel.Ferreteria?.Str_nombre,
                 Str_ferreteriaTelefono = depositoModel.Ferreteria?.Str_telefono,
@@ -26,6 +29,9 @@ namespace api.Mapper
             {
                 Str_nombre = depositoDto.Str_nombre,
                 Str_direccion = depositoDto.Str_direccion,
+                Str_telefono = depositoDto.Str_telefono,
+                Str_encargado = depositoDto.Str_encargado,
+                Str_telefonoEncargado = depositoDto.Str_telefonoEncargado,
                 FerreteriaId = ferreteriaId
             };
         }
@@ -36,6 +42,9 @@ namespace api.Mapper
             {
                 Str_nombre = depositoDto.Str_nombre,
                 Str_direccion = depositoDto.Str_direccion,
+                Str_telefono = depositoDto.Str_telefono,
+                Str_encargado = depositoDto.Str_encargado,
+                Str_telefonoEncargado = depositoDto.Str_telefonoEncargado
             };
         }
     }

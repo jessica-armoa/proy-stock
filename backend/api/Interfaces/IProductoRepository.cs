@@ -16,5 +16,6 @@ namespace api.Interfaces
         Task<Producto?> UpdateAsync(int id, Producto productoDto);
         Task<Producto?> DeleteAsync(int id); 
         Task<bool> ProductoExists(int id);
+        Task ActualizarCostoPPPAsync();
     }
 }
