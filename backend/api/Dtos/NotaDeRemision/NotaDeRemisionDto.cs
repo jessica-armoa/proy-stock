@@ -4,15 +4,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using api.Dtos.DetalleDeMovimiento;
 
-namespace api.Dtos.Movimiento
+namespace api.Dtos.NotaDeRemision
 {
-    public class MovimientoDto
+    public class NotaDeRemisionDto
     {
         public int Id { get; set; }
         public DateTime Date_fecha { get; set; } = DateTime.Now;
-        //public int Int_cantidad { get; set; }
         public int? TipoDeMovimientoId { get; set; }
-        public int? DepositoOrigenId { get; set; }
+        public int? DepositoOrigenId{ get; set; }
         public int? DepositoDestinoId { get; set; }
         public List<DetalleDeMovimientoDto> DetallesDeMovimientos { get; set; }
     }

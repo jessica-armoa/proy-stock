@@ -24,6 +24,7 @@ const Login = () => {
       console.log(response.data);
       localStorage.setItem("Token", response.data.token);
       localStorage.setItem("isAuthenticated", true);
+      localStorage.setItem("user", JSON.stringify(response.data));
       //navigate('/productos');
       router.push("/productos");
     } catch (err) {

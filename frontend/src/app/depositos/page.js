@@ -40,7 +40,7 @@ const Depositos = () => {
     },
     {
       header: "Acciones",
-      search: false      
+      search: false
     },
   ];
 
@@ -57,7 +57,7 @@ const Depositos = () => {
     <div className="flex h-screen w-full bg-ui-background p-2 text-ui-text">
         <Sidebar/>
           <div className="flex flex-col w-full h-full p-5 rounded-lg bg-ui-cardbg">
-          <h1 className='mb-4 text-l font-semibold normal-case tracking-tight'>Depósitos</h1> 
+          <h1 className='mb-4 text-l font-semibold normal-case tracking-tight'>Depósitos</h1>
           <div className="flex items-center justify-end space-x-2">
             <Button
               variant="primary"
@@ -76,7 +76,7 @@ const Depositos = () => {
           </div>
         </div>
       </div>
-    
+
   )
 }
 

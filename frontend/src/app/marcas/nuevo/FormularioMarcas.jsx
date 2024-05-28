@@ -1,10 +1,10 @@
 "use client";
 import React, { useEffect, useState } from 'react';
-import { Button, NumberInput, TextInput } from '@tremor/react';
-import MarcasConfig from '../MarcasConfig';
-import ProveedoresConfig from '../../proveedores/ProveedoresConfig';
-
 import { useRouter } from 'next/navigation';
+import { Button, NumberInput, TextInput, SearchSelect, SearchSelectItem, Divider } from '@tremor/react';
+import MarcasConfig from './MarcasConfig';
+import { useNavigate } from 'react-router-dom';
+import ProveedoresConfig from '../proveedores/ProveedoresConfig';
 
 export default function FormularioMarcas() {
 
@@ -50,9 +50,10 @@ export default function FormularioMarcas() {
     }
 
     return (
-        <form onSubmit={handleSubmit}>
-            <div className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
-                <div className="col-span-full sm:col-span-3">
+        <form onSubmit={handleSubmit} className='mt-8'>
+            <div className="grid grid-cols-3 gap-x-4 gap-y-6 sm:grid-cols-6">
+
+                <div className="col-span-full sm:row-span-3">
                     <label
                         htmlFor="str_nombre"
                         className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
@@ -65,7 +66,7 @@ export default function FormularioMarcas() {
                         id="str_nombre"
                         name="str_nombre"
                         autoComplete="str_nombre"
-                        placeholder="Nombre de Proveedor"
+                        placeholder="Nombre de la Nueva Marca"
                         className="mt-2"
                         value={str_nombre}
                         onChange={(e) => setStr_nombre(e.target.value)}
@@ -73,7 +74,7 @@ export default function FormularioMarcas() {
                     />
                 </div>
 
-                <div className="col-span-full sm:col-span-3">
+                <div className="sm:row-span-1">
                     <label
                         htmlFor="proveedorId"
                         className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
@@ -81,24 +82,25 @@ export default function FormularioMarcas() {
                         Proveedor
                         <span className="text-red-500">*</span>
                     </label>
-                    <select id="proveedorId" value={proveedorId} onChange={(e) => setProveedorId(parseInt(e.target.value))}>
-                        <option value={0}>Seleccionar proveedor</option>
-                        {proveedores.map(proveedor => (
-                            <option key={proveedor.id} value={proveedor.id}>{proveedor.str_nombre}</option>
-                        ))}
-                    </select>
 
-                    
+                    <SearchSelect id='proveedorId' className='mt-2' placeholder='Proveedor' value={proveedorId} onValueChange={(value) => setProveedorId(parseInt(value))}>
+                        {proveedores.map(proveedor => (
+                            <SearchSelectItem key={proveedor.id} value={proveedor.id}>{proveedor.str_nombre}</SearchSelectItem>
+                        ))}
+                    </SearchSelect>
                 </div>
 
                 <Button variant="primary" type="submit">Guardar</Button>
                 <Button variant="secondary" type="button" onClick={() => {
+                <Button className='mt-8' variant="secondary" onClick={() => {
                     // Lógica para descartar
                     console.log("Formulario descartado");
                     // Reiniciar los valores del formulario
                     setStr_nombre('');
                     router.push('/marcas');
                 }}>Descartar</Button>
+                <Button className='mt-8' variant="primary" type="submit">Guardar</Button>
+
             </div>
         </form>
     )

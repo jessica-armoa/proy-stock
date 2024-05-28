@@ -54,7 +54,7 @@ builder.Services.AddControllers().AddNewtonsoftJson(options => {
 });
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>{
-    string connectionString = "Data Source=stockdb.clakio4kgb5y.us-east-2.rds.amazonaws.com;Initial Catalog=stockdb;User ID=admin;Password=adminstockdb;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+    string connectionString = "Data Source=stockdb.clakio4kgb5y.us-east-2.rds.amazonaws.com;Initial Catalog=stockdb;User ID=admin;Password=adminstockdb;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";//Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
     options.UseSqlServer(connectionString);
 });
 
@@ -119,6 +119,8 @@ builder.Services.AddScoped<IDepositoRepository, DepositoRepository>();
 builder.Services.AddScoped<IProveedorRepository, ProveedorRepository>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IMarcaRepository, MarcaRepository>();
+builder.Services.AddScoped<IMovimientoRepository, MovimientoRepository>();
+builder.Services.AddScoped<IDetalleDeMovimientosRepository, DetalleDeMovimientosRepository>();
 
 
 var app = builder.Build();
