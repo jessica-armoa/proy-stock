@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const api = process.env.NEXT_PUBLIC_API_URL+"ferreteria";
+const api = "https://proy-stock.azurewebsites.net/api/"+"ferreteria";
 
 class FerreteriasConfig{
     getFerreteria(){

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const api = process.env.NEXT_PUBLIC_API_URL+"marca";
+const api = "https://proy-stock.azurewebsites.net/api/"+"marca";
 
 class MarcasConfig{
     getMarca(){
