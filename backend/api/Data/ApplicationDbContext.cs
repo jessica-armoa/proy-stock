@@ -28,6 +28,11 @@ namespace api.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<Proveedor>()
+                .HasMany(p => p.Categorias)
+                .WithOne(c => c.Proveedor)
+                .HasForeignKey(c => c.ProveedorId);
+
             modelBuilder.Entity<Movimiento>()
                 .HasOne(m => m.DepositoOrigen)
                 .WithMany()
@@ -51,6 +56,11 @@ namespace api.Data
                 {
                     Name = "User",
                     NormalizedName = "USER"
+                },
+                new IdentityRole
+                {
+                    Name = "Encargado",
+                    NormalizedName = "ENCARGADO"
                 },
             };
 

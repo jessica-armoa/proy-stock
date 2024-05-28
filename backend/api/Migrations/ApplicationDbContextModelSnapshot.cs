@@ -51,15 +51,21 @@ namespace api.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "5c9eb653-8b03-4658-9514-3874b6f0800a",
+                            Id = "1377c60e-128a-4fb8-8bff-fb31ee5a78ff",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "d5b875db-fa30-4114-8a70-6487bd0bd584",
+                            Id = "a588a598-a634-45bf-8e89-34bec0d7696d",
                             Name = "User",
                             NormalizedName = "USER"
+                        },
+                        new
+                        {
+                            Id = "4a7fea9f-19eb-4c99-bed1-aea91ab8a109",
+                            Name = "Encargado",
+                            NormalizedName = "ENCARGADO"
                         });
                 });
 
@@ -167,6 +173,28 @@ namespace api.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("api.Models.Categoria", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("ProveedorId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Str_descripcion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProveedorId");
+
+                    b.ToTable("categorias");
                 });
 
             modelBuilder.Entity("api.Models.Deposito", b =>
@@ -429,7 +457,7 @@ namespace api.Migrations
 
                     b.HasIndex("MotivoId");
 
-                    b.ToTable("TiposDeMovimientos");
+                    b.ToTable("tipos_de_movimientos");
                 });
 
             modelBuilder.Entity("api.Models.Usuarios", b =>
@@ -548,6 +576,15 @@ namespace api.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("api.Models.Categoria", b =>
+                {
+                    b.HasOne("api.Models.Proveedor", "Proveedor")
+                        .WithMany("Categorias")
+                        .HasForeignKey("ProveedorId");
+
+                    b.Navigation("Proveedor");
+                });
+
             modelBuilder.Entity("api.Models.Deposito", b =>
                 {
                     b.HasOne("api.Models.Ferreteria", "Ferreteria")
@@ -575,7 +612,7 @@ namespace api.Migrations
             modelBuilder.Entity("api.Models.Marca", b =>
                 {
                     b.HasOne("api.Models.Proveedor", "Proveedor")
-                        .WithMany()
+                        .WithMany("Marcas")
                         .HasForeignKey("ProveedorId");
 
                     b.Navigation("Proveedor");
@@ -673,6 +710,8 @@ namespace api.Migrations
             modelBuilder.Entity("api.Models.Proveedor", b =>
                 {
                     b.Navigation("Categorias");
+
+                    b.Navigation("Marcas");
 
                     b.Navigation("Productos");
                 });
