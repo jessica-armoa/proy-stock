@@ -61,7 +61,7 @@ const Productos = () => {
   };
 
   const handleEdit = (product, event) => {
-    event.stopPropagation(); // Detener la propagación del evento
+    event.stopPropagation(); 
     setCurrentProduct(product);
     setModalIsOpen(true);
   };
