@@ -83,7 +83,10 @@ export default function FormularioDepositos() {
                     <button
                         type="button"
                         className="rounded-tremor-small p-2 text-tremor-content-subtle hover:bg-tremor-background-subtle hover:text-tremor-content dark:text-dark-tremor-content-subtle hover:dark:bg-dark-tremor-background-subtle hover:dark:text-tremor-content"
-                        onClick={() => setIsOpen(false)}
+                        onClick={() => {
+                            setIsOpen(false);
+                            navigate.push('/depositos');
+                        }}
                         aria-label="Close"
                     >
                         <RiCloseLine
