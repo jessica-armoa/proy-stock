@@ -66,6 +66,7 @@ const Depositos = () => {
 
   const handleSave = () => {
     DepositosController.updateDeposito(currentDeposito.id, currentDeposito)
+    //console.log('current', currentDeposito)
       .then(() => {
         setDepositos(depositos.map(deposito => (deposito.id === currentDeposito.id ? currentDeposito : deposito)));
         setModalIsOpen(false);
@@ -76,6 +77,7 @@ const Depositos = () => {
         );
       })
       .catch((error) => {
+        //console.log(depositos)
         console.error("Error updating deposito:", error);
         Swal.fire(
           'Error!',
