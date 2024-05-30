@@ -19,5 +19,23 @@ namespace api.Mapper
                 ProductoId = detalleDeMovimientoModel.ProductoId
             };
         }
+
+        public static DetalleDeMovimiento ToDetalleFromCreate(this CreateDetalleRequestDto detalleDto, int movimientoId, int productoId)
+        {
+            return new DetalleDeMovimiento
+            {
+                Int_cantidad = detalleDto.Int_cantidad,
+                MovimientoId = movimientoId,
+                ProductoId = productoId
+            };
+        }
+
+        public static DetalleDeMovimiento ToDetalleFromUpdate(this UpdateDetalleRequestDto detalleDto)
+        {
+            return new DetalleDeMovimiento
+            {
+                Int_cantidad = detalleDto.Int_cantidad,
+            };
+        }
     }
 }
