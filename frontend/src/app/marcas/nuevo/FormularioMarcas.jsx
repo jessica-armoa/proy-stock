@@ -1,16 +1,18 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Button, NumberInput, TextInput, SearchSelect, SearchSelectItem, Divider } from '@tremor/react';
-import MarcasConfig from './MarcasConfig';
-import { useNavigate } from 'react-router-dom';
-import ProveedoresConfig from '../proveedores/ProveedoresConfig';
+import { Button, Dialog, DialogPanel, TextInput, SearchSelect, SearchSelectItem} from '@tremor/react';
+import { RiCloseLine } from '@remixicon/react';
+import MarcasConfig from '../MarcasConfig';
+import ProveedoresConfig from '../../proveedores/ProveedoresConfig';
 
 export default function FormularioMarcas() {
 
     const [str_nombre, setStr_nombre] = useState('');
     const [proveedorId, setProveedorId] = useState(0);
     const [proveedores, setProveedores] = useState([]);
+
+    const [isOpen, setIsOpen] = useState(true);
 
     const router = useRouter();
 
@@ -25,7 +27,6 @@ export default function FormularioMarcas() {
         }
         extraccionProveedores();
     }, []);
-    //const [str_proveedor, setStr_proveedor] = ProveedoresConfig.getProveedor()
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -44,64 +45,90 @@ export default function FormularioMarcas() {
             // También puedes reiniciar los valores de los campos del formulario
             setStr_nombre('');
             setProveedorId(0);
+            router.push('/marcas');
         } catch (error) {
             console.error('Error al enviar los datos del formulario: ', error);
         }
     }
 
     return (
-        <form onSubmit={handleSubmit} className='mt-8'>
-            <div className="grid grid-cols-3 gap-x-4 gap-y-6 sm:grid-cols-6">
-
-                <div className="col-span-full sm:row-span-3">
-                    <label
-                        htmlFor="str_nombre"
-                        className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+        <Dialog open={isOpen}
+            onClose={() => setIsOpen(false)}
+            static={true}
+            className="z-[100]">
+            <DialogPanel className="sm:max-w-md">
+                <div className="absolute right-0 top-0 pr-3 pt-3">
+                    <button
+                        type="button"
+                        className="rounded-tremor-small p-2 text-tremor-content-subtle hover:bg-tremor-background-subtle hover:text-tremor-content dark:text-dark-tremor-content-subtle hover:dark:bg-dark-tremor-background-subtle hover:dark:text-tremor-content"
+                        onClick={() => {
+                            setIsOpen(false);
+                            navigate.push('/marcas');
+                        }}
+                        aria-label="Close"
                     >
-                        Nombre de la Marca
-                        <span className="text-red-500">*</span>
-                    </label>
-                    <TextInput
-                        type="text"
-                        id="str_nombre"
-                        name="str_nombre"
-                        autoComplete="str_nombre"
-                        placeholder="Nombre de la Nueva Marca"
-                        className="mt-2"
-                        value={str_nombre}
-                        onChange={(e) => setStr_nombre(e.target.value)}
-                        required
-                    />
+                        <RiCloseLine
+                            className="h-5 w-5 shrink-0"
+                            aria-hidden={true}
+                        />
+                    </button>
                 </div>
+                <form onSubmit={handleSubmit}>
+                    <h4 className="font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong">
+                        Nueva Marca
+                    </h4>
+                    <div className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
 
-                <div className="sm:row-span-1">
-                    <label
-                        htmlFor="proveedorId"
-                        className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
-                    >
-                        Proveedor
-                        <span className="text-red-500">*</span>
-                    </label>
+                        <div className="col-span-full sm:col-span-3">
+                            <label
+                                htmlFor="str_nombre"
+                                className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                            >
+                                Nombre de la Marca
+                                <span className="text-red-500">*</span>
+                            </label>
+                            <TextInput
+                                type="text"
+                                id="str_nombre"
+                                name="str_nombre"
+                                autoComplete="str_nombre"
+                                placeholder="Nueva Marca"
+                                className="mt-2"
+                                value={str_nombre}
+                                onChange={(e) => setStr_nombre(e.target.value)}
+                                required
+                            />
+                        </div>
 
-                    <SearchSelect id='proveedorId' className='mt-2' placeholder='Proveedor' value={proveedorId} onValueChange={(value) => setProveedorId(parseInt(value))}>
-                        {proveedores.map(proveedor => (
-                            <SearchSelectItem key={proveedor.id} value={proveedor.id}>{proveedor.str_nombre}</SearchSelectItem>
-                        ))}
-                    </SearchSelect>
-                </div>
+                        <div className="col-span-full sm:col-span-3">
+                            <label
+                                htmlFor="proveedorId"
+                                className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                            >
+                                Proveedor
+                                <span className="text-red-500">*</span>
+                            </label>
 
-                <Button variant="primary" type="submit">Guardar</Button>
-                <Button variant="secondary" type="button" onClick={() => {
-                <Button className='mt-8' variant="secondary" onClick={() => {
-                    // Lógica para descartar
-                    console.log("Formulario descartado");
-                    // Reiniciar los valores del formulario
-                    setStr_nombre('');
-                    router.push('/marcas');
-                }}>Descartar</Button>
-                <Button className='mt-8' variant="primary" type="submit">Guardar</Button>
+                            <SearchSelect id='proveedorId' className='mt-2' placeholder='Proveedor' value={proveedorId} onValueChange={(value) => setProveedorId(parseInt(value))}>
+                                {proveedores.map(proveedor => (
+                                    <SearchSelectItem key={proveedor.id} value={proveedor.id}>{proveedor.str_nombre}</SearchSelectItem>
+                                ))}
+                            </SearchSelect>
+                        </div>
 
-            </div>
-        </form>
+                        <div className="col-span-full flex justify-center space-x-4">
+                            <Button className='mt-8' variant="secondary" onClick={() => {
+                                // Lógica para descartar
+                                console.log("Formulario descartado");
+                                // Reiniciar los valores del formulario
+                                setStr_nombre('');
+                                router.push('/marcas');
+                            }}>Descartar</Button>
+                            <Button className='mt-8' variant="primary" type="submit">Guardar</Button>
+                        </div>
+                    </div>
+                </form>
+            </DialogPanel>
+        </Dialog>
     )
 }

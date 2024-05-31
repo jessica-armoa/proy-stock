@@ -21,7 +21,7 @@ const Movimientos = () => {
           <Button
             variant="primary"
             color="blue"
-            onClick={() => router.push('/depositos/nuevo')}
+            onClick={() => router.push('/movimientos/nuevo')}
           >
             Nuevo Movimiento
           </Button>

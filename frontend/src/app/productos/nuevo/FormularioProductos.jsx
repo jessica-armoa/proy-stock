@@ -1,10 +1,11 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import { Button, NumberInput, TextInput, Select, SelectItem, SearchSelect, SearchSelectItem, Divider } from '@tremor/react';
-import ProveedoresConfig from '../proveedores/ProveedoresConfig';
-import MarcasConfig from '../marcas/MarcasConfig';
-import DepositosConfig from '../depositos/DepositosConfig';
-import ProductosConfig from './ProductosConfig';
+import ProveedoresConfig from '../../proveedores/ProveedoresConfig';
+import MarcasConfig from '../../marcas/MarcasConfig';
+import DepositosConfig from '../../depositos/DepositosConfig';
+import ProductosConfig from '../ProductosConfig';
+import { useRouter } from 'next/navigation';
 
 export default function FormularioProductos() {
   // Definimos el estado para cada campo del formulario
