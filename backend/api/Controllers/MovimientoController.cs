@@ -15,10 +15,12 @@ namespace api.Controllers
     {
         private readonly IMovimientoRepository _movimientoRepo;
         private readonly IDepositoRepository _depositoRepo;
-        public MovimientoController(IMovimientoRepository movimientoRepo, IDepositoRepository depositoRepo)
+        private readonly ITipoDeMovimientoRepository _tipoDeMovimientoRepo;
+        public MovimientoController(IMovimientoRepository movimientoRepo, IDepositoRepository depositoRepo, ITipoDeMovimientoRepository tipoDeMovimientoRepo)
         {
             _movimientoRepo = movimientoRepo;
             _depositoRepo = depositoRepo;
+            _tipoDeMovimientoRepo = tipoDeMovimientoRepo;
         }
 
         [HttpGet]
@@ -59,9 +61,20 @@ namespace api.Controllers
             }
 
             var movimientoModel = movimientoDto.ToMovimientoFromCreate(tipodemovimientoId, depositoOrigen, depositoDestino);
+            
+            var tipo_de_movimiento = await _tipoDeMovimientoRepo.GetByIdAsync(movimientoModel.TipoDeMovimientoId);
+            if (tipo_de_movimiento.Str_descripcion.ToLower() == "transferencia")
+            {
+                if(movimientoModel.DepositoOrigenId == movimientoModel.DepositoDestinoId)
+                {
+                    return BadRequest("No puedes hacer una transferencia en el mismo deposito");
+                } 
+            }
+            
             await _movimientoRepo.CreateAsync(movimientoModel);
             return CreatedAtAction(nameof(GetById), new{id = movimientoModel.Id}, movimientoModel.ToMovimientoDto());
         }
+
         [HttpPut]
         [Route("{id:int}")]
         public async Task<IActionResult> Update([FromRoute] int id, UpdateMovimientoRequestDto movimientoDto)

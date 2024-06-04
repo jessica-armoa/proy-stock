@@ -79,8 +79,6 @@ namespace api.Repository
             productoExistente.Int_iva = productoDto.Int_iva;
             productoExistente.Dec_precio_mayorista = productoDto.Dec_precio_mayorista;
             productoExistente.Dec_precio_minorista = productoDto.Dec_precio_minorista;
-
-            await _context.SaveChangesAsync();
             return productoExistente;
         }
 

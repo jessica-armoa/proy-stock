@@ -21,13 +21,15 @@ namespace api.Controllers
         private readonly IMovimientoRepository _movimientoRepo;
         private readonly IDepositoRepository _depositoRepo;
         private readonly ApplicationDbContext _context;
-        public DetalleDeMovimientosController(IDetalleDeMovimientosRepository detalleRepo, IProductoRepository productoRepo, IMovimientoRepository movimientoRepo, IDepositoRepository depositoRepo, ApplicationDbContext context)
+        private readonly ITipoDeMovimientoRepository _tipoDeMovimientoRepo;
+        public DetalleDeMovimientosController(IDetalleDeMovimientosRepository detalleRepo, IProductoRepository productoRepo, IMovimientoRepository movimientoRepo, IDepositoRepository depositoRepo, ApplicationDbContext context, ITipoDeMovimientoRepository tipoDeMovimientoRepo)
         {
             _detalleRepo = detalleRepo;
             _productoRepo = productoRepo;
             _movimientoRepo = movimientoRepo;
             _depositoRepo = depositoRepo;
             _context = context;
+            _tipoDeMovimientoRepo = tipoDeMovimientoRepo;
         }
 
         [HttpGet]
@@ -68,8 +70,8 @@ namespace api.Controllers
                 return BadRequest("El producto ingresado no existe!!");
             }
 
-           /* var movimiento = await _movimientoRepo.GetByIdAsync(movimientoId);
-            //var tipo_de_movimiento = await _tipoMovimientoRepo.GetByIdAsync(movimiento.TipoDeMovimientoId);
+            var movimiento = await _movimientoRepo.GetByIdAsync(movimientoId);
+            var tipo_de_movimiento = await _tipoDeMovimientoRepo.GetByIdAsync(movimiento.TipoDeMovimientoId);
             //var motivo = await _motivoRepo.GetByIdAsync(tipo_de_movimiento.MotivoId);
             var producto = await _productoRepo.GetByIdAsync(productoId);
             var productoEnOrigen = await _depositoRepo.GetProductoEnDepositoAsync(movimiento.DepositoOrigenId, producto.Str_nombre);
@@ -77,7 +79,7 @@ namespace api.Controllers
 
             ///////////////////////////////////
 
-            if (movimiento.TipoDeMovimiento.Str_descripcion.ToLower() == "ingreso")
+            if (tipo_de_movimiento.Str_descripcion.ToLower() == "ingreso")
             {
                 if (productoEnOrigen == null || !await _productoRepo.ProductoExistsName(producto.Str_nombre))
                 {
@@ -107,7 +109,7 @@ namespace api.Controllers
                 }
             }
 
-            /*if (movimiento.TipoDeMovimiento.Str_descripcion.ToLower() == "egreso")
+            if (movimiento.TipoDeMovimiento.Str_descripcion.ToLower() == "egreso")
             {
                 if (productoEnOrigen == null || productoEnOrigen.Int_cantidad_actual < detalleDto.Int_cantidad)
                 {
@@ -117,6 +119,10 @@ namespace api.Controllers
 
             if (movimiento.TipoDeMovimiento.Str_descripcion.ToLower() == "transferencia")
             {
+                if(movimiento.DepositoOrigenId == movimiento.DepositoDestinoId)
+                {
+                    return BadRequest("No puedes hacer una transferencia en el mismo deposito");
+                }     
                 if (productoEnOrigen == null || productoEnOrigen.Int_cantidad_actual < detalleDto.Int_cantidad)
                 {
                     return BadRequest("No hay suficiente cantidad del producto en el depósito origen!!");
@@ -150,7 +156,7 @@ namespace api.Controllers
                     productoEnDestino.Int_cantidad_actual += detalleDto.Int_cantidad;
                 }
             }
-            */
+
             var detalleModel = detalleDto.ToDetalleFromCreate(movimientoId, productoId);
             await _detalleRepo.CreateAsync(detalleModel);
             return CreatedAtAction(nameof(GetById), new { id = detalleModel.Id }, detalleModel.ToDetalleDeMovimientoDto());
