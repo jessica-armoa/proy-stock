@@ -68,64 +68,95 @@ namespace api.Controllers
                 return BadRequest("El producto ingresado no existe!!");
             }
 
-            var movimiento = await _movimientoRepo.GetByIdAsync(movimientoId);
+           /* var movimiento = await _movimientoRepo.GetByIdAsync(movimientoId);
+            //var tipo_de_movimiento = await _tipoMovimientoRepo.GetByIdAsync(movimiento.TipoDeMovimientoId);
+            //var motivo = await _motivoRepo.GetByIdAsync(tipo_de_movimiento.MotivoId);
             var producto = await _productoRepo.GetByIdAsync(productoId);
             var productoEnOrigen = await _depositoRepo.GetProductoEnDepositoAsync(movimiento.DepositoOrigenId, producto.Str_nombre);
             var productoEnDestino = await _depositoRepo.GetProductoEnDepositoAsync(movimiento.DepositoDestinoId, producto.Str_nombre);
 
+            ///////////////////////////////////
 
-            if (productoEnOrigen == null || productoEnOrigen.Int_cantidad_actual < detalleDto.Int_cantidad)
+            if (movimiento.TipoDeMovimiento.Str_descripcion.ToLower() == "ingreso")
             {
-                return BadRequest("No hay suficiente cantidad del producto en el depósito origen!!");
-            }
-
-            using (var transaction = await _context.Database.BeginTransactionAsync())
-            {
-                try
+                if (productoEnOrigen == null || !await _productoRepo.ProductoExistsName(producto.Str_nombre))
                 {
-                    // Realizar la transferencia
-                    productoEnOrigen.Int_cantidad_actual -= detalleDto.Int_cantidad;
-
-                    if (productoEnDestino == null || productoEnOrigen.Str_nombre != productoEnDestino.Str_nombre)
+                    // Si el producto no existe en el depósito destino, crearlo
+                    var nuevoProductoOrigenModel = new CreateProductoCantidadDto
                     {
-                        // Si el producto no existe en el depósito destino, crearlo
-                        var productoEnDestino2 = new CreateProductoRequestDto
-                        {
-                            Str_ruta_imagen = productoEnOrigen.Str_ruta_imagen,
-                            Str_nombre = productoEnOrigen.Str_nombre,
-                            Str_descripcion = productoEnOrigen.Str_descripcion,
-                            Int_cantidad_actual = detalleDto.Int_cantidad,
-                            Int_cantidad_minima = productoEnOrigen.Int_cantidad_minima,
-                            Dec_costo = productoEnOrigen.Dec_costo,
-                            Dec_costo_PPP = productoEnOrigen.Dec_costo_PPP,
-                            Int_iva = productoEnOrigen.Int_iva,
-                            Dec_precio_mayorista = productoEnOrigen.Dec_precio_mayorista,
-                            Dec_precio_minorista = productoEnOrigen.Dec_precio_minorista
-                        };
+                        Str_ruta_imagen = producto.Str_ruta_imagen,
+                        Str_nombre = producto.Str_nombre,
+                        Str_descripcion = producto.Str_descripcion,
+                        Int_cantidad_actual = detalleDto.Int_cantidad,
+                        Int_cantidad_minima = producto.Int_cantidad_minima,
+                        Dec_costo = producto.Dec_costo,
+                        Dec_costo_PPP = producto.Dec_costo_PPP,
+                        Int_iva = producto.Int_iva,
+                        Dec_precio_mayorista = producto.Dec_precio_mayorista,
+                        Dec_precio_minorista = producto.Dec_precio_minorista
+                    };
 
-                        var nuevo_producto = productoEnDestino2.ToProductoFromCreate(movimiento.DepositoDestinoId, productoEnOrigen.ProveedorId, productoEnOrigen.MarcaId);
-                        await _productoRepo.CreateAsync(nuevo_producto);
-                    }
-                    else
-                    {
-                        // Si el producto ya existe en el depósito destino, actualizar la cantidad
-                        productoEnDestino.Int_cantidad_actual += detalleDto.Int_cantidad;
-                    }
-
-
-                    var detalleModel = detalleDto.ToDetalleFromCreate(movimientoId, productoId);
-
-                    await _detalleRepo.CreateAsync(detalleModel);
-                    await transaction.CommitAsync();
-                    return CreatedAtAction(nameof(GetById), new { id = detalleModel.Id }, detalleModel.ToDetalleDeMovimientoDto());
+                    var nuevoProducto = nuevoProductoOrigenModel.ToProductoCantidadFromCreate(producto.DepositoId, producto.ProveedorId, producto.MarcaId);
+                    await _productoRepo.CreateAsync(nuevoProducto);
                 }
-                catch (Exception ex)
+                else
                 {
-                    await transaction.RollbackAsync();
-                    return StatusCode(500, "Ocurrió un error al realizar la transferencia: " + ex.Message);
+                    // Si el producto ya existe en el depósito destino, actualizar la cantidad
+                    producto.Int_cantidad_actual += detalleDto.Int_cantidad;
+                    await _productoRepo.UpdateAsync(producto.Id, producto);
                 }
             }
+
+            /*if (movimiento.TipoDeMovimiento.Str_descripcion.ToLower() == "egreso")
+            {
+                if (productoEnOrigen == null || productoEnOrigen.Int_cantidad_actual < detalleDto.Int_cantidad)
+                {
+                    return BadRequest("No hay suficiente cantidad del producto en el depósito origen!!");
+                }
+            }
+
+            if (movimiento.TipoDeMovimiento.Str_descripcion.ToLower() == "transferencia")
+            {
+                if (productoEnOrigen == null || productoEnOrigen.Int_cantidad_actual < detalleDto.Int_cantidad)
+                {
+                    return BadRequest("No hay suficiente cantidad del producto en el depósito origen!!");
+                }
+                // Realizar la transferencia
+                productoEnOrigen.Int_cantidad_actual -= detalleDto.Int_cantidad;
+
+                if (productoEnDestino == null || productoEnOrigen.Str_nombre != productoEnDestino.Str_nombre)
+                {
+                    // Si el producto no existe en el depósito destino, crearlo
+                    var productoEnDestino2 = new CreateProductoCantidadDto
+                    {
+                        Str_ruta_imagen = productoEnOrigen.Str_ruta_imagen,
+                        Str_nombre = productoEnOrigen.Str_nombre,
+                        Str_descripcion = productoEnOrigen.Str_descripcion,
+                        Int_cantidad_actual = detalleDto.Int_cantidad,
+                        Int_cantidad_minima = productoEnOrigen.Int_cantidad_minima,
+                        Dec_costo = productoEnOrigen.Dec_costo,
+                        Dec_costo_PPP = productoEnOrigen.Dec_costo_PPP,
+                        Int_iva = productoEnOrigen.Int_iva,
+                        Dec_precio_mayorista = productoEnOrigen.Dec_precio_mayorista,
+                        Dec_precio_minorista = productoEnOrigen.Dec_precio_minorista
+                    };
+
+                    var nuevo_producto = productoEnDestino2.ToProductoCantidadFromCreate(movimiento.DepositoDestinoId, productoEnOrigen.ProveedorId, productoEnOrigen.MarcaId);
+                    await _productoRepo.CreateAsync(nuevo_producto);
+                }
+                else
+                {
+                    // Si el producto ya existe en el depósito destino, actualizar la cantidad
+                    productoEnDestino.Int_cantidad_actual += detalleDto.Int_cantidad;
+                }
+            }
+            */
+            var detalleModel = detalleDto.ToDetalleFromCreate(movimientoId, productoId);
+            await _detalleRepo.CreateAsync(detalleModel);
+            return CreatedAtAction(nameof(GetById), new { id = detalleModel.Id }, detalleModel.ToDetalleDeMovimientoDto());
         }
+        ////////////////////////////////////////////////////
+
 
         [HttpPut]
         [Route("{id:int}")]

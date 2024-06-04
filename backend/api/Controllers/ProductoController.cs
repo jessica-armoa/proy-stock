@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using api.Dtos.Producto;
 using api.Interfaces;
 using api.Mapper;
+using api.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
@@ -37,18 +38,20 @@ namespace api.Controllers
         [Route("{id:int}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
-            if(!ModelState.IsValid) 
+            if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             try
-            {   
+            {
                 var producto = await _productoRepo.GetByIdAsync(id);
-                if(producto == null){
+                if (producto == null)
+                {
                     return NotFound();
                 }
                 return Ok(producto.ToProductoDto());
             }
-            catch(Exception ex){
+            catch (Exception ex)
+            {
                 return BadRequest(ex.Message);
             }
         }
@@ -56,38 +59,60 @@ namespace api.Controllers
         [HttpPost("{depositoId:int}/{proveedorId:int}/{marcaId:int}")]
         public async Task<IActionResult> Post([FromRoute] int depositoId, [FromRoute] int proveedorId, [FromRoute] int marcaId, CreateProductoRequestDto productoDto)
         {
-            if(!ModelState.IsValid) 
+            if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if(!await _depositoRepo.DepositoExists(depositoId))
+            if (!await _depositoRepo.DepositoExists(depositoId))
             {
                 return BadRequest("El deposito ingresado no existe!");
             }
 
-            if(!await _proveedorRepo.ProveedorExists(proveedorId))
+            if (!await _proveedorRepo.ProveedorExists(proveedorId))
             {
                 return BadRequest("El proveedor ingresado no existe!");
             }
-            
-            if(!await _marcaRepo.MarcaExists(marcaId))
+
+            if (!await _marcaRepo.MarcaExists(marcaId))
             {
                 return BadRequest("La marca ingresada no existe!");
             }
 
+            if(await _productoRepo.ProductoExistsName(productoDto.Str_nombre))
+            {
+                return BadRequest("El producto que desea ingresar ya existe!!");
+            }
+
             var productoModel = productoDto.ToProductoFromCreate(depositoId, proveedorId, marcaId);
             await _productoRepo.CreateAsync(productoModel);
-            return CreatedAtAction(nameof(GetById), new{id = productoModel.Id}, productoModel.ToProductoDto());
+
+            var depositos = await _depositoRepo.GetAllAsync();
+            if (depositos != null)
+            {
+                foreach (var deposito in depositos)
+                {
+                    if (deposito.Id != depositoId)
+                    {
+                        if (deposito.Productos.Any(d => d.Str_nombre != productoDto.Str_nombre))
+                        {
+                            var productoEnDepositos = productoDto.ToProductoFromCreate(deposito.Id, proveedorId, marcaId);
+                            await _productoRepo.CreateAsync(productoEnDepositos);
+                        }
+                    }
+                }
+            }
+            
+            return CreatedAtAction(nameof(GetById), new { id = productoModel.Id }, productoModel.ToProductoDto());
         }
 
         [HttpPut]
         [Route("{id:int}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateProductoRequestDto updateDto)
         {
-            if(!ModelState.IsValid) 
+            if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-                
+
             var producto = await _productoRepo.UpdateAsync(id, updateDto.ToProductoFromUpdate());
-            if(producto == null)
+            if (producto == null)
             {
                 return NotFound("El producto que desea actualizar no existe");
             }
@@ -99,11 +124,11 @@ namespace api.Controllers
         [Route("{id:int}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
-            if(!ModelState.IsValid) 
+            if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             var productoModel = await _productoRepo.DeleteAsync(id);
-            if(productoModel == null)
+            if (productoModel == null)
             {
                 return NotFound("El producto que desea eliminar no existe!!");
             }
@@ -111,7 +136,7 @@ namespace api.Controllers
             return Ok(productoModel); //No es necesario traer algo, puede ser vacio
         }
 
-         [HttpPost("actualizar-costo-ppp")]
+        [HttpPost("actualizar-costo-ppp")]
         public async Task<IActionResult> ActualizarCostoPPP()
         {
             // Obtener todos los productos
@@ -120,7 +145,7 @@ namespace api.Controllers
                 await _productoRepo.ActualizarCostoPPPAsync();
                 return Ok("Costo PPP actualizado correctamente!!");
             }
-            catch(InvalidOperationException ex)
+            catch (InvalidOperationException ex)
             {
                 return NotFound(ex.Message);
             }
