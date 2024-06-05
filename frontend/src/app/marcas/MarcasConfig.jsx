@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const api = process.env.NEXT_PUBLIC_API_URL+"marca";
+const api = process.env.NEXT_PUBLIC_API_URL+"api/marca";
 
 class MarcasConfig{
     getMarca(){
