@@ -9,6 +9,7 @@ namespace api.Models
     {
         public int Id { get; set; }
         public DateTime Date_fecha { get; set; } = DateTime.Now;
+        //public int Int_cantidad { get; set; }
         public int? TipoDeMovimientoId { get; set; }
         public TipoDeMovimiento? TipoDeMovimiento{ get; set; }
         public int? DepositoOrigenId{ get; set; }

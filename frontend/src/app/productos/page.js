@@ -81,6 +81,7 @@ const Productos = () => {
       })
       .catch((error) => {
         console.error("Error updating product:", error);
+        console.log(error.response.data);
         Swal.fire(
           "Error!",
           "Hubo un problema al actualizar el producto.",
@@ -193,6 +194,7 @@ const Productos = () => {
           <h1 className="text-l font-semibold normal-case tracking-tight">
             Productos
           </h1>
+
 
           <div className="flex items-center justify-end space-x-2">
             <Button

@@ -51,15 +51,21 @@ namespace api.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "5c9eb653-8b03-4658-9514-3874b6f0800a",
+                            Id = "f82665cd-2f5e-4bb9-891d-07f10b33ac7d",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "d5b875db-fa30-4114-8a70-6487bd0bd584",
+                            Id = "bfec5579-4339-46e7-9116-ec0f909414c4",
                             Name = "User",
                             NormalizedName = "USER"
+                        },
+                        new
+                        {
+                            Id = "6801e97d-094d-44f9-85e0-3cfe8ccb0363",
+                            Name = "Encargado",
+                            NormalizedName = "ENCARGADO"
                         });
                 });
 
@@ -169,6 +175,28 @@ namespace api.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("api.Models.Categoria", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("ProveedorId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Str_descripcion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProveedorId");
+
+                    b.ToTable("categorias");
+                });
+
             modelBuilder.Entity("api.Models.Deposito", b =>
                 {
                     b.Property<int>("Id")
@@ -184,7 +212,19 @@ namespace api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Str_encargado")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Str_nombre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Str_telefono")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Str_telefonoEncargado")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -332,6 +372,9 @@ namespace api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<decimal>("Dec_costo")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<decimal>("Dec_costo_PPP")
                         .HasColumnType("decimal(18,2)");
 
@@ -429,7 +472,7 @@ namespace api.Migrations
 
                     b.HasIndex("MotivoId");
 
-                    b.ToTable("TiposDeMovimientos");
+                    b.ToTable("tipos_de_movimientos");
                 });
 
             modelBuilder.Entity("api.Models.Usuarios", b =>
@@ -548,6 +591,15 @@ namespace api.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("api.Models.Categoria", b =>
+                {
+                    b.HasOne("api.Models.Proveedor", "Proveedor")
+                        .WithMany("Categorias")
+                        .HasForeignKey("ProveedorId");
+
+                    b.Navigation("Proveedor");
+                });
+
             modelBuilder.Entity("api.Models.Deposito", b =>
                 {
                     b.HasOne("api.Models.Ferreteria", "Ferreteria")
@@ -575,7 +627,7 @@ namespace api.Migrations
             modelBuilder.Entity("api.Models.Marca", b =>
                 {
                     b.HasOne("api.Models.Proveedor", "Proveedor")
-                        .WithMany()
+                        .WithMany("Marcas")
                         .HasForeignKey("ProveedorId");
 
                     b.Navigation("Proveedor");
@@ -673,6 +725,8 @@ namespace api.Migrations
             modelBuilder.Entity("api.Models.Proveedor", b =>
                 {
                     b.Navigation("Categorias");
+
+                    b.Navigation("Marcas");
 
                     b.Navigation("Productos");
                 });

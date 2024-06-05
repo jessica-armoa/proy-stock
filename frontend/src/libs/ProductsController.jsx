@@ -15,12 +15,12 @@ class ProductsController {
     return axios.post(api, product);
   }
 
-  updateProduct(id,producto) {
-    return axios.put(`${api}/${id}`, producto, {
+  updateProduct(id, productData) {
+    return axios.put(`${api}${id}`, productData, {
       headers: {
-          'Content-Type': 'application/json'
+        'Content-Type': 'application/json'
       }
-  });
+    });
   }
 
   deleteProduct(id) {
