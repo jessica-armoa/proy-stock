@@ -22,7 +22,7 @@ namespace api.Mapper
             };
         }
 
-        public static Movimiento ToMovimientoFromCreate(this CreateMovimientoRequestDto movimientoDto, int tipodemovimientoId, int depositoOrigen, int depositoDestino)
+        public static Movimiento ToMovimientoFromCreate(this CreateMovimientoRequestDto movimientoDto, int? tipodemovimientoId, int? depositoOrigen, int? depositoDestino)
         {
             return new Movimiento
             {

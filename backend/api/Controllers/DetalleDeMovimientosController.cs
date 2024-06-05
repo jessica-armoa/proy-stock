@@ -54,7 +54,6 @@ namespace api.Controllers
         }
 
         [HttpPost]
-        [Route("{movimientoId:int}/{productoId}")]
         public async Task<IActionResult> Post([FromBody] CreateDetalleRequestDto detalleDto, [FromRoute] int movimientoId, [FromRoute] int productoId)
         {
             if (!ModelState.IsValid)
@@ -70,6 +69,7 @@ namespace api.Controllers
                 return BadRequest("El producto ingresado no existe!!");
             }
 
+            
             var movimiento = await _movimientoRepo.GetByIdAsync(movimientoId);
             var tipo_de_movimiento = await _tipoDeMovimientoRepo.GetByIdAsync(movimiento.TipoDeMovimientoId);
             //var motivo = await _motivoRepo.GetByIdAsync(tipo_de_movimiento.MotivoId);
@@ -156,7 +156,7 @@ namespace api.Controllers
                     productoEnDestino.Int_cantidad_actual += detalleDto.Int_cantidad;
                 }
             }
-
+            
             var detalleModel = detalleDto.ToDetalleFromCreate(movimientoId, productoId);
             await _detalleRepo.CreateAsync(detalleModel);
             return CreatedAtAction(nameof(GetById), new { id = detalleModel.Id }, detalleModel.ToDetalleDeMovimientoDto());
