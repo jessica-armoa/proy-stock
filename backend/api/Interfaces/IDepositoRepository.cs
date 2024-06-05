@@ -10,7 +10,7 @@ namespace api.Interfaces
     public interface IDepositoRepository
     {
         Task<List<DepositoDto>> GetAllAsync();
-        Task<Deposito?> GetByIdAsync(int id);
+        Task<Deposito?> GetByIdAsync(int? id);
         Task<Deposito> CreateAsync(Deposito depositoModel);
         Task<Deposito?> UpdateAsync(int id, UpdateDepositoRequestDto depositoDto);
         Task<Deposito?> DeleteAsync(int id);

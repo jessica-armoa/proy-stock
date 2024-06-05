@@ -101,7 +101,7 @@ namespace api.Repository
         .ToListAsync();
         }
 
-        public async Task<Deposito?> GetByIdAsync(int id)
+        public async Task<Deposito?> GetByIdAsync(int? id)
         {
             return await _context.depositos
             .Include(d => d.Movimientos)
