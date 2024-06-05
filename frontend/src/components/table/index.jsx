@@ -62,6 +62,11 @@ function DataTable({ columns, data, pageurl }) {
     onColumnFiltersChange: setColumnFilters,
     onSortingChange: setSorting,
     onGlobalFilterChange: setFiltering,
+    initialState: {
+      pagination: {
+        pageSize: 7,
+      }
+    }
   });
 
   const clearAllFilters = () => {
@@ -145,10 +150,10 @@ function DataTable({ columns, data, pageurl }) {
 
         <TableBody>
           {table.getRowModel().rows.map((row) => (
-            <TableRow key={row.id} {...row.getRowProps}>
+            <TableRow key={row.id} {...row.getRowProps} className="clickable tablerow" onClick={() => router.push(`${pageurl}${row.original.id}`)}>
               {row.getVisibleCells().map((cell) => (
-                <TableCell className="p-2 text-wrap" key={cell.id}>
-                  <div className="clickable" onClick={() => router.push(`${pageurl}${row.original.id}`)}>
+                <TableCell className="p-2 text-wrap truncate" key={cell.id}>
+                  <div>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </div>
                 </TableCell>

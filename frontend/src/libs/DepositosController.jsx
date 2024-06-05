@@ -7,21 +7,21 @@ class DepositosController {
     return axios.get(api);
   }
 
-  getProduct(id) {
+  getDeposito(id) {
     return axios.get(`${api}${id}`);
   }
 
-  createProduct(product) {
-    return axios.post(api, product);
+  createDeposito(deposito) {
+    return axios.post(api, deposito);
   }
 
-  updateProduct(id) {
-    return axios.put(`${api}/${id}`);
+  updateDeposito(id, deposito) {
+    return axios.put(`${api}${id}`, deposito);
   }
 
   deleteProduct(id) {
     return axios.delete(`${api}/${id}`);
-  }
+  }*/
 }
 
 export default new DepositosController();

@@ -107,5 +107,10 @@ namespace api.Repository
 
             await _context.SaveChangesAsync();
         }
+
+        public async Task<bool> ProductoExistsName(string nombreProducto)
+        {
+            return await _context.productos.AnyAsync(p => p.Str_nombre == nombreProducto);
+        }
     }
 }

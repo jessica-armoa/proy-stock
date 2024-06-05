@@ -9,7 +9,7 @@ namespace api.Interfaces
 {
     public interface IDepositoRepository
     {
-        Task<List<Deposito>> GetAllAsync();
+        Task<List<DepositoDto>> GetAllAsync();
         Task<Deposito?> GetByIdAsync(int id);
         Task<Deposito> CreateAsync(Deposito depositoModel);
         Task<Deposito?> UpdateAsync(int id, UpdateDepositoRequestDto depositoDto);

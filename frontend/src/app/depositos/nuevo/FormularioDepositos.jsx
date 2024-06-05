@@ -2,10 +2,13 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Card, Dialog, DialogPanel, NumberInput, TextInput } from '@tremor/react';
 import { RiArrowDownSLine, RiCloseLine } from '@remixicon/react';
-import DepositosConfig from './DepositosConfig';
-import FerreteriasConfig from '../ferreterias/FerreteriasConfig';
+import DepositosConfig from '../DepositosConfig';
+import FerreteriasConfig from '../../ferreterias/FerreteriasConfig';
+import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 
 export default function FormularioDepositos() {
+    const navigate = useRouter();
 
     const [isOpen, setIsOpen] = useState(true);
 
@@ -14,6 +17,8 @@ export default function FormularioDepositos() {
 
     const [str_empleado, setStr_empleado] = useState('');
     const [str_telefono, setStr_telefono] = useState('');
+    const [str_telefono_empleado, setStr_telefono_empleado] = useState('');
+
 
     const [isHabilitado, setIsHabilitado] = useState(true);
 
@@ -40,12 +45,18 @@ export default function FormularioDepositos() {
 
             const deposito = {
                 "str_nombre": str_nombre,
-                "str_direccion": str_direccion
+                "str_direccion": str_direccion,
+                "str_telefono": str_telefono,
+                "str_encargado": str_empleado,
+                "str_telefonoEncargado": str_telefono_empleado
             }
 
             console.log({
                 str_nombre,
-                str_direccion
+                str_direccion,
+                str_telefono,
+                str_empleado,
+                str_telefono_empleado
             });
 
             const response = await DepositosConfig.createDeposito(1, deposito);
@@ -55,6 +66,8 @@ export default function FormularioDepositos() {
             setStr_nombre('');
             setStr_direccion('');
             setFk_ferreteria(0);
+
+            navigate.push('/depositos');
         } catch (error) {
             console.error('Error al enviar los datos del formulario: ', error);
         }
@@ -70,7 +83,10 @@ export default function FormularioDepositos() {
                     <button
                         type="button"
                         className="rounded-tremor-small p-2 text-tremor-content-subtle hover:bg-tremor-background-subtle hover:text-tremor-content dark:text-dark-tremor-content-subtle hover:dark:bg-dark-tremor-background-subtle hover:dark:text-tremor-content"
-                        onClick={() => setIsOpen(false)}
+                        onClick={() => {
+                            setIsOpen(false);
+                            navigate.push('/depositos');
+                        }}
                         aria-label="Close"
                     >
                         <RiCloseLine
@@ -128,49 +144,70 @@ export default function FormularioDepositos() {
                         </div>
 
                         {/*<div className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">*/}
-                            <div className="col-span-full sm:col-span-3">
-                                <label
-                                    htmlFor="str_empleado"
-                                    className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
-                                >
-                                    Encargado
-                                    <span className="text-red-500">*</span>
-                                </label>
-                                <TextInput
-                                    type="text"
-                                    id="str_empleado"
-                                    name="str_empleado"
-                                    autoComplete="str_empleado"
-                                    placeholder="Empleado encargado"
-                                    className="mt-2"
-                                    value={str_empleado}
-                                    onChange={(e) => setStr_empleado(e.target.value)}
-                                    required
-                                />
-                            </div>
+                        <div className="col-span-full sm:col-span-3">
+                            <label
+                                htmlFor="str_empleado"
+                                className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                            >
+                                Encargado
+                                <span className="text-red-500">*</span>
+                            </label>
+                            <TextInput
+                                type="text"
+                                id="str_empleado"
+                                name="str_empleado"
+                                autoComplete="str_empleado"
+                                placeholder="Empleado encargado"
+                                className="mt-2"
+                                value={str_empleado}
+                                onChange={(e) => setStr_empleado(e.target.value)}
+                                required
+                            />
+                        </div>
 
-                            <div className="col-span-full sm:col-span-3">
-                                <label
-                                    htmlFor="str_telefono"
-                                    className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
-                                >
-                                    Teléfono del Depósito
-                                    <span className="text-red-500">*</span>
-                                </label>
-                                <TextInput
-                                    type="text"
-                                    id="str_telefono"
-                                    name="str_telefono"
-                                    autoComplete="str_telefono"
-                                    placeholder="Telefono del Depósito"
-                                    className="mt-2"
-                                    value={str_telefono}
-                                    onChange={(e) => setStr_telefono(e.target.value)}
-                                    required
-                                />
-                            </div>
+                        <div className="col-span-full sm:col-span-3">
+                            <label
+                                htmlFor="str_telefono"
+                                className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                            >
+                                Teléfono del Depósito
+                                <span className="text-red-500">*</span>
+                            </label>
+                            <TextInput
+                                type="text"
+                                id="str_telefono"
+                                name="str_telefono"
+                                autoComplete="str_telefono"
+                                placeholder="Telefono del Depósito"
+                                className="mt-2"
+                                value={str_telefono}
+                                onChange={(e) => setStr_telefono(e.target.value)}
+                                required
+                            />
+                        </div>
 
-                            {/* <div className="none col-span-full sm:col-span-3">
+                        <div className="col-span-full sm:col-span-3">
+                            <label
+                                htmlFor="str_telefono_empleado"
+                                className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                            >
+                                Teléfono del Encargado
+                                <span className="text-red-500">*</span>
+                            </label>
+                            <TextInput
+                                type="text"
+                                id="str_telefono_empleado"
+                                name="str_telefono_empleado"
+                                autoComplete="str_telefono_empleado"
+                                placeholder="Telefono del Encargado"
+                                className="mt-2"
+                                value={str_telefono_empleado}
+                                onChange={(e) => setStr_telefono_empleado(e.target.value)}
+                                required
+                            />
+                        </div>
+
+                        {/* <div className="none col-span-full sm:col-span-3">
                     <label
                         htmlFor="fk_ferreteria"
                         className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
@@ -187,19 +224,20 @@ export default function FormularioDepositos() {
                 </div>*/}
 
 
-                            <div className="col-span-full flex justify-center space-x-4">
-                                <Button variant="secondary" onClick={() => {
-                                    // Lógica para descartar
-                                    console.log("Formulario descartado");
-                                    // Reiniciar los valores del formulario
-                                    setStr_nombre('');
-                                    setStr_direccion('');
-                                    setFk_ferreteria(0);
-                                    setIsOpen(false);
-                                }}>Cancelar</Button>
-                                <Button variant="primary" type="submit">Guardar</Button>
-                            </div>
+                        <div className="col-span-full flex justify-center space-x-4">
+                            <Button variant="secondary" onClick={() => {
+                                // Lógica para descartar
+                                console.log("Formulario descartado");
+                                // Reiniciar los valores del formulario
+                                setStr_nombre('');
+                                setStr_direccion('');
+                                setFk_ferreteria(0);
+                                setIsOpen(false);
+                                navigate.push('/depositos');
+                            }}>Cancelar</Button>
+                            <Button variant="primary" type="submit">Guardar</Button>
                         </div>
+                    </div>
                 </form>
 
             </DialogPanel>
