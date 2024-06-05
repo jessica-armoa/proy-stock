@@ -47,7 +47,7 @@ namespace api.Repository
             .ToListAsync();
         }
 
-        public async Task<Movimiento?> GetByIdAsync(int id)
+        public async Task<Movimiento?> GetByIdAsync(int? id)
         {
             return await _context.movimientos
             .Include(m => m.DetallesDeMovimientos)
