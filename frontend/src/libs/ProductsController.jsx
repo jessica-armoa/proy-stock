@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const api = process.env.NEXT_PUBLIC_API_URL+"producto/";
+const api = process.env.NEXT_PUBLIC_API_URL+"api/producto";
 
 class ProductsController {
   getProducts() {
