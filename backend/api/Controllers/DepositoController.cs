@@ -25,8 +25,7 @@ namespace api.Controllers
         public async Task<IActionResult> GetAll()
         {
             var depositos = await _depositoRepo.GetAllAsync();
-            var depositoDto = depositos.Select(d => d.ToDepositoDto());
-            return Ok(depositoDto);
+            return Ok(depositos);
         }
 
         [HttpGet]

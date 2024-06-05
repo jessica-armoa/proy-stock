@@ -58,11 +58,6 @@ namespace api.Controllers
                 return BadRequest("El deposito destino ingresado no existe!!");
             }
 
-            if(depositoOrigen == depositoDestino)
-            {
-                return BadRequest("Los depositos origen y destino no pueden ser iguales!!");
-            }
-
             var movimientoModel = movimientoDto.ToMovimientoFromCreate(tipodemovimientoId, depositoOrigen, depositoDestino);
             await _movimientoRepo.CreateAsync(movimientoModel);
             return CreatedAtAction(nameof(GetById), new{id = movimientoModel.Id}, movimientoModel.ToMovimientoDto());
