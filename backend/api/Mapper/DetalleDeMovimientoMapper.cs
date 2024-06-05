@@ -20,7 +20,7 @@ namespace api.Mapper
             };
         }
 
-        public static DetalleDeMovimiento ToDetalleFromCreate(this CreateDetalleRequestDto detalleDto, int movimientoId, int productoId)
+        public static DetalleDeMovimiento ToDetalleFromCreate(this CreateDetalleRequestDto detalleDto, int? movimientoId, int? productoId)
         {
             return new DetalleDeMovimiento
             {

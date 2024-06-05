@@ -111,12 +111,28 @@ namespace api.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var producto = await _productoRepo.UpdateAsync(id, updateDto.ToProductoFromUpdate());
+            var productoOriginal = await _productoRepo.GetByIdAsync(id);
+            var productoActualizado =
+                new UpdateProductoCantidadDto
+                {
+                    Str_ruta_imagen = updateDto.Str_ruta_imagen,
+                    Str_nombre = updateDto.Str_nombre,
+                    Str_descripcion = updateDto.Str_descripcion,
+                    Int_cantidad_actual = productoOriginal.Int_cantidad_actual,
+                    Int_cantidad_minima = updateDto.Int_cantidad_minima,
+                    Dec_costo = updateDto.Dec_costo,
+                    Dec_costo_PPP = updateDto.Dec_costo_PPP,
+                    Int_iva = updateDto.Int_iva,
+                    Dec_precio_mayorista = updateDto.Dec_precio_mayorista,
+                    Dec_precio_minorista = updateDto.Dec_precio_minorista
+                };
+
+            var producto = await _productoRepo.UpdateAsync(id, productoActualizado.ToProductoCantidadFromUpdate());
             if (producto == null)
             {
                 return NotFound("El producto que desea actualizar no existe");
             }
-
+            
             return Ok(producto.ToProductoDto());
         }
 

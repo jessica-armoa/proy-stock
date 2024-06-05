@@ -121,7 +121,7 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IMarcaRepository, MarcaRepository>();
 builder.Services.AddScoped<IMovimientoRepository, MovimientoRepository>();
 builder.Services.AddScoped<IDetalleDeMovimientosRepository, DetalleDeMovimientosRepository>();
-
+builder.Services.AddScoped<ITipoDeMovimientoRepository, TipoDeMovimientoRepository>();
 
 var app = builder.Build();
 

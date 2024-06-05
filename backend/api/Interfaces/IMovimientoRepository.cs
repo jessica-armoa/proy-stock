@@ -9,7 +9,7 @@ namespace api.Interfaces
     public interface IMovimientoRepository
     {
         Task<List<Movimiento>> GetAllAsync();
-        Task<Movimiento?> GetByIdAsync(int id);
+        Task<Movimiento?> GetByIdAsync(int? id);
         Task<Movimiento> CreateAsync(Movimiento movimientoModel);
         Task<Movimiento?> UpdateAsync(int id, Movimiento movimientoDto);
         Task<Movimiento?> DeleteAsync(int id); 
