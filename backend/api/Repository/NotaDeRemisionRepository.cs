@@ -1,4 +1,4 @@
-/*using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using api.Dtos.NotaDeRemision;
@@ -6,6 +6,7 @@ using api.Dtos.DetalleDeMovimiento;
 using api.Interfaces;
 using api.Data;
 using Microsoft.EntityFrameworkCore;
+using api.Models;
 
 namespace api.Repository
 {
@@ -18,27 +19,18 @@ namespace api.Repository
       _context = context;
     }
 
-    public async Task<IEnumerable<NotaDeRemisionDto>> GetNotasDeRemisionAsync()
+    public async Task<NotaDeRemision?> GetByIdAsync(int? id)
     {
-      var notas = await _context.NotasDeRemision
-          .Include(n => n.DetallesDeMovimientos)
+        return await _context.notas_de_remision
+            .Include(n => n.Movimiento)
+            .FirstOrDefaultAsync(i => i.Id == id);
+    }
+
+    public async Task<List<NotaDeRemision>> GetAllAsync()
+    {
+        return await _context.notas_de_remision
+          .Include(n => n.Movimiento)
           .ToListAsync();
-
-      // Mapear entidades a DTOs
-      var notasDto = notas.Select(n => new NotaDeRemisionDto
-      {
-        Id = n.Id,
-        Date_fecha = n.Date_fecha,
-        TipoDeMovimientoId = n.TipoDeMovimientoId,
-        DepositoOrigenId = n.DepositoOrigenId,
-        DepositoDestinoId = n.DepositoDestinoId,
-        DetallesDeMovimientos = n.DetallesDeMovimientos.Select(d => new DetalleDeMovimientoDto
-        {
-          // Mapear propiedades del detalle
-        }).ToList()
-      }).ToList();
-
-      return notasDto;
     }
   }
-}*/
+}
