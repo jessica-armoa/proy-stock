@@ -9,5 +9,6 @@ namespace api.Dtos.DetalleDeMovimiento
     {
         public int Int_cantidad { get; set; }
         // public string Str_encargado { get; set; } = String.Empty;
+        public bool Bool_borrado { get; set; } = false;
     }
 }

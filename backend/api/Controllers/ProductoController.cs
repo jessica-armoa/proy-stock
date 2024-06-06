@@ -46,7 +46,7 @@ namespace api.Controllers
                 var producto = await _productoRepo.GetByIdAsync(id);
                 if (producto == null)
                 {
-                    return NotFound();
+                    return NotFound("El producto no existe!!");
                 }
                 return Ok(producto.ToProductoDto());
             }
@@ -111,23 +111,7 @@ namespace api.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var productoOriginal = await _productoRepo.GetByIdAsync(id);
-            var productoActualizado =
-                new UpdateProductoCantidadDto
-                {
-                    Str_ruta_imagen = updateDto.Str_ruta_imagen,
-                    Str_nombre = updateDto.Str_nombre,
-                    Str_descripcion = updateDto.Str_descripcion,
-                    Int_cantidad_actual = productoOriginal.Int_cantidad_actual,
-                    Int_cantidad_minima = updateDto.Int_cantidad_minima,
-                    Dec_costo = updateDto.Dec_costo,
-                    Dec_costo_PPP = updateDto.Dec_costo_PPP,
-                    Int_iva = updateDto.Int_iva,
-                    Dec_precio_mayorista = updateDto.Dec_precio_mayorista,
-                    Dec_precio_minorista = updateDto.Dec_precio_minorista
-                };
-
-            var producto = await _productoRepo.UpdateAsync(id, productoActualizado.ToProductoCantidadFromUpdate());
+            var producto = await _productoRepo.UpdateAsync(id, updateDto.ToProductoFromUpdate());
             if (producto == null)
             {
                 return NotFound("El producto que desea actualizar no existe");
@@ -143,13 +127,18 @@ namespace api.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
+            var productoExistente = await _productoRepo.GetByIdAsync(id);
+            if(productoExistente == null)
+            {
+                return NotFound("El producto que desea eliminar no existe!!");    
+            }
             var productoModel = await _productoRepo.DeleteAsync(id);
             if (productoModel == null)
             {
                 return NotFound("El producto que desea eliminar no existe!!");
             }
 
-            return Ok(productoModel); //No es necesario traer algo, puede ser vacio
+            return Ok($"Se borró correctamente el producto: {productoModel.Str_nombre}"); //No es necesario traer algo, puede ser vacio
         }
 
         [HttpPost("actualizar-costo-ppp")]
