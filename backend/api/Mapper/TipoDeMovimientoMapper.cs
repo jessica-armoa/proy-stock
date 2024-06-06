@@ -16,7 +16,10 @@ namespace api.Mapper
                 Id = tipoDeMovimientoModel.Id,
                 Str_descripcion = tipoDeMovimientoModel.Str_descripcion,
                 MotivoId = tipoDeMovimientoModel.MotivoId,
-                Movimientos = tipoDeMovimientoModel.Movimientos.Select(m => m.ToMovimientoDto()).ToList()
+                Bool_borrado = tipoDeMovimientoModel.Bool_borrado,
+                Movimientos = tipoDeMovimientoModel.Movimientos
+                    .Where(m => m.Bool_borrado != true)
+                    .Select(m => m.ToMovimientoDto()).ToList()
             };
         }
     }

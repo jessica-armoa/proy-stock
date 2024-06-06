@@ -36,8 +36,8 @@ namespace api.Controllers
         public async Task<IActionResult> GetAll()
         {
             var detalles = await _detalleRepo.GetAllAsync();
-            var detalleDto = detalles.Select(f => f.ToDetalleDeMovimientoDto());
-            return Ok(detalleDto);
+            var detallesDto = detalles.Select(d => d.ToDetalleDeMovimientoDto());
+            return Ok(detalles);
         }
 
         [HttpGet]
@@ -50,7 +50,7 @@ namespace api.Controllers
             var detalle = await _detalleRepo.GetByIdAsync(id);
             if (detalle == null) return NotFound();
 
-            return Ok(detalle);
+            return Ok(detalle.ToDetalleDeMovimientoDto());
         }
 
         [HttpPost]
@@ -109,7 +109,7 @@ namespace api.Controllers
                 }
             }
 
-            if (movimiento.TipoDeMovimiento.Str_descripcion.ToLower() == "egreso")
+            if (tipo_de_movimiento.Str_descripcion.ToLower() == "egreso")
             {
                 if (productoEnOrigen == null || productoEnOrigen.Int_cantidad_actual < detalleDto.Int_cantidad)
                 {
@@ -117,7 +117,7 @@ namespace api.Controllers
                 }
             }
 
-            if (movimiento.TipoDeMovimiento.Str_descripcion.ToLower() == "transferencia")
+            if (tipo_de_movimiento.Str_descripcion.ToLower() == "transferencia")
             {
                 if(movimiento.DepositoOrigenId == movimiento.DepositoDestinoId)
                 {
