@@ -13,6 +13,7 @@ namespace api.Dtos.Ferreteria
         public string Str_nombre{ get; set; } = String.Empty;
         public string Str_ruc { get; set; } = String.Empty;
         public string Str_telefono { get; set; } = String.Empty;
+        public bool Bool_borrado { get; set; } = false;
         public List<DepositoDto> Depositos { get; set; }
     }
 }

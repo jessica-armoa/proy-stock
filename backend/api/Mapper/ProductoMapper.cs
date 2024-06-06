@@ -25,13 +25,16 @@ namespace api.Mapper
                 Int_iva = productoModel.Int_iva,
                 Dec_precio_mayorista = productoModel.Dec_precio_mayorista,
                 Dec_precio_minorista = productoModel.Dec_precio_minorista,
-                DetallesDeMovimientos = productoModel.DetallesDeMovimientos.Select(d => d.ToDetalleDeMovimientoDto()).ToList(),
+                DetallesDeMovimientos = productoModel.DetallesDeMovimientos
+                    .Where(d => d.Bool_borrado != true)
+                    .Select(d => d.ToDetalleDeMovimientoDto()).ToList(),
                 DepositoId = productoModel.DepositoId,
                 DepositoNombre = productoModel.Deposito?.Str_nombre,
                 ProveedorId = productoModel.ProveedorId,
                 ProveedorNombre = productoModel.Proveedor?.Str_nombre,
                 MarcaId = productoModel.MarcaId,
-                MarcaNombre = productoModel.Marca?.Str_nombre
+                MarcaNombre = productoModel.Marca?.Str_nombre,
+                Bool_borrado = productoModel.Bool_borrado
             };
         }
 
@@ -50,7 +53,8 @@ namespace api.Mapper
                 Dec_precio_minorista = productoDto.Dec_precio_minorista,
                 DepositoId = depositoId,
                 ProveedorId = proveedorId,
-                MarcaId = marcaId
+                MarcaId = marcaId,
+                Bool_borrado = false
             };
         }
         public static Producto ToProductoCantidadFromCreate(this CreateProductoCantidadDto productoDto, int? depositoId, int? proveedorId, int? marcaId)
@@ -69,7 +73,8 @@ namespace api.Mapper
                 Dec_precio_minorista = productoDto.Dec_precio_minorista,
                 DepositoId = depositoId,
                 ProveedorId = proveedorId,
-                MarcaId = marcaId
+                MarcaId = marcaId,
+                Bool_borrado = false
             };
         }
         
@@ -86,7 +91,8 @@ namespace api.Mapper
                 Dec_costo_PPP = productoDto.Dec_costo_PPP,
                 Int_iva = productoDto.Int_iva,
                 Dec_precio_mayorista = productoDto.Dec_precio_mayorista,
-                Dec_precio_minorista = productoDto.Dec_precio_minorista
+                Dec_precio_minorista = productoDto.Dec_precio_minorista,
+                Bool_borrado = productoDto.Bool_borrado
             };
         }
         public static Producto ToProductoCantidadFromUpdate(this UpdateProductoCantidadDto productoDto)
@@ -102,7 +108,8 @@ namespace api.Mapper
                 Dec_costo_PPP = productoDto.Dec_costo_PPP,
                 Int_iva = productoDto.Int_iva,
                 Dec_precio_mayorista = productoDto.Dec_precio_mayorista,
-                Dec_precio_minorista = productoDto.Dec_precio_minorista        
+                Dec_precio_minorista = productoDto.Dec_precio_minorista,
+                Bool_borrado = productoDto.Bool_borrado    
             };
         }
     }

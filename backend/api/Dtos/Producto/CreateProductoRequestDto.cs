@@ -28,5 +28,6 @@ namespace api.Dtos.Producto
         public decimal Dec_precio_mayorista { get; set; }
 
         public decimal Dec_precio_minorista { get; set; }
+        public bool Bool_borrado { get; set; } = false;
     }
 }

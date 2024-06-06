@@ -19,6 +19,7 @@ namespace api.Repository
         public async Task<List<TipoDeMovimiento>> GetAllAsync()
         {
             return await _context.tipos_de_movimientos
+            .Where(p => p.Bool_borrado != true)
             .Include(t => t.Movimientos)
             .Include(t => t.Motivo)
             .ToListAsync();
@@ -27,6 +28,7 @@ namespace api.Repository
         public async Task<TipoDeMovimiento?> GetByIdAsync(int? id)
         {
             return await _context.tipos_de_movimientos
+            .Where(p => p.Bool_borrado != true)
             .Include(t => t.Movimientos)
             .Include(t => t.Motivo)
             .FirstOrDefaultAsync(t => t.Id == id);
@@ -34,7 +36,9 @@ namespace api.Repository
 
         public async Task<bool> TipoDeMovimientoExists(int id)
         {
-            return await _context.tipos_de_movimientos.AnyAsync(t => t.Id == id);
+            return await _context.tipos_de_movimientos
+            .Where(t => t.Bool_borrado != true)
+            .AnyAsync(t => t.Id == id);
         }
     }
 }
