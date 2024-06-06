@@ -1,7 +1,8 @@
 'use client'
 import dynamic from 'next/dynamic';
-import { Card, ProgressBar } from "@tremor/react";
+import { Card, ProgressBar} from "@tremor/react";
 import withAuth from "@/components/auth/withAuth";
+import VistaNR from './movimientos/VistaNR';
 
 // Dynamic imports to prevent build-time errors
 const Sidebar = dynamic(() => import("@/components/sidebar"), { ssr: false });
@@ -24,6 +25,7 @@ const Dashboard = () => {
               <span>$225,000</span>
             </p>
             <ProgressBar value={32} className="mt-2" />
+            <VistaNR></VistaNR>
           </Card>
         </div>
       </div>
