@@ -19,5 +19,6 @@ namespace api.Models
         //[ForeignKey("Producto")]
         public int? ProductoId { get; set; }
         public Producto? Producto { get; set; }
+        public NotaDeRemision NotaDeRemision { get; set; }
     }
 }
