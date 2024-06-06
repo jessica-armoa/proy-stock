@@ -90,7 +90,7 @@ namespace api.Repository
           .ThenInclude(p => p.Proveedor)
           .Include(d => d.Producto)
           .ThenInclude(p => p.Deposito)
-          .Where(d => d.Movimiento.TipoDeMovimiento.MotivoId == 7) //El motivo 7 siempre es Perdida por deterioro
+          .Where(d => d.Movimiento.TipoDeMovimiento.Motivo.Bool_perdida)
           .OrderByDescending(d => d.Movimiento.Date_fecha) // Ordenar por fecha de movimiento en orden descendente
           .GroupBy(d => d.ProductoId)
           .Select(g => new Producto
