@@ -1,22 +1,22 @@
 import axios from "axios";
 
-const api = process.env.NEXT_PUBLIC_API_URL+"deposito/";
+const api = process.env.NEXT_PUBLIC_API_URL+"api/deposito";
 
 class DepositosController {
   getDepositos() {
     return axios.get(api);
   }
-/*
-  getProduct(id) {
+
+  getDeposito(id) {
     return axios.get(`${api}${id}`);
   }
 
-  createProduct(product) {
-    return axios.post(api, product);
+  createDeposito(deposito) {
+    return axios.post(api, deposito);
   }
 
-  updateProduct(id) {
-    return axios.put(`${api}/${id}`);
+  updateDeposito(id, deposito) {
+    return axios.put(`${api}${id}`, deposito);
   }
 
   deleteProduct(id) {
