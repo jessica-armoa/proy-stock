@@ -16,6 +16,7 @@ namespace api.Models
         public Deposito? DepositoOrigen { get; set; }
         public int? DepositoDestinoId { get; set; }
         public Deposito? DepositoDestino { get; set; }
+        public bool Bool_borrado { get; set; } = false;
         public List<DetalleDeMovimiento> DetallesDeMovimientos { get; set; } = [];
     }
 }

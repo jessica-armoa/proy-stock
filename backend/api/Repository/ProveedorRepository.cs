@@ -36,6 +36,7 @@ namespace api.Repository
         public async Task<List<Proveedor>> GetAllAsync()
         {
             return await _context.proveedores
+            .Where(p => p.Bool_borrado != true)
             .Include(p => p.Productos)
             .Include(p => p.Categorias)
             .Include(p => p.Marcas)
@@ -45,6 +46,7 @@ namespace api.Repository
         public async Task<Proveedor?> GetByIdAsync(int id)
         {
             return await _context.proveedores
+            .Where(p => p.Bool_borrado != true)
             .Include(p => p.Productos)
             .Include(p => p.Categorias)
             .Include(p => p.Marcas)
@@ -53,18 +55,24 @@ namespace api.Repository
 
         public async Task<bool> ProveedorExists(int id)
         {
-            return await _context.proveedores.AnyAsync(p => p.Id == id);
+            return await _context.proveedores
+            .Where(p => p.Bool_borrado != true)
+            .AnyAsync(p => p.Id == id);
         }
 
         public async Task<Proveedor?> UpdateAsync(int id, Proveedor proveedorModel)
         {
-            var proveedorExistente = await _context.proveedores.FirstOrDefaultAsync(p => p.Id == id);
+            var proveedorExistente = await _context.proveedores
+                .Where(p => p.Bool_borrado != true)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
             if(proveedorExistente == null) return null;
 
             proveedorExistente.Str_nombre = proveedorModel.Str_nombre;
             proveedorExistente.Str_telefono = proveedorModel.Str_telefono;
             proveedorExistente.Str_direccion = proveedorModel.Str_direccion;
             proveedorExistente.Str_correo = proveedorModel.Str_correo;
+            proveedorExistente.Bool_borrado = proveedorModel.Bool_borrado;
 
             await _context.SaveChangesAsync();
             return proveedorExistente;

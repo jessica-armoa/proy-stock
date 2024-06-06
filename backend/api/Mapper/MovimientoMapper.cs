@@ -18,7 +18,10 @@ namespace api.Mapper
                 TipoDeMovimientoId = movimientoModel.TipoDeMovimientoId,
                 DepositoOrigenId = movimientoModel.DepositoOrigenId,
                 DepositoDestinoId= movimientoModel.DepositoDestinoId,
-                DetallesDeMovimientos = movimientoModel.DetallesDeMovimientos.Select(m => m.ToDetalleDeMovimientoDto()).ToList()
+                Bool_borrado = movimientoModel.Bool_borrado,
+                DetallesDeMovimientos = movimientoModel.DetallesDeMovimientos
+                    .Where(d => d.Bool_borrado != true)
+                    .Select(d => d.ToDetalleDeMovimientoDto()).ToList()
             };
         }
 
@@ -29,7 +32,8 @@ namespace api.Mapper
                 Date_fecha = movimientoDto.Date_fecha,
                 TipoDeMovimientoId = tipodemovimientoId,
                 DepositoOrigenId = depositoOrigen,
-                DepositoDestinoId = depositoDestino
+                DepositoDestinoId = depositoDestino,
+                Bool_borrado = false
             };
         }
 
@@ -37,7 +41,9 @@ namespace api.Mapper
         {
             return new Movimiento
             {
-                Date_fecha = movimientoDto.Date_fecha
+                Date_fecha = movimientoDto.Date_fecha,
+                Bool_borrado = movimientoDto.Bool_borrado,
+                DetallesDeMovimientos = movimientoDto.DetallesDeMovimientos.Select(d => d.ToDetalleFromUpdate()).ToList()
             };
         }
     }

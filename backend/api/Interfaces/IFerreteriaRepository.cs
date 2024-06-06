@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using api.Dtos.Ferreteria;
 using api.Models;
 
 namespace api.Interfaces
@@ -12,7 +13,7 @@ namespace api.Interfaces
         Task<Ferreteria?> GetByIdAsync(int id);
         Task<Ferreteria> CreateAsync(Ferreteria ferreteriaModel);
         Task<Ferreteria?> UpdateAsync(int id, Ferreteria ferreteriaModel);
-        Task<Ferreteria?> DeleteAsync(int id);
+        Task<Ferreteria?> DeleteAsync(int id, FerreteriaDto ferreteriaDto);
         Task<bool> FerreteriaExists(int id);
     }
 }

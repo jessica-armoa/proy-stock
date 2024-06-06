@@ -11,6 +11,7 @@ namespace api.Models
         public string Str_descripcion { get; set; } = String.Empty;
         public int? MotivoId { get; set; }
         public Motivos? Motivo { get; set; }
+        public bool Bool_borrado { get; set; } = false;
         public List<Movimiento> Movimientos { get; set; } = [];
     }
 }

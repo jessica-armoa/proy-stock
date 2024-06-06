@@ -11,6 +11,7 @@ namespace api.Dtos.Proveedor
         public string Str_telefono { get; set; } = String.Empty;
         public string Str_direccion { get; set; } = String.Empty;
         public string Str_correo { get; set; } = String.Empty;
+        public bool Bool_borrado { get; set; } = false;
         public List<ProductoDto> Productos { get; set; }
         public List<CategoriaDto> Categorias { get; set; } 
         public List<MarcaDto> Marcas { get; set; }

@@ -36,6 +36,7 @@ namespace api.Repository
         public async Task<List<Marca>> GetAllAsync()
         {
             return await _context.marcas
+            .Where(m => m.Bool_borrado != true)
             .Include(m => m.Productos)
             .Include(m => m.Proveedor)
             .ToListAsync();
@@ -44,6 +45,7 @@ namespace api.Repository
         public async Task<Marca?> GetByIdAsync(int id)
         {
             return await _context.marcas
+            .Where(m => m.Bool_borrado != true)
             .Include(m => m.Productos)
             .Include(m => m.Proveedor)
             .FirstOrDefaultAsync(m => m.Id == id);
@@ -51,15 +53,21 @@ namespace api.Repository
 
         public async Task<bool> MarcaExists(int id)
         {
-            return await _context.marcas.AnyAsync(m => m.Id == id);
+            return await _context.marcas
+            .Where(m => m.Bool_borrado != true)
+            .AnyAsync(m => m.Id == id);
         }
 
         public async Task<Marca?> UpdateAsync(int id, Marca marcaModel)
         {
-            var marcaExistente = await _context.marcas.FirstOrDefaultAsync(m => m.Id == id);
+            var marcaExistente = await _context.marcas
+            .Where(m => m.Bool_borrado != true)
+            .FirstOrDefaultAsync(m => m.Id == id);
+
             if(marcaExistente == null) return null;
 
             marcaExistente.Str_nombre = marcaModel.Str_nombre;
+            marcaExistente.Bool_borrado = marcaModel.Bool_borrado;
 
             await _context.SaveChangesAsync();
             return marcaExistente;
