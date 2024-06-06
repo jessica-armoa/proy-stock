@@ -123,6 +123,9 @@ builder.Services.AddScoped<IMarcaRepository, MarcaRepository>();
 builder.Services.AddScoped<IMovimientoRepository, MovimientoRepository>();
 builder.Services.AddScoped<IDetalleDeMovimientosRepository, DetalleDeMovimientosRepository>();
 builder.Services.AddScoped<ITipoDeMovimientoRepository, TipoDeMovimientoRepository>();
+builder.Services.AddScoped<INotaDeRemisionRepository, NotaDeRemisionRepository>();
+builder.Services.AddScoped<IReporteRepository, ReporteRepository>();
+
 
 var app = builder.Build();
 
