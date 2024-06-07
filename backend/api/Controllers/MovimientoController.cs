@@ -116,11 +116,11 @@ namespace api.Controllers
 
                         if (tipoDeMovimiento.Str_descripcion.ToLower() == "ingreso")
                         {
-                            producto.Int_cantidad_actual += detalle.Int_cantidad;
                             var nuevoDetalle = new CreateDetalleRequestDto
                             {
                                 Int_cantidad = detalle.Int_cantidad,
                             };
+
                             var detalleModel = nuevoDetalle.ToDetalleFromCreate(movimientoModel.Id, detalle.ProductoId);
                             await _detalleRepo.CreateAsync(detalleModel);
                         }
@@ -130,12 +130,12 @@ namespace api.Controllers
                             {
                                 return BadRequest("Cantidad insuficiente en el depósito origen.");
                             }
-                            producto.Int_cantidad_actual -= detalle.Int_cantidad;
 
                             var nuevoDetalle = new CreateDetalleRequestDto
                             {
                                 Int_cantidad = detalle.Int_cantidad,
                             };
+
                             var detalleModel = nuevoDetalle.ToDetalleFromCreate(movimientoModel.Id, detalle.ProductoId);
                             await _detalleRepo.CreateAsync(detalleModel);
                         }
@@ -155,8 +155,17 @@ namespace api.Controllers
                             {
                                 var nuevoProductoDestino = new CreateProductoCantidadDto
                                 {
+                                    Str_ruta_imagen = producto.Str_ruta_imagen,
                                     Str_nombre = producto.Str_nombre,
-                                    Int_cantidad_actual = detalle.Int_cantidad
+                                    Str_descripcion = producto.Str_descripcion,
+                                    Int_cantidad_actual = detalle.Int_cantidad,
+                                    Int_cantidad_minima = producto.Int_cantidad_minima,
+                                    Dec_costo = producto.Dec_costo,
+                                    Dec_costo_PPP = producto.Dec_costo_PPP,
+                                    Int_iva = producto.Int_iva,
+                                    Dec_precio_mayorista = producto.Dec_precio_mayorista,
+                                    Dec_precio_minorista = producto.Dec_precio_minorista,
+                                    Bool_borrado = false
                                 };
                                 var productoModel = nuevoProductoDestino.ToProductoCantidadFromCreate(movimiento.DepositoDestinoId, producto.ProveedorId, producto.MarcaId);
                                 await _productoRepo.CreateAsync(productoModel);

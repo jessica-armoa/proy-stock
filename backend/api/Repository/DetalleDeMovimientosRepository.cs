@@ -4,7 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using api.Data;
 using api.Dtos.DetalleDeMovimiento;
+using api.Dtos.Producto;
 using api.Interfaces;
+using api.Mapper;
 using api.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,6 +21,50 @@ namespace api.Repository
         }
         public async Task<DetalleDeMovimiento> CreateAsync(DetalleDeMovimiento detalleModel)
         {
+            var movimientoDetalle = await _context.movimientos
+                .Where(m => m.Bool_borrado != true)
+                .FirstOrDefaultAsync(m => m.Id == detalleModel.MovimientoId);
+
+            if (movimientoDetalle == null)
+            {
+                return null;
+            }
+
+            var tipoDeMovimiento = await _context.tipos_de_movimientos
+                .Where(t => t.Bool_borrado != true)
+                .FirstOrDefaultAsync(t => t.Id == movimientoDetalle.TipoDeMovimientoId);
+
+            if (tipoDeMovimiento == null)
+            {
+                return null;
+            }
+
+            if (tipoDeMovimiento.Str_descripcion.ToLower() == "ingreso")
+            {
+                var productoEnOrigen = await _context.productos
+                    .Where(p => p.Bool_borrado != true)
+                    .FirstOrDefaultAsync(p => p.Id == detalleModel.ProductoId);
+
+                if (tipoDeMovimiento == null || productoEnOrigen == null)
+                {
+                    return null;
+                }
+                productoEnOrigen.Int_cantidad_actual += detalleModel.Int_cantidad;
+            }
+
+            if (tipoDeMovimiento.Str_descripcion.ToLower() == "egreso")
+            {
+                var productoEnOrigen = await _context.productos
+                    .Where(p => p.Bool_borrado != true)
+                    .FirstOrDefaultAsync(p => p.Id == detalleModel.ProductoId);
+
+                if (tipoDeMovimiento == null || productoEnOrigen == null)
+                {
+                    return null;
+                }
+                productoEnOrigen.Int_cantidad_actual -= detalleModel.Int_cantidad;
+            }
+            
             await _context.detalles_de_movimientos.AddAsync(detalleModel);
             await _context.SaveChangesAsync();
             return detalleModel;
@@ -41,40 +87,40 @@ namespace api.Repository
             var tipoDeMovimiento = await _context.tipos_de_movimientos
                 .Where(t => t.Bool_borrado != true)
                 .FirstOrDefaultAsync(t => t.Id == movimientoDetalle.TipoDeMovimientoId);
-            
+
             if (tipoDeMovimiento == null) return null;
 
-            if(tipoDeMovimiento.Str_descripcion.ToLower() == "ingreso")
+            if (tipoDeMovimiento.Str_descripcion.ToLower() == "ingreso")
             {
                 var productoDetalle = await _context.productos
                 .Where(p => p.Bool_borrado != true)
                 .FirstOrDefaultAsync(p => p.Id == detalleExistente.ProductoId);
-            
-                 if (productoDetalle == null) return null;
-                productoDetalle.Int_cantidad_actual -= detalleExistente.Int_cantidad;       
-            }
-            
-            if(tipoDeMovimiento.Str_descripcion.ToLower() == "egreso")
-            {
-                var productoDetalle = await _context.productos
-                .Where(p => p.Bool_borrado != true)
-                .FirstOrDefaultAsync(p => p.Id == detalleExistente.ProductoId);
-            
-            if (productoDetalle == null) return null;
-                productoDetalle.Int_cantidad_actual += detalleExistente.Int_cantidad; 
+
+                if (productoDetalle == null) return null;
+                productoDetalle.Int_cantidad_actual -= detalleExistente.Int_cantidad;
             }
 
-            if(tipoDeMovimiento.Str_descripcion.ToLower() == "transferencia")
+            if (tipoDeMovimiento.Str_descripcion.ToLower() == "egreso")
+            {
+                var productoDetalle = await _context.productos
+                .Where(p => p.Bool_borrado != true)
+                .FirstOrDefaultAsync(p => p.Id == detalleExistente.ProductoId);
+
+                if (productoDetalle == null) return null;
+                productoDetalle.Int_cantidad_actual += detalleExistente.Int_cantidad;
+            }
+
+            if (tipoDeMovimiento.Str_descripcion.ToLower() == "transferencia")
             {
                 var productoEnOrigen = await _context.productos
                     .Where(p => p.Bool_borrado != true)
-                    .FirstOrDefaultAsync(p => p.Id ==detalleExistente.ProductoId && p.DepositoId == movimientoDetalle.DepositoOrigenId);
-                
+                    .FirstOrDefaultAsync(p => p.Id == detalleExistente.ProductoId && p.DepositoId == movimientoDetalle.DepositoOrigenId);
+
                 var productoEnDestino = await _context.productos
                     .Where(p => p.Bool_borrado != true)
-                    .FirstOrDefaultAsync(p => p.Id ==detalleExistente.ProductoId && p.DepositoId == movimientoDetalle.DepositoDestinoId);
-                
-                if(productoEnDestino == null || productoEnOrigen == null)
+                    .FirstOrDefaultAsync(p => p.Id == detalleExistente.ProductoId && p.DepositoId == movimientoDetalle.DepositoDestinoId);
+
+                if (productoEnDestino == null)
                 {
                     return null;
                 }
@@ -82,8 +128,8 @@ namespace api.Repository
                 productoEnOrigen.Int_cantidad_actual += detalleExistente.Int_cantidad;
                 productoEnDestino.Int_cantidad_actual -= detalleExistente.Int_cantidad;
             }
-            
-            
+
+
             detalleExistente.Bool_borrado = true;
 
             await _context.SaveChangesAsync();
@@ -146,42 +192,42 @@ namespace api.Repository
             var tipoDeMovimiento = await _context.tipos_de_movimientos
                 .Where(t => t.Bool_borrado != true)
                 .FirstOrDefaultAsync(t => t.Id == movimientoDetalle.TipoDeMovimientoId);
-            
+
             if (tipoDeMovimiento == null) return null;
 
-            if(tipoDeMovimiento.Str_descripcion.ToLower() == "ingreso")
+            if (tipoDeMovimiento.Str_descripcion.ToLower() == "ingreso")
             {
                 var productoDetalle = await _context.productos
                 .Where(p => p.Bool_borrado != true)
                 .FirstOrDefaultAsync(p => p.Id == detalleAntiguo.ProductoId);
-            
-                 if (productoDetalle == null) return null;
-                productoDetalle.Int_cantidad_actual -= detalleAntiguo.Int_cantidad;  
-                productoDetalle.Int_cantidad_actual += detalleDto.Int_cantidad;     
-            }
-            
-            if(tipoDeMovimiento.Str_descripcion.ToLower() == "egreso")
-            {
-                var productoDetalle = await _context.productos
-                .Where(p => p.Bool_borrado != true)
-                .FirstOrDefaultAsync(p => p.Id == detalleAntiguo.ProductoId);
-            
-            if (productoDetalle == null) return null;
-                productoDetalle.Int_cantidad_actual += detalleAntiguo.Int_cantidad;
-                productoDetalle.Int_cantidad_actual -= detalleDto.Int_cantidad;  
+
+                if (productoDetalle == null) return null;
+                productoDetalle.Int_cantidad_actual -= detalleAntiguo.Int_cantidad;
+                productoDetalle.Int_cantidad_actual += detalleDto.Int_cantidad;
             }
 
-            if(tipoDeMovimiento.Str_descripcion.ToLower() == "transferencia")
+            if (tipoDeMovimiento.Str_descripcion.ToLower() == "egreso")
+            {
+                var productoDetalle = await _context.productos
+                .Where(p => p.Bool_borrado != true)
+                .FirstOrDefaultAsync(p => p.Id == detalleAntiguo.ProductoId);
+
+                if (productoDetalle == null) return null;
+                productoDetalle.Int_cantidad_actual += detalleAntiguo.Int_cantidad;
+                productoDetalle.Int_cantidad_actual -= detalleDto.Int_cantidad;
+            }
+
+            if (tipoDeMovimiento.Str_descripcion.ToLower() == "transferencia")
             {
                 var productoEnOrigen = await _context.productos
                     .Where(p => p.Bool_borrado != true)
                     .FirstOrDefaultAsync(p => p.Id == detalleAntiguo.ProductoId && p.DepositoId == movimientoDetalle.DepositoOrigenId);
-                
+
                 var productoEnDestino = await _context.productos
                     .Where(p => p.Bool_borrado != true)
                     .FirstOrDefaultAsync(p => p.Id == detalleAntiguo.ProductoId && p.DepositoId == movimientoDetalle.DepositoDestinoId);
-                
-                if(productoEnDestino == null || productoEnOrigen == null)
+
+                if (productoEnDestino == null || productoEnOrigen == null)
                 {
                     return null;
                 }
@@ -190,9 +236,9 @@ namespace api.Repository
                 productoEnDestino.Int_cantidad_actual -= detalleAntiguo.Int_cantidad;
                 //Cargar las cantidades nuevas
                 productoEnOrigen.Int_cantidad_actual -= detalleDto.Int_cantidad;
-                productoEnDestino.Int_cantidad_actual += detalleDto.Int_cantidad;  
+                productoEnDestino.Int_cantidad_actual += detalleDto.Int_cantidad;
             }
-            
+
             detalleAntiguo.Int_cantidad -= detalleAntiguo.Int_cantidad;
             detalleAntiguo.Int_cantidad += detalleDto.Int_cantidad;
             detalleAntiguo.Bool_borrado = false;
