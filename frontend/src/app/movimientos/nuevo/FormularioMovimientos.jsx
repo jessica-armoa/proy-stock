@@ -3,43 +3,89 @@
 import { useEffect, useState } from "react";
 import { Card, Select, SelectItem, SearchSelect, SearchSelectItem, Table, TableBody, TableCell, TableHead, TableHeaderCell, TableRow } from "@tremor/react";
 import { useRouter } from 'next/navigation';
-import DepositosConfig from '../../depositos/DepositosConfig';
+import DepositosConfig from "../../depositos/DepositosConfig";
 import ProductosConfig from "../../productos/ProductosConfig";
+import MovimientosConfig from "../MovimientosConfig";
+import DepositosController from "@/libs/DepositosController";
+import ProductsController from "@/libs/ProductsController";
 
-//import { v4 as uuidv4 } from 'uuid';
 let detalleIdCounter = 0;
-{/*let arregloProductos = [
-    { id: 1, nombre: "Producto 1", precio: 10000 },
-    { id: 2, nombre: "Producto 2", precio: 15000 },
-    { id: 3, nombre: "Producto 3", precio: 20000 },
-{ id: 4, nombre: "Producto 4", precio: 25000 }];*/}
 
 export default function FormularioMovimientos() {
     const navigate = useRouter();
 
     //const [numeroDocumento, setNumeroDocumento] = useState('');
+
     const [timbrado, setTimbrado] = useState('');
+
+    //Encabezado de Movimientos
     const [responsable, setResponsable] = useState('');
     const [fecha, setFecha] = useState('');
-    const [tipoMovimiento, setTipoMovimiento] = useState('');
+    const [fk_motivoId, setFk_MotivoId] = useState(0);
+    const [motivos, setMotivos] = useState([]);
+    const tiposDeMovimientos = [
+        { id: 1, str_descripcion: 'ingreso' },
+        { id: 2, str_descripcion: 'egreso' },
+        { id: 3, str_descripcion: 'transferencia' }
+    ];
+    const [fk_tipo_de_movimiento, setFk_tipo_de_movimiento] = useState(0);
+    const motivosIngreso = [
+        { id: 2, str_motivo: 'Compra' },
+        { id: 3, str_motivo: 'Devolucion de cliente' }
+    ];
+
+    const motivosEgreso = [
+        { id: 1, str_motivo: 'Venta Cliente' },
+        { id: 4, str_motivo: 'Devolucion a proveedor' },
+        { id: 7, str_motivo: 'Perdida por deterioro' }
+    ];
+
+    const motivosTransferencia = [{ id: 8, str_motivo: 'transferencia' }];
+
+    useEffect(() => {
+        // Función para obtener los motivos según el tipo de movimiento seleccionado
+        const obtenerMotivos = (tipoMovimientoId) => {
+            switch (tipoMovimientoId) {
+                case 1: // Ingreso
+                    setMotivos(motivosIngreso);
+                    break;
+                case 2: // Egreso
+                    setMotivos(motivosEgreso);
+                    break;
+                case 3: // Transferencia
+                    setMotivos(motivosTransferencia);
+                    break;
+                default:
+                    setMotivos([]); // Si el tipo de movimiento no coincide con ninguno de los anteriores, se establecen motivos vacíos
+                    break;
+            }
+        };
+
+        // Llamar a la función para establecer los motivos al principio y cada vez que cambie el tipo de movimiento seleccionado
+        obtenerMotivos(fk_tipo_de_movimiento);
+    }, [fk_tipo_de_movimiento]);
     //const [detallesMovimientos, setDetallesMovimientos] = useState([{ idDetalle: detalleIdCounter++, descripcion: '', cantidad: 1, precio: 0, total: 0 }])
+
+    //Este es el arreglo de detalles que se le va a pasar a detalles de movimientos
     const [detallesMovimientos, setDetallesMovimientos] = useState([]);
     const [depositoOrigen, setDepositoOrigen] = useState(0);
     const [iva, setIva] = useState(10);
 
+    //Manejo de listas de productos y Depósitos de Origen y Destino para los movimientos
     const [fk_producto, setFk_producto] = useState(0);
     const [arregloProductos, setArreglo_productos] = useState([]);
-
-
-    const [fk_deposito_origen, setFk_deposito_origen] = useState(0);
-    const [fk_deposito_destino, setFk_deposito_destino] = useState(0);
+    const [fk_deposito_origen, setFk_deposito_origen] = useState(null);
+    const [fk_deposito_destino, setFk_deposito_destino] = useState(null);
     const [depositos, setDepositos] = useState([]);
     const [depositosDestinos, setDepositosDestinos] = useState([]);
+    //evento para mostrar solo destinos que no sean igual que su deposito origen
+    const opcionesFiltradas = depositosDestinos.filter(opcion => opcion.id !== fk_deposito_origen);
+    //Con esta función devolvemos las listas de productos y la lista de depósitos tanto para origen como destino.
     useEffect(() => {
         const extraccionDepositos = async () => {
             try {
-                const respuestaDepositos = await DepositosConfig.getDeposito();
-                const respuestaProductos = await ProductosConfig.getProducto();
+                const respuestaDepositos = await DepositosController.getDepositos();
+                const respuestaProductos = await ProductsController.getProducts();
                 setDepositos(respuestaDepositos.data);
                 setDepositosDestinos(respuestaDepositos.data);
                 setArreglo_productos(respuestaProductos.data);
@@ -50,13 +96,15 @@ export default function FormularioMovimientos() {
         extraccionDepositos();
     }, []);
 
-    
+
+
+
 
 
     const [motivo, setMotivo] = useState('');
 
     //Estado para detalle temporal
-    const [detalleTemp, setDetalleTemp] = useState({ descripcion: '', cantidad: 1, precio: 0, total: 0 });
+    const [detalleTemp, setDetalleTemp] = useState({ idProducto: 0, descripcion: '', cantidad: 1, precio: 0, total: 0 });
 
     const manejarCambioDetalleTemp = (nombre, valor) => {
         setDetalleTemp(prevDetalle => ({
@@ -66,6 +114,27 @@ export default function FormularioMovimientos() {
         }));
     };
 
+    const manejarAgregarDetalle = () => {
+        const productoSeleccionado = arregloProductos.find(producto => {
+            if (producto.id === +fk_producto) {
+                return producto;
+            }
+        });
+        //console.log(detallesMovimientos);
+        const nuevoId = detallesMovimientos.length;
+        setDetallesMovimientos([...detallesMovimientos, { ...detalleTemp, idDetalle: nuevoId, idProducto: productoSeleccionado.id, descripcion: productoSeleccionado.str_nombre, cantidad: detalleTemp.cantidad, precio: detalleTemp.precio, total: detalleTemp.total }]);
+        setDetalleTemp({ idProducto: 0, descripcion: '', cantidad: 1, precio: 0, total: 0 });
+        setFk_producto(0); // Reset product selection after adding
+    };
+
+    useEffect(() => {
+        console.log(detallesMovimientos);
+    }, [detallesMovimientos]);
+
+    const manejarQuitarDetalle = (id) => {
+        setDetallesMovimientos(detallesMovimientos.filter(detalle => detalle.idDetalle !== id));
+    };
+
     // Campos adicionales para transferencia
     const [numeroNotaRemision, setNumeroNotaRemision] = useState('');
     const [timbradoRemision, setTimbradoRemision] = useState('');
@@ -73,7 +142,9 @@ export default function FormularioMovimientos() {
     const [datosVehiculo, setDatosVehiculo] = useState('');
     const [conductor, setConductor] = useState('');
 
-    const manejarCambioProducto = (id, nombre, valor) => {
+    //<-- Estas funciones agregaban producto pero lo que agregamos son detalles y no productos.-->
+    //<-- Estas funciones no se están utilizando así que se van a eliminar más adelante.-->
+    {/*const manejarCambioProducto = (id, nombre, valor) => {
         const detallesLista = detallesMovimientos.map(detalle =>
             detalle.idDetalle === id ? { ...detalle, [nombre]: valor, total: nombre === 'precio' || nombre === 'cantidad' ? (nombre === 'precio' ? detalle.cantidad * parseFloat(valor) : parseInt(valor) * detalle.precio) : detalle.total } : detalle
         );
@@ -84,21 +155,15 @@ export default function FormularioMovimientos() {
         setDetallesMovimientos([...detallesMovimientos, { idDetalle: 0, descripcion: '', cantidad: 1, precio: 0, total: 0 }]);
     };
 
-    const manejarAgregarDetalle = () => {
-        const productoSeleccionado = arregloProductos.find(producto => producto.id === fk_producto);
-        const nuevoId = detallesMovimientos.length ? Math.max(detallesMovimientos.map(detalle => detalle.idDetalle)) + 1 : 1;
-        setDetallesMovimientos([...detallesMovimientos, { ...detalleTemp, idDetalle: nuevoId, descripcion: productoSeleccionado.str_nombre }]);
-        setDetalleTemp({ descripcion: '', cantidad: 1, precio: 0, total: 0 });
-        setFk_producto(0); // Reset product selection after adding
-    };
-
-    const manejarQuitarDetalle = (id) => {
-        setDetallesMovimientos(detallesMovimientos.filter(detalle => detalle.idDetalle !== id));
-    };
-
     const manejarQuitarProducto = (id) => {
         setDetallesMovimientos(detallesMovimientos.filter(detalle => detalle.idDetalle != id));
-    };
+    };*/}
+
+    //Estas funciones se utilizan para manejar los detalles del movimientos
+    // manejarAgregarDetalle
+
+
+
 
     const calcularSubTotal = () => {
         return detallesMovimientos.reduce((acumulador, detalle) => acumulador + detalle.total, 0);
@@ -112,31 +177,48 @@ export default function FormularioMovimientos() {
         return subTotal;
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log('Factura enviada', { responsable, fecha, productos: detallesMovimientos, iva });
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        try {
+            const movimientoActual = {
+                "date_fecha": fecha,
+                "tipoDeMovimientoId": fk_tipo_de_movimiento,
+                "depositoOrigenId": fk_deposito_origen,
+                "depositoDestinoId": fk_deposito_destino,
+                "bool_borrado": false,
+                "detallesDeMovimientos": detallesMovimientos.map(detalle => ({
+                    "int_cantidad": detalle.cantidad,
+                    "productoId": detalle.idProducto
+                }))
+            }
+            console.log('Movimiento enviado', movimientoActual);
+            debugger;
+            const movimientoCreado = await MovimientosConfig.createMovimiento(movimientoActual);
+
+
+        } catch (error) {
+            console.error('Error al enviar los datos del formulario: ', error);
+        }
+
+    };
+
+    const formatNumber = (number) => {
+        return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    };
+
+    const unformatNumber = (number) => {
+        return number.replace(/,/g, '');
     };
 
     const subTotal = calcularSubTotal();
     const IVA = calcularIva(subTotal);
     const total = calcularTotal(subTotal);
 
-    const motivosIngreso = [
-        { value: 'compra', label: 'Compra' },
-        { value: 'ajuste_stock', label: 'Ajuste de Stock' },
-        { value: 'regalo', label: 'Regalo' }
-    ];
 
-    const motivosEgreso = [
-        { value: 'venta', label: 'Venta' },
-        { value: 'ajuste_stock', label: 'Ajuste de Stock' },
-        { value: 'transferencia', label: 'Transferencia' },
-        { value: 'fallo', label: 'Rotura/Fallo/Inservible' }
-    ];
+    //const motivos = tipoMovimiento === 'transferencia' ? motivosTransferencia : ('ingreso' ? motivosIngreso : motivosEgreso);
 
-    const motivos = tipoMovimiento === 'ingreso' ? motivosIngreso : motivosEgreso;
 
-    const esTransferencia = motivo === 'transferencia';
+    const esTransferencia = fk_tipo_de_movimiento === 3;
 
     return (
         <>
@@ -172,17 +254,17 @@ export default function FormularioMovimientos() {
 
                             <div>
                                 <label
-                                    htmlFor="tipoMovimiento"
+                                    htmlFor="fk_tipo_de_movimiento"
                                     className="block text-sm font-medium text-gray-700"
                                 >
                                     Tipo de Movimiento
                                 </label>
-                                <select
-                                    id="tipoMovimiento"
-                                    name="tipoMovimiento"
-                                    value={tipoMovimiento}
+                                {/*<select
+                                    id="fk_tipo_de_movimiento"
+                                    name="fk_tipo_de_movimiento"
+                                    value={fk_tipo_de_movimiento}
                                     onChange={(e) => {
-                                        setTipoMovimiento(e.target.value);
+                                        setFk_tipo_de_movimiento(e.target.value);
                                         setMotivo('');
                                     }}
                                     className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
@@ -193,7 +275,16 @@ export default function FormularioMovimientos() {
                                     </option>
                                     <option value="ingreso">Ingreso</option>
                                     <option value="egreso">Egreso</option>
-                                </select>
+                                    <option value="transferencia">Transferencia</option>
+                                </select>*/}
+                                <SearchSelect id="fk_tipo_de_movimiento" className='mt-2' placeholder='Tipo de Movimiento' value={fk_tipo_de_movimiento} onValueChange={(value) => {
+                                    setFk_tipo_de_movimiento(parseInt(value));
+                                    setMotivo('');
+                                }}>
+                                    {tiposDeMovimientos.map(tiposMovimientos => (
+                                        <SearchSelectItem key={tiposMovimientos.id} value={tiposMovimientos.id}>{tiposMovimientos.str_descripcion}</SearchSelectItem>
+                                    ))}
+                                </SearchSelect>
                             </div>
 
                             <div>
@@ -203,7 +294,7 @@ export default function FormularioMovimientos() {
                                 >
                                     Motivo
                                 </label>
-                                <select
+                                {/*<select
                                     id="motivo"
                                     name="motivo"
                                     value={motivo}
@@ -215,11 +306,16 @@ export default function FormularioMovimientos() {
                                         Seleccione un Motivo
                                     </option>
                                     {motivos.map(motivo => (
-                                        <option key={motivo.value} value={motivo.value}>
-                                            {motivo.label}
+                                        <option key={motivo.id} value={motivo.id}>
+                                            {motivo.str}
                                         </option>
                                     ))}
-                                </select>
+                                </select>*/}
+                                <SearchSelect id="fk_motivoId" className='mt-2' placeholder='Motivo' value={fk_motivoId} onValueChange={(value) => setFk_MotivoId(parseInt(value))}>
+                                    {motivos.map(motivosSeleccionados => (
+                                        <SearchSelectItem key={motivosSeleccionados.id} value={motivosSeleccionados.id}>{motivosSeleccionados.str_motivo}</SearchSelectItem>
+                                    ))}
+                                </SearchSelect>
                             </div>
 
                             <div>
@@ -255,7 +351,8 @@ export default function FormularioMovimientos() {
                                             <option value="2">2</option>
                                         </select>*/}
                                         <SearchSelect id="fk_deposito_destino" className='mt-2' placeholder='Depósito' value={fk_deposito_destino} onValueChange={(value) => setFk_deposito_destino(parseInt(value))}>
-                                            {depositosDestinos.map(depositoDestino => (
+                                            {opcionesFiltradas.map(depositoDestino => (
+
                                                 <SearchSelectItem key={depositoDestino.id} value={depositoDestino.id}>{depositoDestino.str_nombre}</SearchSelectItem>
                                             ))}
                                         </SearchSelect>
@@ -317,6 +414,7 @@ export default function FormularioMovimientos() {
                         <div className="flex justify-end mt-6 gap-2">
                             <button type="button" onClick={() => navigate.push('/')} className="px-4 py-2 bg-gray-400 text-white rounded-md">Cancelar</button>
                             <button
+                                disabled={detallesMovimientos.length === 0}
                                 type="submit"
                                 className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
                             >
@@ -340,10 +438,10 @@ export default function FormularioMovimientos() {
                                 ))}
                             </SearchSelect>*/}
                             <SearchSelect id="fk_producto" className='mt-2' placeholder='Producto' value={fk_producto} onValueChange={(value) => setFk_producto(parseInt(value))}>
-                                            {arregloProductos.map(producto => (
-                                                <SearchSelectItem key={producto.id} value={producto.id}>{producto.str_nombre}</SearchSelectItem>
-                                            ))}
-                                        </SearchSelect>
+                                {arregloProductos.map(producto => (
+                                    <SearchSelectItem key={producto.id} value={producto.id}>{producto.str_nombre}</SearchSelectItem>
+                                ))}
+                            </SearchSelect>
                         </div>
 
                         <div>
@@ -398,6 +496,7 @@ export default function FormularioMovimientos() {
                 <Table className="mt-8">
                     <TableHead>
                         <TableRow>
+                            <TableHeaderCell>#</TableHeaderCell>
                             <TableHeaderCell>Detalle</TableHeaderCell>
                             <TableHeaderCell>Cantidad</TableHeaderCell>
                             <TableHeaderCell>Precio Unitario</TableHeaderCell>
@@ -409,6 +508,7 @@ export default function FormularioMovimientos() {
                     <TableBody>
                         {detallesMovimientos.map((detalle, index) => (
                             <TableRow key={detalle.idDetalle}>
+                                <TableCell>{detalle.idProducto}</TableCell>
                                 <TableCell>{detalle.descripcion}</TableCell>
                                 <TableCell>{detalle.cantidad}</TableCell>
                                 <TableCell>{detalle.precio}</TableCell>
