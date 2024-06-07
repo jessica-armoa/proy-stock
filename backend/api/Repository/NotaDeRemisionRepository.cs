@@ -1,14 +1,10 @@
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using api.Dtos.NotaDeRemision;
-using api.Dtos.DetalleDeMovimiento;
-using api.Interfaces;
 using api.Data;
-using Microsoft.EntityFrameworkCore;
 using api.Models;
+using Microsoft.EntityFrameworkCore;
 
-namespace api.Repository
+namespace api.Interfaces
 {
   public class NotaDeRemisionRepository : INotaDeRemisionRepository
   {
@@ -19,18 +15,31 @@ namespace api.Repository
       _context = context;
     }
 
-    public async Task<NotaDeRemision?> GetByIdAsync(int? id)
+    public async Task CreateAsync(NotaDeRemision notaDeRemision)
     {
-        return await _context.notas_de_remision
-            .Include(n => n.Movimiento)
-            .FirstOrDefaultAsync(i => i.Id == id);
+      _context.notas_de_remision.Add(notaDeRemision);
+      await _context.SaveChangesAsync();
     }
 
     public async Task<List<NotaDeRemision>> GetAllAsync()
     {
-        return await _context.notas_de_remision
-          .Include(n => n.Movimiento)
-          .ToListAsync();
+      return await _context.notas_de_remision.ToListAsync();
+    }
+
+    public async Task<NotaDeRemision?> GetByIdAsync(int? id)
+    {
+      return await _context.notas_de_remision.FirstOrDefaultAsync(n => n.Id == id);
+    }
+
+    public async Task<NotaDeRemision?> GetUltimaNotaDeRemisionAsync()
+    {
+      return await _context.notas_de_remision.OrderByDescending(n => n.Id).FirstOrDefaultAsync();
+    }
+
+    public async Task UpdateAsync(NotaDeRemision notaDeRemision)
+    {
+      _context.Entry(notaDeRemision).State = EntityState.Modified;
+      await _context.SaveChangesAsync();
     }
   }
 }
