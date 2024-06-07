@@ -25,12 +25,16 @@ namespace api.Repository
 
         public async Task<Proveedor?> DeleteAsync(int id)
         {
-            var proveedorModel = await _context.proveedores.FirstOrDefaultAsync(p => p.Id == id);
-            if(proveedorModel == null) return null;
+            var proveedorExistente = await _context.proveedores
+                .Where(p => p.Bool_borrado != true)
+                .FirstOrDefaultAsync(p => p.Id == id);
 
-            _context.proveedores.Remove(proveedorModel);
+            if(proveedorExistente == null) return null;
+
+            proveedorExistente.Bool_borrado = true;
+            
             await _context.SaveChangesAsync();
-            return proveedorModel;
+            return proveedorExistente;
         }
 
         public async Task<List<Proveedor>> GetAllAsync()
@@ -72,7 +76,7 @@ namespace api.Repository
             proveedorExistente.Str_telefono = proveedorModel.Str_telefono;
             proveedorExistente.Str_direccion = proveedorModel.Str_direccion;
             proveedorExistente.Str_correo = proveedorModel.Str_correo;
-            proveedorExistente.Bool_borrado = proveedorModel.Bool_borrado;
+            proveedorExistente.Bool_borrado = false;
 
             await _context.SaveChangesAsync();
             return proveedorExistente;

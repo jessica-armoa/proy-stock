@@ -33,40 +33,19 @@
 }
 
 .tablerow:hover {
-  background: rgb(246, 245, 248); /* Set the desired hover background color */
-  color: black;
+  background: rgb(246, 245, 248); 
+  color: rgb(51, 51, 71);
 }
 
-/*:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+.w-pdf {
+  min-width: 100%;
+  max-width: 100%;
+  min-height: 600px;
+  max-height: 900px;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+.pagination-container {
+  position: fixed;
+  bottom: 30px;
+  width: 80%;
 }
-
-body {
-  color: rgb(var(--foreground-rgb));
-  margin-top: 50px;
-  
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
-  
-}
-
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
-}
-*/

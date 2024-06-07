@@ -47,7 +47,6 @@ namespace api.Repository
             return await _context.movimientos
             .Where(m => m.Bool_borrado != true)
             .Include(m => m.DetallesDeMovimientos)
-            .Where(d => d.Bool_borrado != true)
             .ToListAsync();
         }
 

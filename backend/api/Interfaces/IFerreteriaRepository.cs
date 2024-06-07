@@ -13,7 +13,7 @@ namespace api.Interfaces
         Task<Ferreteria?> GetByIdAsync(int id);
         Task<Ferreteria> CreateAsync(Ferreteria ferreteriaModel);
         Task<Ferreteria?> UpdateAsync(int id, Ferreteria ferreteriaModel);
-        Task<Ferreteria?> DeleteAsync(int id, FerreteriaDto ferreteriaDto);
+        Task<Ferreteria?> DeleteAsync(int id);
         Task<bool> FerreteriaExists(int id);
     }
 }

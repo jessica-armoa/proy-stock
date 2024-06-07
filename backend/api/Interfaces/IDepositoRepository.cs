@@ -13,7 +13,7 @@ namespace api.Interfaces
         Task<DepositoDto?> GetByIdAsync(int? id);
         Task<Deposito> CreateAsync(Deposito depositoModel);
         Task<Deposito?> UpdateAsync(int id, UpdateDepositoRequestDto depositoDto);
-        Task<Deposito?> DeleteAsync(int id, DepositoDto depositoDto);
+        Task<Deposito?> DeleteAsync(int id);
         Task<bool> DepositoExists(int id);
         Task<Producto?> GetProductoEnDepositoAsync(int? depositoId, string producto_nombre);
     }

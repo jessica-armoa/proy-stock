@@ -101,6 +101,21 @@ namespace api.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "timbrados",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Str_timbrado = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Date_inicio_vigencia = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Date_fin_vigencia = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_timbrados", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -404,7 +419,6 @@ namespace api.Migrations
                     Int_cantidad = table.Column<int>(type: "int", nullable: false),
                     MovimientoId = table.Column<int>(type: "int", nullable: true),
                     ProductoId = table.Column<int>(type: "int", nullable: true),
-                    NotaDeRemisionId = table.Column<int>(type: "int", nullable: false),
                     Bool_borrado = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -415,12 +429,6 @@ namespace api.Migrations
                         column: x => x.MovimientoId,
                         principalTable: "movimientos",
                         principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_detalles_de_movimientos_notas_de_remision_NotaDeRemisionId",
-                        column: x => x.NotaDeRemisionId,
-                        principalTable: "notas_de_remision",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_detalles_de_movimientos_productos_ProductoId",
                         column: x => x.ProductoId,
@@ -433,9 +441,9 @@ namespace api.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "2ae16b15-47b5-4748-8d79-74c280dcc7d7", null, "Encargado", "ENCARGADO" },
-                    { "705e1362-4e8b-489b-87f3-9f13a496bf52", null, "User", "USER" },
-                    { "b9255ef2-6624-4fc0-89d0-ce60054fcfa1", null, "Admin", "ADMIN" }
+                    { "4406daa5-d78e-4b63-87ae-05f6ced3d839", null, "User", "USER" },
+                    { "7eaf94f4-1e75-42c0-a6e1-664596d02c45", null, "Encargado", "ENCARGADO" },
+                    { "aa0b1b6e-b535-4fc2-98c5-611f2f919550", null, "Admin", "ADMIN" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -491,11 +499,6 @@ namespace api.Migrations
                 name: "IX_detalles_de_movimientos_MovimientoId",
                 table: "detalles_de_movimientos",
                 column: "MovimientoId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_detalles_de_movimientos_NotaDeRemisionId",
-                table: "detalles_de_movimientos",
-                column: "NotaDeRemisionId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_detalles_de_movimientos_ProductoId",
@@ -578,13 +581,16 @@ namespace api.Migrations
                 name: "detalles_de_movimientos");
 
             migrationBuilder.DropTable(
+                name: "notas_de_remision");
+
+            migrationBuilder.DropTable(
+                name: "timbrados");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
-
-            migrationBuilder.DropTable(
-                name: "notas_de_remision");
 
             migrationBuilder.DropTable(
                 name: "productos");

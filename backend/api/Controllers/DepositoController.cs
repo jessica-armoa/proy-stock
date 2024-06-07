@@ -91,17 +91,15 @@ namespace api.Controllers
                 return NotFound("El deposito que desea eliminar no existe!!");
             }
 
-            /*foreach(var producto in depositoExistente.Productos)
+            foreach(var producto in depositoExistente.Productos)
             {
-                producto.Bool_borrado = true;
                 foreach(var detalle in producto.DetallesDeMovimientos)
                 {
-                    detalle.Bool_borrado = true;
-                    await _detalleRepo.DeleteAsync(detalle.Id, detalle);
+                    await _detalleRepo.DeleteAsync(detalle.Id);
                 };
-                await _productoRepo.DeleteAsync(producto.Id, producto);
-            };*/
-            var depositoModel = await _depositoRepo.DeleteAsync(id, depositoExistente);
+                await _productoRepo.DeleteAsync(producto.Id);
+            };
+            var depositoModel = await _depositoRepo.DeleteAsync(id);
             if (depositoModel == null)
             {
                 return NotFound("El deposito que desea eliminar no existe!!");

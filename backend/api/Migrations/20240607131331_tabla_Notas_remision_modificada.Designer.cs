@@ -12,8 +12,8 @@ using api.Data;
 namespace api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240607002014_Initial")]
-    partial class Initial
+    [Migration("20240607131331_tabla_Notas_remision_modificada")]
+    partial class tabla_Notas_remision_modificada
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -54,19 +54,19 @@ namespace api.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "b9255ef2-6624-4fc0-89d0-ce60054fcfa1",
+                            Id = "940b3c0b-7e60-474c-95fc-ae493a31ff95",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "705e1362-4e8b-489b-87f3-9f13a496bf52",
+                            Id = "3e5a7970-f206-47eb-acf8-a0e1f84782c7",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "2ae16b15-47b5-4748-8d79-74c280dcc7d7",
+                            Id = "e40df266-077e-4ada-9679-8a9faed5802d",
                             Name = "Encargado",
                             NormalizedName = "ENCARGADO"
                         });
@@ -258,17 +258,12 @@ namespace api.Migrations
                     b.Property<int?>("MovimientoId")
                         .HasColumnType("int");
 
-                    b.Property<int>("NotaDeRemisionId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("ProductoId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("MovimientoId");
-
-                    b.HasIndex("NotaDeRemisionId");
 
                     b.HasIndex("ProductoId");
 
@@ -398,14 +393,78 @@ namespace api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("ComprobanteVenta")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ConductorDireccion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ConductorDocumento")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ConductorNombre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("Date_fecha_de_expedicion")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("Date_fecha_de_vencimiento")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("DestinatarioDocumento")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DestinatarioNombre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EmpresaActividad")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EmpresaDireccion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EmpresaNombre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EmpresaSucursal")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EmpresaTelefono")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Motivo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MotivoDescripcion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int?>("MovimientoId")
                         .HasColumnType("int");
+
+                    b.Property<string>("PuntoLlegada")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PuntoPartida")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Ruc")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Str_numero")
                         .IsRequired()
@@ -424,6 +483,30 @@ namespace api.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Str_timbrado")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TransportistaNombre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TransportistaRuc")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TrasladoFechaFin")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TrasladoFechaInicio")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TrasladoRua")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TrasladoVehiculo")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -528,6 +611,29 @@ namespace api.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("proveedores");
+                });
+
+            modelBuilder.Entity("api.Models.Timbrado", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Date_fin_vigencia")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("Date_inicio_vigencia")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Str_timbrado")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("timbrados");
                 });
 
             modelBuilder.Entity("api.Models.TipoDeMovimiento", b =>
@@ -695,19 +801,11 @@ namespace api.Migrations
                         .WithMany("DetallesDeMovimientos")
                         .HasForeignKey("MovimientoId");
 
-                    b.HasOne("api.Models.NotaDeRemision", "NotaDeRemision")
-                        .WithMany()
-                        .HasForeignKey("NotaDeRemisionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("api.Models.Producto", "Producto")
                         .WithMany("DetallesDeMovimientos")
                         .HasForeignKey("ProductoId");
 
                     b.Navigation("Movimiento");
-
-                    b.Navigation("NotaDeRemision");
 
                     b.Navigation("Producto");
                 });

@@ -8,7 +8,7 @@ import withAuth from "@/components/auth/withAuth";
 //import Photo from "../../../../components/productimg";
 
 // Dynamic imports
-const Sidebar = dynamic(() => import("@/components/sidebar"), { ssr: false });
+const Sidebar = dynamic(() => import("@/components/sidebar/Sidebar"), { ssr: false });
 const DataTable = dynamic(() => import("@/components/table"), { ssr: false });
 const Photo = dynamic(() => import("@/components/productimg"), { ssr: false });
 

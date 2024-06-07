@@ -8,7 +8,7 @@ import DepositosController from "../../libs/DepositosController";
 import dynamic from 'next/dynamic'; 
 import DepositosConfig from "./DepositosConfig";
 
-const Sidebar = dynamic(() => import("@/components/sidebar"), { ssr: false });
+const Sidebar = dynamic(() => import("@/components/sidebar/Sidebar"), { ssr: false });
 const DataTable = dynamic(() => import("@/components/table"), { ssr: false });
 
 const Depositos = () => {
@@ -117,9 +117,9 @@ const Depositos = () => {
       header: "Acciones",
       search: false,
       cell: ({ row }) => (
-        <div className="flex space-x-2">
+        <div id={"btn-actions"+row.original.id} className="flex justify-evenly invisible">
           <button
-            className="px-4 py-2 bg-cyan-400 text-white rounded hover:bg-cyan-500"
+            className="text-cyan-400 rounded  hover:text-blue-500"
             onClick={(event) => handleEdit(row.original, event)}
           >
             <svg
@@ -134,7 +134,7 @@ const Depositos = () => {
          
           </button>
           <button
-            className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-700"
+            className="text-red-400 rounded hover:text-red-700"
             onClick={(event) => handleDelete(row.original.id, event)}
           >
             <svg

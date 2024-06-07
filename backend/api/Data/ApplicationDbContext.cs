@@ -24,6 +24,7 @@ namespace api.Data
         public DbSet<Categoria> categorias { get; set; }
         public DbSet<DetalleDeMovimiento> detalles_de_movimientos { get; set; }
         public DbSet<NotaDeRemision> notas_de_remision { get; set; }
+        public DbSet<Timbrado> timbrados { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
