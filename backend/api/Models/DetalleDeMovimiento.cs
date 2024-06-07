@@ -15,7 +15,6 @@ namespace api.Models
         public Movimiento? Movimiento { get; set; }
         public int? ProductoId { get; set; }
         public Producto? Producto { get; set; }
-        public NotaDeRemision NotaDeRemision { get; set; }
         public bool Bool_borrado { get; set; } = false;
     }
 }
