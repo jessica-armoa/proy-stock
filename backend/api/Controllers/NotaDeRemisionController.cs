@@ -1,14 +1,14 @@
-using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using api.Dtos.NotaDeRemision;
 using api.Interfaces;
-using api.Mapper;
+using api.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
 {
+  [Route("api/notas-de-remision")]
   [ApiController]
-  [Route("api/nota")]
   public class NotaDeRemisionController : ControllerBase
   {
     private readonly INotaDeRemisionRepository _notaDeRemisionRepository;
@@ -19,33 +19,66 @@ namespace api.Controllers
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public async Task<ActionResult<List<NotaDeRemision>>> GetAllAsync()
     {
-      var notas = await _notaDeRemisionRepository.GetAllAsync();
-      var notasDto = notas.Select(n => n.ToNotaDeRemisionDto());
-      return Ok(notasDto);
+      var notasDeRemision = await _notaDeRemisionRepository.GetAllAsync();
+      return Ok(notasDeRemision);
     }
 
-    [HttpGet]
-    [Route("{id:int}")]
-    public async Task<IActionResult> GetById([FromRoute] int id)
+    [HttpGet("{id}")]
+    public async Task<ActionResult<NotaDeRemision>> GetByIdAsync(int? id)
     {
-      if (!ModelState.IsValid)
-        return BadRequest(ModelState);
+      var notaDeRemision = await _notaDeRemisionRepository.GetByIdAsync(id);
+      if (notaDeRemision == null)
+      {
+        return NotFound();
+      }
+      return Ok(notaDeRemision);
+    }
 
+    [HttpGet("ultimo")]
+    public async Task<ActionResult<NotaDeRemision>> GetUltimaNotaDeRemisionAsync()
+    {
+      var notaDeRemision = await _notaDeRemisionRepository.GetUltimaNotaDeRemisionAsync();
+      if (notaDeRemision == null)
+      {
+        return NotFound();
+      }
+      return Ok(notaDeRemision);
+    }
+
+    [HttpPost]
+    public async Task<ActionResult<NotaDeRemision>> CreateAsync(NotaDeRemision notaDeRemision)
+    {
       try
       {
-        var nota = await _notaDeRemisionRepository.GetByIdAsync(id);
-        if (nota == null)
-        {
-          return NotFound("La nota de remisión no existe");
-        }
-        return Ok(nota.ToNotaDeRemisionDto());
+        await _notaDeRemisionRepository.CreateAsync(notaDeRemision);
+        return CreatedAtAction(nameof(GetByIdAsync), new { id = notaDeRemision.Id }, notaDeRemision);
       }
       catch (Exception ex)
       {
-        return BadRequest(ex.Message);
+        return StatusCode(500, $"Error interno del servidor: {ex.Message}");
       }
+    }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateAsync(int id, NotaDeRemision notaDeRemision)
+    {
+      if (id != notaDeRemision.Id)
+      {
+        return BadRequest();
+      }
+
+      try
+      {
+        await _notaDeRemisionRepository.UpdateAsync(notaDeRemision);
+      }
+      catch (Exception ex)
+      {
+        return StatusCode(500, $"Error interno del servidor: {ex.Message}");
+      }
+
+      return NoContent();
     }
   }
 }
