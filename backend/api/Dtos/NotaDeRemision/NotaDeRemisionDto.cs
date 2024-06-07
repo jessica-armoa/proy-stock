@@ -9,8 +9,8 @@ namespace api.Dtos.NotaDeRemision
     public class NotaDeRemisionDto
     {
         public int Id { get; set; }
-        public int Str_numero { get; set; }
-        public int Int_timbrado { get; set; }
+        public string Str_numero { get; set; }
+        public string Str_timbrado { get; set; }
         public string Str_numero_de_comprobante_inicial { get; set; } = String.Empty;
         public string Str_numero_de_comprobante_final { get; set; } = String.Empty;
         public string Str_numero_de_comprobante_actual { get; set; } = String.Empty;
