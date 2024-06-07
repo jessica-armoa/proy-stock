@@ -73,7 +73,14 @@ namespace api.Controllers
             if(!ModelState.IsValid) 
                 return BadRequest(ModelState);
                 
-                var ferreteriaModel = await _ferreteriaRepo.DeleteAsync(id);
+                var ferreteriaExistente = await _ferreteriaRepo.GetByIdAsync(id);
+                if(ferreteriaExistente == null)
+                {
+                    return NotFound("La ferreteria que desea eliminar no existe!!");
+                }
+
+                var ferreteriaModel = await _ferreteriaRepo.DeleteAsync(id, ferreteriaExistente.ToFerreteriaDto());
+
                 if (ferreteriaModel == null)
                 {
                     return NotFound("La ferreteria que desea eliminar no existe!!");

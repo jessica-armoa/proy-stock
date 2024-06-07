@@ -54,7 +54,8 @@ builder.Services.AddControllers().AddNewtonsoftJson(options => {
 });
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>{
-    string connectionString = "Data Source=stockdb.clakio4kgb5y.us-east-2.rds.amazonaws.com;Initial Catalog=stockdb;User ID=admin;Password=adminstockdb;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";//Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
+    string connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
+    //"Data Source=stockdb.clakio4kgb5y.us-east-2.rds.amazonaws.com;Initial Catalog=stockdb;User ID=admin;Password=adminstockdb;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
     options.UseSqlServer(connectionString);
 });
 
@@ -122,6 +123,9 @@ builder.Services.AddScoped<IMarcaRepository, MarcaRepository>();
 builder.Services.AddScoped<IMovimientoRepository, MovimientoRepository>();
 builder.Services.AddScoped<IDetalleDeMovimientosRepository, DetalleDeMovimientosRepository>();
 builder.Services.AddScoped<ITipoDeMovimientoRepository, TipoDeMovimientoRepository>();
+builder.Services.AddScoped<INotaDeRemisionRepository, NotaDeRemisionRepository>();
+builder.Services.AddScoped<IReporteRepository, ReporteRepository>();
+
 
 var app = builder.Build();
 

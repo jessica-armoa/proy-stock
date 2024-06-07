@@ -18,9 +18,15 @@ namespace api.Mapper
                 Str_telefono = proveedorModel.Str_telefono,
                 Str_direccion = proveedorModel.Str_direccion,
                 Str_correo = proveedorModel.Str_correo,
-                Productos = proveedorModel.Productos.Select(p => p.ToProductoDto()).ToList(),
-                Categorias = proveedorModel.Categorias.Select(c => c.ToCategoriaDto()).ToList(),
-                Marcas = proveedorModel.Marcas.Select(m => m.ToMarcaDto()).ToList()
+                Bool_borrado = proveedorModel.Bool_borrado,
+                Productos = proveedorModel.Productos
+                    .Where(p => p.Bool_borrado != true)
+                    .Select(p => p.ToProductoDto()).ToList(),
+                Categorias = proveedorModel.Categorias
+                    .Select(c => c.ToCategoriaDto()).ToList(),
+                Marcas = proveedorModel.Marcas
+                    .Where(m => m.Bool_borrado != true)
+                    .Select(m => m.ToMarcaDto()).ToList()
             };
         }
 
@@ -31,7 +37,8 @@ namespace api.Mapper
                 Str_nombre = proveedorDto.Str_nombre,
                 Str_telefono = proveedorDto.Str_telefono,
                 Str_direccion = proveedorDto.Str_direccion,
-                Str_correo = proveedorDto.Str_correo
+                Str_correo = proveedorDto.Str_correo,
+                Bool_borrado = false
             };
         }
 
@@ -42,7 +49,8 @@ namespace api.Mapper
                 Str_nombre = proveedorDto.Str_nombre,
                 Str_telefono = proveedorDto.Str_telefono,
                 Str_direccion = proveedorDto.Str_direccion,
-                Str_correo = proveedorDto.Str_correo
+                Str_correo = proveedorDto.Str_correo,
+                Bool_borrado = proveedorDto.Bool_borrado
             };
         }
     }

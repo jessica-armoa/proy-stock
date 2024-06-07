@@ -31,6 +31,12 @@
 .clickable {
   cursor: pointer;
 }
+
+.tablerow:hover {
+  background: rgb(246, 245, 248); /* Set the desired hover background color */
+  color: black;
+}
+
 /*:root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;

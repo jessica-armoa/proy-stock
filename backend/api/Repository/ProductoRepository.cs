@@ -26,27 +26,44 @@ namespace api.Repository
 
         public async Task<Producto?> DeleteAsync(int id)
         {
-            var productoModel = await _context.productos.FirstOrDefaultAsync(p => p.Id == id);
-            if (productoModel == null) return null;
+            var productoExistente = await _context.productos
+                .Where(p => p.Bool_borrado != true)
+                .FirstOrDefaultAsync(s => s.Id == id);
 
-            _context.productos.Remove(productoModel);
+            if (productoExistente == null) return null;
+
+            productoExistente.Bool_borrado = true;
+            
             await _context.SaveChangesAsync();
-            return productoModel;
+            return productoExistente;
         }
 
         public async Task<List<Producto>> GetAllAsync()
         {
             return await _context.productos
+            .Where(p => p.Bool_borrado != true)
             .Include(p => p.DetallesDeMovimientos)
             .Include(p => p.Deposito)
             .Include(p => p.Proveedor)
             .Include(p => p.Marca)
+            /*.Select(p => new Producto
+            {
+                Id = p.Id,
+                DetallesDeMovimientos = p.DetallesDeMovimientos.Select(d => new DetalleDeMovimiento
+                {
+                    Id= d.Id,
+                    Int_cantidad= d.Int_cantidad,
+                    MovimientoId = d.MovimientoId,
+                    ProductoId = d.ProductoId    
+                }).ToList(),
+            })*/
             .ToListAsync();
         }
 
         public async Task<Producto?> GetByIdAsync(int? id)
         {
             return await _context.productos
+            .Where(p => p.Bool_borrado != true)
             .Include(p => p.DetallesDeMovimientos)
             .Include(p => p.Deposito)
             .Include(p => p.Proveedor)
@@ -56,17 +73,24 @@ namespace api.Repository
 
         public async Task<Producto?> GetByNombreAsync(string nombre)
         {
-            return await _context.productos.FirstOrDefaultAsync(s => s.Str_nombre == nombre);
+            return await _context.productos
+            .Where(p => p.Bool_borrado != true)
+            .FirstOrDefaultAsync(s => s.Str_nombre == nombre);
         }
 
         public async Task<bool> ProductoExists(int id)
         {
-            return await _context.productos.AnyAsync(s => s.Id == id);
+            return await _context.productos
+            .Where(p => p.Bool_borrado != true)
+            .AnyAsync(s => s.Id == id);
         }
 
         public async Task<Producto?> UpdateAsync(int id, Producto productoDto)
         {
-            var productoExistente = await _context.productos.FirstOrDefaultAsync(s => s.Id == id);
+            var productoExistente = await _context.productos
+                .Where(p => p.Bool_borrado != true)
+                .FirstOrDefaultAsync(s => s.Id == id);
+
             if (productoExistente == null) return null;
 
             productoExistente.Str_ruta_imagen = productoDto.Str_ruta_imagen;
@@ -79,25 +103,34 @@ namespace api.Repository
             productoExistente.Int_iva = productoDto.Int_iva;
             productoExistente.Dec_precio_mayorista = productoDto.Dec_precio_mayorista;
             productoExistente.Dec_precio_minorista = productoDto.Dec_precio_minorista;
+            productoExistente.Bool_borrado = false;
+
+            await _context.SaveChangesAsync();
             return productoExistente;
         }
 
         public async Task ActualizarCostoPPPAsync()
         {
             // Obtener todos los productos
-            var productos = await _context.productos.ToListAsync();
-            var depositos = await _context.depositos.Include(d => d.Productos).Include(d => d.Movimientos).ToListAsync();
+            var productos = await GetAllAsync();
+            var depositos = await _context.depositos
+                .Where(d => d.Bool_borrado != true)
+                .Include(d => d.Productos)
+                .Include(d => d.Movimientos)
+                .ToListAsync();
 
             if (!productos.Any())
             {
                 throw new InvalidOperationException("No se encontraron productos.");
             }
 
-            foreach(var deposito in depositos)
+            foreach (var deposito in depositos)
             {
-                var costoTotal = deposito.Productos.Sum(p => p.Dec_costo);
+                var costoTotal = deposito.Productos
+                    .Where(p => p.Bool_borrado != true)
+                    .Sum(p => p.Dec_costo);
                 var costoPPP = costoTotal / deposito.Productos.Count;
-                foreach(var producto in deposito.Productos)
+                foreach (var producto in deposito.Productos)
                 {
                     producto.Dec_costo_PPP = costoPPP;
                 }
@@ -108,7 +141,9 @@ namespace api.Repository
 
         public async Task<bool> ProductoExistsName(string nombreProducto)
         {
-            return await _context.productos.AnyAsync(p => p.Str_nombre == nombreProducto);
+            return await _context.productos
+            .Where(p => p.Bool_borrado != true)
+            .AnyAsync(p => p.Str_nombre == nombreProducto);
         }
     }
 }
