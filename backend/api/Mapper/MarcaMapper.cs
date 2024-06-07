@@ -16,7 +16,10 @@ namespace api.Mapper
                 Id = marcaModel.Id,
                 Str_nombre = marcaModel.Str_nombre,
                 ProveedorId = marcaModel.ProveedorId,
-                Productos = marcaModel.Productos.Select(m => m.ToProductoDto()).ToList()
+                Bool_borrado = marcaModel.Bool_borrado,
+                Productos = marcaModel.Productos
+                    .Where(m => m.Bool_borrado != true)
+                    .Select(m => m.ToProductoDto()).ToList()
             };
         }
 
@@ -25,7 +28,8 @@ namespace api.Mapper
             return new Marca
             {
                 Str_nombre = marcaDto.Str_nombre,
-                ProveedorId = proveedorId
+                ProveedorId = proveedorId,
+                Bool_borrado = false
             };
         }
 
@@ -33,7 +37,8 @@ namespace api.Mapper
         {
             return new Marca
             {
-                Str_nombre = marcaDto.Str_nombre
+                Str_nombre = marcaDto.Str_nombre,
+                Bool_borrado = marcaDto.Bool_borrado
             };
         }
     }

@@ -12,8 +12,8 @@ using api.Data;
 namespace api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240528161655_Initial")]
-    partial class Initial
+    [Migration("20240607131331_tabla_Notas_remision_modificada")]
+    partial class tabla_Notas_remision_modificada
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -54,19 +54,19 @@ namespace api.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "f82665cd-2f5e-4bb9-891d-07f10b33ac7d",
+                            Id = "940b3c0b-7e60-474c-95fc-ae493a31ff95",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "bfec5579-4339-46e7-9116-ec0f909414c4",
+                            Id = "3e5a7970-f206-47eb-acf8-a0e1f84782c7",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "6801e97d-094d-44f9-85e0-3cfe8ccb0363",
+                            Id = "e40df266-077e-4ada-9679-8a9faed5802d",
                             Name = "Encargado",
                             NormalizedName = "ENCARGADO"
                         });
@@ -208,6 +208,9 @@ namespace api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<bool>("Bool_borrado")
+                        .HasColumnType("bit");
+
                     b.Property<int?>("FerreteriaId")
                         .HasColumnType("int");
 
@@ -246,6 +249,9 @@ namespace api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<bool>("Bool_borrado")
+                        .HasColumnType("bit");
+
                     b.Property<int>("Int_cantidad")
                         .HasColumnType("int");
 
@@ -272,6 +278,9 @@ namespace api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<bool>("Bool_borrado")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Str_nombre")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -297,6 +306,9 @@ namespace api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<bool>("Bool_borrado")
+                        .HasColumnType("bit");
+
                     b.Property<int?>("ProveedorId")
                         .HasColumnType("int");
 
@@ -319,6 +331,9 @@ namespace api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<bool>("Bool_borrado")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("Bool_perdida")
                         .HasColumnType("bit");
 
@@ -338,6 +353,9 @@ namespace api.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Bool_borrado")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime>("Date_fecha")
                         .HasColumnType("datetime2");
@@ -367,6 +385,138 @@ namespace api.Migrations
                     b.ToTable("movimientos");
                 });
 
+            modelBuilder.Entity("api.Models.NotaDeRemision", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ComprobanteVenta")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ConductorDireccion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ConductorDocumento")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ConductorNombre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Date_fecha_de_expedicion")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("Date_fecha_de_vencimiento")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DestinatarioDocumento")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DestinatarioNombre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EmpresaActividad")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EmpresaDireccion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EmpresaNombre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EmpresaSucursal")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EmpresaTelefono")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Motivo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MotivoDescripcion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("MovimientoId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PuntoLlegada")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PuntoPartida")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Ruc")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Str_numero")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Str_numero_de_comprobante_actual")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Str_numero_de_comprobante_final")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Str_numero_de_comprobante_inicial")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Str_timbrado")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TransportistaNombre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TransportistaRuc")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TrasladoFechaFin")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TrasladoFechaInicio")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TrasladoRua")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TrasladoVehiculo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MovimientoId");
+
+                    b.ToTable("notas_de_remision");
+                });
+
             modelBuilder.Entity("api.Models.Producto", b =>
                 {
                     b.Property<int>("Id")
@@ -374,6 +524,9 @@ namespace api.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Bool_borrado")
+                        .HasColumnType("bit");
 
                     b.Property<decimal>("Dec_costo")
                         .HasColumnType("decimal(18,2)");
@@ -436,6 +589,9 @@ namespace api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<bool>("Bool_borrado")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Str_correo")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -457,6 +613,29 @@ namespace api.Migrations
                     b.ToTable("proveedores");
                 });
 
+            modelBuilder.Entity("api.Models.Timbrado", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Date_fin_vigencia")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("Date_inicio_vigencia")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Str_timbrado")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("timbrados");
+                });
+
             modelBuilder.Entity("api.Models.TipoDeMovimiento", b =>
                 {
                     b.Property<int>("Id")
@@ -465,11 +644,15 @@ namespace api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<bool>("Bool_operacion")
+                    b.Property<bool>("Bool_borrado")
                         .HasColumnType("bit");
 
                     b.Property<int?>("MotivoId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Str_descripcion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -661,6 +844,15 @@ namespace api.Migrations
                     b.Navigation("DepositoOrigen");
 
                     b.Navigation("TipoDeMovimiento");
+                });
+
+            modelBuilder.Entity("api.Models.NotaDeRemision", b =>
+                {
+                    b.HasOne("api.Models.Movimiento", "Movimiento")
+                        .WithMany()
+                        .HasForeignKey("MovimientoId");
+
+                    b.Navigation("Movimiento");
                 });
 
             modelBuilder.Entity("api.Models.Producto", b =>

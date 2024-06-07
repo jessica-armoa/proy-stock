@@ -17,7 +17,10 @@ namespace api.Mapper
                 Str_nombre = ferreteriaModel.Str_nombre,
                 Str_ruc = ferreteriaModel.Str_ruc,
                 Str_telefono = ferreteriaModel.Str_telefono,
-                Depositos = ferreteriaModel.Depositos.Select(d => d.ToDepositoDto()).ToList()
+                Bool_borrado = ferreteriaModel.Bool_borrado,
+                Depositos = ferreteriaModel.Depositos
+                    .Where(d => d.Bool_borrado != true)
+                    .Select(d => d.ToDepositoDto()).ToList()
             };
         }
 
@@ -27,7 +30,8 @@ namespace api.Mapper
             {
                 Str_nombre = ferreteriaDto.Str_nombre,
                 Str_ruc = ferreteriaDto.Str_ruc,
-                Str_telefono = ferreteriaDto.Str_telefono
+                Str_telefono = ferreteriaDto.Str_telefono,
+                Bool_borrado = false
             };
         }
 
@@ -37,7 +41,8 @@ namespace api.Mapper
             {
                 Str_nombre = ferreteriaDto.Str_nombre,
                 Str_ruc = ferreteriaDto.Str_ruc,
-                Str_telefono = ferreteriaDto.Str_telefono
+                Str_telefono = ferreteriaDto.Str_telefono,
+                Bool_borrado = ferreteriaDto.Bool_borrado
             };
         }
     }

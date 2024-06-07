@@ -60,7 +60,8 @@ namespace api.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Str_nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Str_ruc = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Str_telefono = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Str_telefono = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Bool_borrado = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -74,7 +75,8 @@ namespace api.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Str_motivo = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Bool_perdida = table.Column<bool>(type: "bit", nullable: false)
+                    Bool_perdida = table.Column<bool>(type: "bit", nullable: false),
+                    Bool_borrado = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -90,11 +92,27 @@ namespace api.Migrations
                     Str_nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Str_telefono = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Str_direccion = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Str_correo = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Str_correo = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Bool_borrado = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_proveedores", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "timbrados",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Str_timbrado = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Date_inicio_vigencia = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Date_fin_vigencia = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_timbrados", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -214,6 +232,7 @@ namespace api.Migrations
                     Str_telefono = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Str_encargado = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Str_telefonoEncargado = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Bool_borrado = table.Column<bool>(type: "bit", nullable: false),
                     FerreteriaId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -232,8 +251,9 @@ namespace api.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Bool_operacion = table.Column<bool>(type: "bit", nullable: false),
-                    MotivoId = table.Column<int>(type: "int", nullable: true)
+                    Str_descripcion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MotivoId = table.Column<int>(type: "int", nullable: true),
+                    Bool_borrado = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -271,7 +291,8 @@ namespace api.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Str_nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ProveedorId = table.Column<int>(type: "int", nullable: true)
+                    ProveedorId = table.Column<int>(type: "int", nullable: true),
+                    Bool_borrado = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -293,6 +314,7 @@ namespace api.Migrations
                     TipoDeMovimientoId = table.Column<int>(type: "int", nullable: true),
                     DepositoOrigenId = table.Column<int>(type: "int", nullable: true),
                     DepositoDestinoId = table.Column<int>(type: "int", nullable: true),
+                    Bool_borrado = table.Column<bool>(type: "bit", nullable: false),
                     DepositoId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -340,7 +362,8 @@ namespace api.Migrations
                     Dec_costo_PPP = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Int_iva = table.Column<int>(type: "int", nullable: false),
                     Dec_precio_mayorista = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Dec_precio_minorista = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                    Dec_precio_minorista = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Bool_borrado = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -363,6 +386,31 @@ namespace api.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "notas_de_remision",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Str_numero = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Str_timbrado = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Str_numero_de_comprobante_inicial = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Str_numero_de_comprobante_final = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Str_numero_de_comprobante_actual = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Date_fecha_de_expedicion = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Date_fecha_de_vencimiento = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    MovimientoId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_notas_de_remision", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_notas_de_remision_movimientos_MovimientoId",
+                        column: x => x.MovimientoId,
+                        principalTable: "movimientos",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "detalles_de_movimientos",
                 columns: table => new
                 {
@@ -370,7 +418,8 @@ namespace api.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Int_cantidad = table.Column<int>(type: "int", nullable: false),
                     MovimientoId = table.Column<int>(type: "int", nullable: true),
-                    ProductoId = table.Column<int>(type: "int", nullable: true)
+                    ProductoId = table.Column<int>(type: "int", nullable: true),
+                    Bool_borrado = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -392,9 +441,9 @@ namespace api.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "6801e97d-094d-44f9-85e0-3cfe8ccb0363", null, "Encargado", "ENCARGADO" },
-                    { "bfec5579-4339-46e7-9116-ec0f909414c4", null, "User", "USER" },
-                    { "f82665cd-2f5e-4bb9-891d-07f10b33ac7d", null, "Admin", "ADMIN" }
+                    { "4406daa5-d78e-4b63-87ae-05f6ced3d839", null, "User", "USER" },
+                    { "7eaf94f4-1e75-42c0-a6e1-664596d02c45", null, "Encargado", "ENCARGADO" },
+                    { "aa0b1b6e-b535-4fc2-98c5-611f2f919550", null, "Admin", "ADMIN" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -482,6 +531,11 @@ namespace api.Migrations
                 column: "TipoDeMovimientoId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_notas_de_remision_MovimientoId",
+                table: "notas_de_remision",
+                column: "MovimientoId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_productos_DepositoId",
                 table: "productos",
                 column: "DepositoId");
@@ -527,34 +581,40 @@ namespace api.Migrations
                 name: "detalles_de_movimientos");
 
             migrationBuilder.DropTable(
+                name: "notas_de_remision");
+
+            migrationBuilder.DropTable(
+                name: "timbrados");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "movimientos");
-
-            migrationBuilder.DropTable(
                 name: "productos");
 
             migrationBuilder.DropTable(
-                name: "tipos_de_movimientos");
-
-            migrationBuilder.DropTable(
-                name: "depositos");
+                name: "movimientos");
 
             migrationBuilder.DropTable(
                 name: "marcas");
 
             migrationBuilder.DropTable(
-                name: "motivos");
+                name: "depositos");
+
+            migrationBuilder.DropTable(
+                name: "tipos_de_movimientos");
+
+            migrationBuilder.DropTable(
+                name: "proveedores");
 
             migrationBuilder.DropTable(
                 name: "ferreterias");
 
             migrationBuilder.DropTable(
-                name: "proveedores");
+                name: "motivos");
         }
     }
 }

@@ -16,17 +16,19 @@ namespace api.Mapper
                 Id = detalleDeMovimientoModel.Id,
                 Int_cantidad = detalleDeMovimientoModel.Int_cantidad,
                 MovimientoId = detalleDeMovimientoModel.MovimientoId,
-                ProductoId = detalleDeMovimientoModel.ProductoId
+                ProductoId = detalleDeMovimientoModel.ProductoId,
+                Bool_borrado = detalleDeMovimientoModel.Bool_borrado
             };
         }
 
-        public static DetalleDeMovimiento ToDetalleFromCreate(this CreateDetalleRequestDto detalleDto, int movimientoId, int productoId)
+        public static DetalleDeMovimiento ToDetalleFromCreate(this CreateDetalleRequestDto detalleDto, int? movimientoId, int? productoId)
         {
             return new DetalleDeMovimiento
             {
                 Int_cantidad = detalleDto.Int_cantidad,
                 MovimientoId = movimientoId,
-                ProductoId = productoId
+                ProductoId = productoId,
+                Bool_borrado = false
             };
         }
 
@@ -35,6 +37,7 @@ namespace api.Mapper
             return new DetalleDeMovimiento
             {
                 Int_cantidad = detalleDto.Int_cantidad,
+                Bool_borrado = detalleDto.Bool_borrado
             };
         }
     }

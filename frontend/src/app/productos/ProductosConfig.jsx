@@ -15,8 +15,12 @@ class ProductosConfig{
         return axios.post(`${api}/${depositoId}/${proveedorId}/${marcaId}`, producto);
     }
 
-    updateProducto(id){
-        return axios.put(`${api}/${id}`);
+    updateProducto(id,producto){
+        return axios.put(`${api}/${id}`, producto, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
     }
 
     deleteProducto(id){

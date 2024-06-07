@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const api = process.env.NEXT_PUBLIC_API_URL+"producto/";
+const api = process.env.NEXT_PUBLIC_API_URL+"producto";
 
 class ProductsController {
   getProducts() {
@@ -8,7 +8,7 @@ class ProductsController {
   }
 
   getProduct(id) {
-    return axios.get(`${api}${id}`);
+    return axios.get(`${api}/${id}`);
   }
 
   createProduct(product) {

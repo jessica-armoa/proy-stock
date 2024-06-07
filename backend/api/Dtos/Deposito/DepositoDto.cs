@@ -18,6 +18,7 @@ namespace api.Dtos.Deposito
         public int? FerreteriaId { get; set; }
         public string Str_ferreteriaNombre { get; set; } = String.Empty;
         public string Str_ferreteriaTelefono { get; set; } = String.Empty;
+        public bool Bool_borrado { get; set; } = false;
         public List<MovimientoDto> Movimientos { get; set; }
         public List<ProductoDto> Productos { get; set; }
     }

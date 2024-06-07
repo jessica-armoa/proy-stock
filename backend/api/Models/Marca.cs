@@ -11,6 +11,7 @@ namespace api.Models
         public string Str_nombre { get; set; } = String.Empty;
         public int? ProveedorId { get; set; }
         public Proveedor? Proveedor { get; set; }
+        public bool Bool_borrado { get; set; } = false;
         public List<Producto> Productos { get; set; } = [];
     }
 }

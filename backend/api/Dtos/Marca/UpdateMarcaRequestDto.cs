@@ -8,5 +8,6 @@ namespace api.Dtos.Marca
     public class UpdateMarcaRequestDto
     {
         public string Str_nombre { get; set; } = String.Empty;
+        public bool Bool_borrado { get; set; }
     }
 }

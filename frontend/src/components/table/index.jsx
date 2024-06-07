@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, {useState, useEffect} from "react";
 import ExportPDF from "../exportpdf";
 import ExportCSV from "../exportcsv";
 
@@ -18,7 +18,6 @@ import {
   getSortedRowModel,
   getFilteredRowModel,
 } from "@tanstack/react-table";
-import { useState } from "react";
 
 import {
   Table,
@@ -62,6 +61,11 @@ function DataTable({ columns, data, pageurl }) {
     onColumnFiltersChange: setColumnFilters,
     onSortingChange: setSorting,
     onGlobalFilterChange: setFiltering,
+    initialState: {
+      pagination: {
+        pageSize: 7,
+      }
+    }
   });
 
   const clearAllFilters = () => {
@@ -74,6 +78,37 @@ function DataTable({ columns, data, pageurl }) {
 
   const filteredData = hasFilters ? table.getRowModel().rows.map(row => row.original) : data;
 
+  const formatCurrency = (value) => {
+    const formattedValue = Intl.NumberFormat('es-ES', {
+      style: 'currency',
+      currency: 'PYG',
+      minimumFractionDigits: 0
+    }).format(value);
+    return formattedValue.replace('PYG', '');
+  };
+  
+  const [hoveredRowId, setHoveredRowId] = useState(null); // State to track hovered row
+  const [prevHoveredRowId, setPrevHoveredRowId] = useState(null);
+  useEffect(() => {
+    const btnActions = document.getElementById('btn-actions'+hoveredRowId?.id);
+    if (btnActions) {
+
+      if (prevHoveredRowId !== null && prevHoveredRowId !== hoveredRowId) {
+        const prevBtnActions = document.getElementById('btn-actions'+prevHoveredRowId);
+        if (prevBtnActions) {
+          prevBtnActions.classList.add('invisible');
+        }
+      }
+
+      if (hoveredRowId?.action === 'entering') {
+        btnActions.classList.remove('invisible');
+      } else if (hoveredRowId?.action === 'leaving') {
+        btnActions.classList.add('invisible');
+      }
+    }
+
+    setPrevHoveredRowId(hoveredRowId?.id);
+  }, [hoveredRowId, prevHoveredRowId]);
 
   return (
     <div>
@@ -145,11 +180,19 @@ function DataTable({ columns, data, pageurl }) {
 
         <TableBody>
           {table.getRowModel().rows.map((row) => (
-            <TableRow key={row.id} {...row.getRowProps}>
+            <TableRow 
+              key={row.id} {...row.getRowProps} className="clickable tablerow" 
+              onClick={() => router.push(`${pageurl}${row.original.id}`)}
+              onMouseEnter={() => setHoveredRowId({ id: row.original.id, action: 'entering' })}
+              onMouseLeave={() => setHoveredRowId({ id: row.original.id, action: 'leaving' })}
+            >
               {row.getVisibleCells().map((cell) => (
-                <TableCell className="p-2 text-wrap" key={cell.id}>
-                  <div className="clickable" onClick={() => router.push(`${pageurl}${row.original.id}`)}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                <TableCell className="p-2 text-wrap truncate" key={cell.id}>
+                  <div>
+                    {typeof cell.getValue() === 'number' 
+                        ? formatCurrency(cell.getValue()) 
+                        : flexRender(cell.column.columnDef.cell, cell.getContext())
+                      }
                   </div>
                 </TableCell>
               ))}
@@ -157,7 +200,7 @@ function DataTable({ columns, data, pageurl }) {
           ))}
         </TableBody>
       </Table>
-      <div className="flex justify-center space-x-5 p-3">
+      <div className="flex justify-center space-x-5 p-3 pagination-container">
         <Button
           icon={RiArrowLeftSLine}
           iconPosition="left"

@@ -15,10 +15,13 @@ class DepositosConfig{
         return axios.post(`${api}/${ferreteriaId}`, deposito);
     }
 
-    updateDeposito(id){
-        return axios.put(`${api}/${id}`);
+    updateDeposito(id, deposito) {
+        return axios.put(`${api}/${id}`, deposito, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
     }
-
     deleteDeposito(id){
         return axios.delete(`${api}/${id}`);
     }

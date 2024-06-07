@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using api.Data;
+using api.Dtos.DetalleDeMovimiento;
+using api.Dtos.Movimiento;
 using api.Interfaces;
 using api.Models;
 using Microsoft.EntityFrameworkCore;
@@ -43,28 +45,38 @@ namespace api.Repository
         public async Task<List<Movimiento>> GetAllAsync()
         {
             return await _context.movimientos
+            .Where(m => m.Bool_borrado != true)
             .Include(m => m.DetallesDeMovimientos)
             .ToListAsync();
         }
 
-        public async Task<Movimiento?> GetByIdAsync(int id)
+        public async Task<Movimiento?> GetByIdAsync(int? id)
         {
             return await _context.movimientos
+            .Where(m => m.Bool_borrado != true)
             .Include(m => m.DetallesDeMovimientos)
             .FirstOrDefaultAsync(m => m.Id == id);
         }
 
         public async Task<bool> MovimientoExists(int id)
         {
-            return await _context.movimientos.AnyAsync(s => s.Id == id);
+            return await _context.movimientos
+            .Where(m => m.Bool_borrado != true)
+            .AnyAsync(s => s.Id == id);
         }
 
         public async Task<Movimiento?> UpdateAsync(int id, Movimiento movimientoDto)
         {
-            var movimientoExistente = await _context.movimientos.FirstOrDefaultAsync(m => m.Id == id);
+            var movimientoExistente = await _context.movimientos
+            .Where(m => m.Bool_borrado != true)
+            .Include(m => m.DetallesDeMovimientos)
+            .Where(d => d.Bool_borrado != true)
+            .FirstOrDefaultAsync(m => m.Id == id);
+
             if(movimientoExistente == null) return null;
 
             movimientoExistente.Date_fecha = movimientoDto.Date_fecha;
+            movimientoExistente.Bool_borrado = movimientoDto.Bool_borrado;
 
             if(movimientoDto.DetallesDeMovimientos != null)
             {
@@ -72,7 +84,9 @@ namespace api.Repository
                 {
                     if(movimientoExistente.DetallesDeMovimientos != null)
                     {
-                        var detalleExistente = movimientoExistente.DetallesDeMovimientos.FirstOrDefault(d => d.Id == detalle.Id);
+                        var detalleExistente = movimientoExistente.DetallesDeMovimientos
+                            .Where(d => d.Bool_borrado != true)
+                            .FirstOrDefault(d => d.Id == detalle.Id);
 
                         if(detalleExistente != null)
                         {

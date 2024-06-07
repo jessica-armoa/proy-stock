@@ -16,10 +16,15 @@ namespace api.Mapper
                 Str_encargado = depositoModel.Str_encargado,
                 Str_telefonoEncargado = depositoModel.Str_telefonoEncargado,
                 FerreteriaId = depositoModel.FerreteriaId,
-                Str_ferreteriaNombre = depositoModel.Ferreteria?.Str_nombre,
-                Str_ferreteriaTelefono = depositoModel.Ferreteria?.Str_telefono,
-                Movimientos = depositoModel.Movimientos.Select(m => m.ToMovimientoDto()).ToList(),
-                Productos = depositoModel.Productos.Select(p => p.ToProductoDto()).ToList()
+                Str_ferreteriaNombre = depositoModel.Ferreteria.Str_nombre,
+                Str_ferreteriaTelefono = depositoModel.Ferreteria.Str_telefono,
+                Bool_borrado = depositoModel.Bool_borrado,
+                Movimientos = depositoModel.Movimientos
+                    .Where(m => m.Bool_borrado != true)
+                    .Select(m => m.ToMovimientoDto()).ToList(),
+                Productos = depositoModel.Productos
+                    .Where(p => p.Bool_borrado != true)
+                    .Select(p => p.ToProductoDto()).ToList()
             };
         }
 
@@ -32,7 +37,8 @@ namespace api.Mapper
                 Str_telefono = depositoDto.Str_telefono,
                 Str_encargado = depositoDto.Str_encargado,
                 Str_telefonoEncargado = depositoDto.Str_telefonoEncargado,
-                FerreteriaId = ferreteriaId
+                FerreteriaId = ferreteriaId,
+                Bool_borrado = false
             };
         }
 
@@ -44,7 +50,8 @@ namespace api.Mapper
                 Str_direccion = depositoDto.Str_direccion,
                 Str_telefono = depositoDto.Str_telefono,
                 Str_encargado = depositoDto.Str_encargado,
-                Str_telefonoEncargado = depositoDto.Str_telefonoEncargado
+                Str_telefonoEncargado = depositoDto.Str_telefonoEncargado,
+                Bool_borrado = depositoDto.Bool_borrado
             };
         }
     }
