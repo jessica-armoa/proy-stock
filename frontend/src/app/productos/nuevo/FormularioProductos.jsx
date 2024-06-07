@@ -67,7 +67,7 @@ export default function FormularioProductos() {
 
 
   // Función para manejar el envío del formulario
-  const router = useRouter();
+  //const router = useRouter();
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {

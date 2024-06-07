@@ -1,5 +1,5 @@
 "use client";
-import Sidebar from "@/components/sidebar";
+//import Sidebar from "@/components/sidebar";
 import FormularioMarcas from "./FormularioMarcas";
 import React, { useState } from 'react';
 

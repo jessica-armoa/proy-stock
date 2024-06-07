@@ -2,9 +2,8 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button, NumberInput, TextInput, SearchSelect, SearchSelectItem, Divider } from '@tremor/react';
-import MarcasConfig from './MarcasConfig';
-import { useNavigate } from 'react-router-dom';
-import ProveedoresConfig from '../proveedores/ProveedoresConfig';
+import MarcasConfig from '../MarcasConfig';
+import ProveedoresConfig from '../../proveedores/ProveedoresConfig';
 
 export default function FormularioMarcas() {
 
@@ -91,16 +90,16 @@ export default function FormularioMarcas() {
                 </div>
 
                 <Button variant="primary" type="submit">Guardar</Button>
-                <Button variant="secondary" type="button" onClick={() => {
-                <Button className='mt-8' variant="secondary" onClick={() => {
-                    // Lógica para descartar
-                    console.log("Formulario descartado");
-                    // Reiniciar los valores del formulario
-                    setStr_nombre('');
-                    router.push('/marcas');
-                }}>Descartar</Button>
+                <Button className='mt-8' variant="secondary" onClick={
+                    () => {
+                        // Lógica para descartar
+                        console.log("Formulario descartado");
+                        // Reiniciar los valores del formulario
+                        setStr_nombre('');
+                        router.push('/marcas');
+                    }
+                }>Descartar</Button>
                 <Button className='mt-8' variant="primary" type="submit">Guardar</Button>
-
             </div>
         </form>
     )

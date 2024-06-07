@@ -37,6 +37,13 @@
   color: black;
 }
 
+.w-pdf {
+  min-width: 100%;
+  max-width: 100%;
+  min-height: 600px;
+  max-height: 900px;
+}
+
 /*:root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
