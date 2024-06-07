@@ -60,7 +60,8 @@ namespace api.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Str_nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Str_ruc = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Str_telefono = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Str_telefono = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Bool_borrado = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -74,7 +75,8 @@ namespace api.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Str_motivo = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Bool_perdida = table.Column<bool>(type: "bit", nullable: false)
+                    Bool_perdida = table.Column<bool>(type: "bit", nullable: false),
+                    Bool_borrado = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -90,7 +92,8 @@ namespace api.Migrations
                     Str_nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Str_telefono = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Str_direccion = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Str_correo = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Str_correo = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Bool_borrado = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -214,6 +217,7 @@ namespace api.Migrations
                     Str_telefono = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Str_encargado = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Str_telefonoEncargado = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Bool_borrado = table.Column<bool>(type: "bit", nullable: false),
                     FerreteriaId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -233,7 +237,8 @@ namespace api.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Str_descripcion = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    MotivoId = table.Column<int>(type: "int", nullable: true)
+                    MotivoId = table.Column<int>(type: "int", nullable: true),
+                    Bool_borrado = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -271,7 +276,8 @@ namespace api.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Str_nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ProveedorId = table.Column<int>(type: "int", nullable: true)
+                    ProveedorId = table.Column<int>(type: "int", nullable: true),
+                    Bool_borrado = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -293,6 +299,7 @@ namespace api.Migrations
                     TipoDeMovimientoId = table.Column<int>(type: "int", nullable: true),
                     DepositoOrigenId = table.Column<int>(type: "int", nullable: true),
                     DepositoDestinoId = table.Column<int>(type: "int", nullable: true),
+                    Bool_borrado = table.Column<bool>(type: "bit", nullable: false),
                     DepositoId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -340,7 +347,8 @@ namespace api.Migrations
                     Dec_costo_PPP = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Int_iva = table.Column<int>(type: "int", nullable: false),
                     Dec_precio_mayorista = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Dec_precio_minorista = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                    Dec_precio_minorista = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Bool_borrado = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -368,8 +376,8 @@ namespace api.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Str_numero = table.Column<int>(type: "int", nullable: false),
-                    Int_timbrado = table.Column<int>(type: "int", nullable: false),
+                    Str_numero = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Str_timbrado = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Str_numero_de_comprobante_inicial = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Str_numero_de_comprobante_final = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Str_numero_de_comprobante_actual = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -396,7 +404,8 @@ namespace api.Migrations
                     Int_cantidad = table.Column<int>(type: "int", nullable: false),
                     MovimientoId = table.Column<int>(type: "int", nullable: true),
                     ProductoId = table.Column<int>(type: "int", nullable: true),
-                    NotaDeRemisionId = table.Column<int>(type: "int", nullable: false)
+                    NotaDeRemisionId = table.Column<int>(type: "int", nullable: false),
+                    Bool_borrado = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -424,9 +433,9 @@ namespace api.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "559d190c-e122-4375-ab6d-bf0daec6e654", null, "Admin", "ADMIN" },
-                    { "c8e3594a-e56d-4e31-bf9a-3a3d328ad191", null, "User", "USER" },
-                    { "fe5345ed-b289-4175-ac45-3ed399868d64", null, "Encargado", "ENCARGADO" }
+                    { "2ae16b15-47b5-4748-8d79-74c280dcc7d7", null, "Encargado", "ENCARGADO" },
+                    { "705e1362-4e8b-489b-87f3-9f13a496bf52", null, "User", "USER" },
+                    { "b9255ef2-6624-4fc0-89d0-ce60054fcfa1", null, "Admin", "ADMIN" }
                 });
 
             migrationBuilder.CreateIndex(

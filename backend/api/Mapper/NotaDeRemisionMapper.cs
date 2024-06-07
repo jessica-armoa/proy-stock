@@ -16,7 +16,7 @@ namespace api.Mapper
       {
         Id = notaDeRemisionModel.Id,
         Str_numero = notaDeRemisionModel.Str_numero,
-        Int_timbrado = notaDeRemisionModel.Int_timbrado,
+        Str_timbrado = notaDeRemisionModel.Str_timbrado,
         Str_numero_de_comprobante_inicial = notaDeRemisionModel.Str_numero_de_comprobante_inicial,
         Str_numero_de_comprobante_final = notaDeRemisionModel.Str_numero_de_comprobante_final,
         Str_numero_de_comprobante_actual = notaDeRemisionModel.Str_numero_de_comprobante_actual,
