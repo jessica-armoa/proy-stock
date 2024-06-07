@@ -1,7 +1,8 @@
 "use client"
 import dynamic from 'next/dynamic';// Dynamic imports
-const Sidebar = dynamic(() => import("@/components/sidebar"), { ssr: false });
+const Sidebar = dynamic(() => import("@/components/sidebar/Sidebar"), { ssr: false });
 import FormularioMovimientos from "./FormularioMovimientos";
+
 
 
 export default function CrearMovimiento() {
