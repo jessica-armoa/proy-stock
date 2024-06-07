@@ -5,7 +5,7 @@ import VistaNR from "./movimientos/VistaNR";
 import { Card, List, ListItem, ProgressBar } from "@tremor/react";
 
 // Dynamic imports to prevent build-time errors
-const Sidebar = dynamic(() => import("@/components/sidebar"), { ssr: false });
+const Sidebar = dynamic(() => import("@/components/sidebar/Sidebar"), { ssr: false });
 
 function ListCard() {
   let titulo = 'Productos mas vendidos'

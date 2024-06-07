@@ -164,10 +164,12 @@ function NotaRemisionPDF({
     },
     "productos":[
       {
+        "id": 1,
         "cantidad": 2,
         "descripcion": "MOTOR REFRIGERADOR LION 3456 SERIE GFR456",
       },
       {
+        "id": 2,
         "cantidad": 1,
         "descripcion": "TANQUE DE GAS REFRIGERADOR LION 3456 SERIE GFZ456",
       },
@@ -349,12 +351,12 @@ function NotaRemisionPDF({
           <View style={styles.normalFlexBorder0}>
             <View style={styles.normalBorderDetails1}>
               {data.productos.map((producto)  => (
-                <Text style={{fontWeight:'normal',color:'blue',fontSize:8.5, lineHeight:1, textAlign: 'right'}}>{producto.cantidad}</Text>
+                <Text key={producto.id} style={{fontWeight:'normal',color:'blue',fontSize:8.5, lineHeight:1, textAlign: 'right'}}>{producto.cantidad}</Text>
               ))}
             </View>
             <View style={styles.normalBorderDetails2}>
               {data.productos.map((producto)  => (
-                <Text style={{fontWeight:'normal',color:'blue',fontSize:8.5, lineHeight:1}}>{producto.descripcion}</Text>
+                <Text key={producto.id} style={{fontWeight:'normal',color:'blue',fontSize:8.5, lineHeight:1}}>{producto.descripcion}</Text>
               ))}
             </View>
           </View>
