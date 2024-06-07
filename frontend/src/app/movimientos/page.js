@@ -5,7 +5,7 @@ import { Button } from '@tremor/react';
 import { useRouter } from 'next/navigation'
 
 import dynamic from 'next/dynamic';// Dynamic imports
-const Sidebar = dynamic(() => import("@/components/sidebar"), { ssr: false });
+const Sidebar = dynamic(() => import("@/components/sidebar/Sidebar"), { ssr: false });
 const DataTable = dynamic(() => import("@/components/table"), { ssr: false });
 
 const Movimientos = () => {
@@ -21,7 +21,7 @@ const Movimientos = () => {
           <Button
             variant="primary"
             color="blue"
-            onClick={() => router.push('/depositos/nuevo')}
+            onClick={() => router.push('/movimientos/nuevo')}
           >
             Nuevo Movimiento
           </Button>

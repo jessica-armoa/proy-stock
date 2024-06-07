@@ -1,7 +1,7 @@
-"use client";
+'use client'
 
 import React, { useEffect, useState } from "react";
-import SidebarItem from "./items";
+import SidebarItem from "./SidebarItem";
 import { useRouter } from 'next/navigation';
 
 const Sidebar = () => {
@@ -56,20 +56,16 @@ const Sidebar = () => {
         <img src="/img/logo.svg" alt="Logo" />
       </div>
       <div>
-        {menuItems.map((item) => {
-          return <SidebarItem key={item.path} item={item} isSubItem={false} />;
-        })}
+        {menuItems.map((item) => (
+          <SidebarItem key={item.path} item={item} />
+        ))}
       </div>
       <div className="mt-auto">
         {user && (
           <div className="mb-3 p-3 rounded-lg bg-gray-100">
             <div className="font-bold">{user.userName}</div>
             <div className="text-sm text-gray-600">
-              {user.role === 'Admin' ? (
-                user.role
-              ) : (
-                `${user.role} ${user.deposito}`
-              )}
+              {user.role === 'Admin' ? user.role : `${user.role} ${user.deposito}`}
             </div>
           </div>
         )}

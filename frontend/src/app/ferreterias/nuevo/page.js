@@ -1,7 +1,7 @@
 import FormularioFerreteria from "./FormularioFerreteria";
 
 import dynamic from 'next/dynamic';// Dynamic imports
-const Sidebar = dynamic(() => import("@/components/sidebar"), { ssr: false });
+const Sidebar = dynamic(() => import("@/components/sidebar/Sidebar"), { ssr: false });
 
 export default function CrearFerreteria() {
     return (
