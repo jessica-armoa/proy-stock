@@ -12,7 +12,7 @@ using api.Data;
 namespace api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240606154403_Initial")]
+    [Migration("20240607002014_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -54,19 +54,19 @@ namespace api.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "559d190c-e122-4375-ab6d-bf0daec6e654",
+                            Id = "b9255ef2-6624-4fc0-89d0-ce60054fcfa1",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "c8e3594a-e56d-4e31-bf9a-3a3d328ad191",
+                            Id = "705e1362-4e8b-489b-87f3-9f13a496bf52",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "fe5345ed-b289-4175-ac45-3ed399868d64",
+                            Id = "2ae16b15-47b5-4748-8d79-74c280dcc7d7",
                             Name = "Encargado",
                             NormalizedName = "ENCARGADO"
                         });
@@ -208,6 +208,9 @@ namespace api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<bool>("Bool_borrado")
+                        .HasColumnType("bit");
+
                     b.Property<int?>("FerreteriaId")
                         .HasColumnType("int");
 
@@ -246,6 +249,9 @@ namespace api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<bool>("Bool_borrado")
+                        .HasColumnType("bit");
+
                     b.Property<int>("Int_cantidad")
                         .HasColumnType("int");
 
@@ -277,6 +283,9 @@ namespace api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<bool>("Bool_borrado")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Str_nombre")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -302,6 +311,9 @@ namespace api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<bool>("Bool_borrado")
+                        .HasColumnType("bit");
+
                     b.Property<int?>("ProveedorId")
                         .HasColumnType("int");
 
@@ -324,6 +336,9 @@ namespace api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<bool>("Bool_borrado")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("Bool_perdida")
                         .HasColumnType("bit");
 
@@ -343,6 +358,9 @@ namespace api.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Bool_borrado")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime>("Date_fecha")
                         .HasColumnType("datetime2");
@@ -386,14 +404,12 @@ namespace api.Migrations
                     b.Property<DateTime>("Date_fecha_de_vencimiento")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Int_timbrado")
-                        .HasColumnType("int");
-
                     b.Property<int?>("MovimientoId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Str_numero")
-                        .HasColumnType("int");
+                    b.Property<string>("Str_numero")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Str_numero_de_comprobante_actual")
                         .IsRequired()
@@ -404,6 +420,10 @@ namespace api.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Str_numero_de_comprobante_inicial")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Str_timbrado")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -421,6 +441,9 @@ namespace api.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Bool_borrado")
+                        .HasColumnType("bit");
 
                     b.Property<decimal>("Dec_costo")
                         .HasColumnType("decimal(18,2)");
@@ -483,6 +506,9 @@ namespace api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<bool>("Bool_borrado")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Str_correo")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -511,6 +537,9 @@ namespace api.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Bool_borrado")
+                        .HasColumnType("bit");
 
                     b.Property<int?>("MotivoId")
                         .HasColumnType("int");

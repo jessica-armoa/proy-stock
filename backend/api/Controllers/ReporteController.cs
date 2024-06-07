@@ -56,7 +56,7 @@ namespace api.Controllers
     }
 
     [HttpGet]
-    [Route("top5productosMasVendidos")]
+    [Route("top5productosMenosVendidos")]
     public async Task<IActionResult> GetTop5ProductosMenosVendidos()
     {
       var productos = await _reporteRepository.GetTop5ProductosMenosVendidosAsync();
@@ -91,7 +91,7 @@ namespace api.Controllers
     }
 
     [HttpGet]
-    [Route("top5productosMasVendidos")]
+    [Route("perdidas")]
     public async Task<IActionResult> GetPerdidasAsync()
     {
       var productos = await _reporteRepository.GetPerdidasAsync();
