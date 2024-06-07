@@ -192,7 +192,6 @@ export default function FormularioMovimientos() {
                 }))
             }
             console.log('Movimiento enviado', movimientoActual);
-            debugger;
             const movimientoCreado = await MovimientosConfig.createMovimiento(movimientoActual);
 
 
