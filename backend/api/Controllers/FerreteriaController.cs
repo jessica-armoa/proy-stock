@@ -79,14 +79,9 @@ namespace api.Controllers
                     return NotFound("La ferreteria que desea eliminar no existe!!");
                 }
 
-                var ferreteriaModel = await _ferreteriaRepo.DeleteAsync(id, ferreteriaExistente.ToFerreteriaDto());
+                ferreteriaExistente = await _ferreteriaRepo.DeleteAsync(id);
 
-                if (ferreteriaModel == null)
-                {
-                    return NotFound("La ferreteria que desea eliminar no existe!!");
-                }
-
-                return Ok(ferreteriaModel);
+                return Ok(ferreteriaExistente.ToFerreteriaDto());
         }
     }
 }

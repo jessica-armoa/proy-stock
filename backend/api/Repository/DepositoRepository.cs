@@ -27,7 +27,7 @@ namespace api.Repository
             return depositoModel;
         }
 
-        public async Task<Deposito?> DeleteAsync(int id, DepositoDto depositoDto)
+        public async Task<Deposito?> DeleteAsync(int id)
         {
             var depositoExistente = await _context.depositos
                 .Where(d => d.Bool_borrado != true)
@@ -35,8 +35,6 @@ namespace api.Repository
 
             if (depositoExistente == null) return null;
 
-            depositoExistente.Str_nombre = depositoDto.Str_nombre;
-            depositoExistente.Str_direccion = depositoDto.Str_direccion;
             depositoExistente.Bool_borrado = true;
 
             await _context.SaveChangesAsync();

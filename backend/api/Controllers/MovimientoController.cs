@@ -19,7 +19,7 @@ namespace api.Controllers
     public class MovimientoController : ControllerBase
     {
         private readonly IMovimientoRepository _movimientoRepo;
-        private readonly IDepositoRepository _depositoRepo;
+        //private readonly IDepositoRepository _depositoRepo;
         private readonly ITipoDeMovimientoRepository _tipoDeMovimientoRepo;
         private readonly ApplicationDbContext _context;
         private readonly IProductoRepository _productoRepo;
@@ -27,7 +27,7 @@ namespace api.Controllers
         public MovimientoController(IMovimientoRepository movimientoRepo, IDepositoRepository depositoRepo, ITipoDeMovimientoRepository tipoDeMovimientoRepo, ApplicationDbContext context, IProductoRepository productoRepo, IDetalleDeMovimientosRepository detalleRepo)
         {
             _movimientoRepo = movimientoRepo;
-            _depositoRepo = depositoRepo;
+            //_depositoRepo = depositoRepo;
             _tipoDeMovimientoRepo = tipoDeMovimientoRepo;
             _context = context;
             _productoRepo = productoRepo;
@@ -50,7 +50,9 @@ namespace api.Controllers
                 DepositoOrigenId = m.DepositoOrigenId,
                 DepositoDestinoId = m.DepositoDestinoId,
                 Bool_borrado = m.Bool_borrado,
-                DetallesDeMovimientos = m.DetallesDeMovimientos.Select(d => new DetalleDeMovimientoDto
+                DetallesDeMovimientos = m.DetallesDeMovimientos
+                .Where(d => d.Bool_borrado != true)
+                .Select(d => new DetalleDeMovimientoDto
                 {
                     Id = d.Id,
                     ProductoId = d.ProductoId,
@@ -78,7 +80,7 @@ namespace api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CrearMovimiento([FromBody] MovimientoDto movimiento)
+        public async Task<IActionResult> Create([FromBody] MovimientoDto movimiento)
         {
             if (movimiento == null || movimiento.DetallesDeMovimientos == null || !movimiento.DetallesDeMovimientos.Any())
             {
@@ -105,9 +107,9 @@ namespace api.Controllers
                     {
                         var producto = await _context.productos
                             .Where(p => p.Bool_borrado != true)
-                            .FirstOrDefaultAsync(p => p.Id == detalle.ProductoId && p.DepositoId == movimiento.DepositoOrigenId);
+                            .FirstOrDefaultAsync(p => p.Id == detalle.ProductoId && p.DepositoId == movimientoModel.DepositoOrigenId);
 
-                        if (producto == null && tipoDeMovimiento.Str_descripcion.ToLower() != "ingreso")
+                        if (producto == null)
                         {
                             return BadRequest("Producto no encontrado en el depósito origen.");
                         }
@@ -129,6 +131,7 @@ namespace api.Controllers
                                 return BadRequest("Cantidad insuficiente en el depósito origen.");
                             }
                             producto.Int_cantidad_actual -= detalle.Int_cantidad;
+
                             var nuevoDetalle = new CreateDetalleRequestDto
                             {
                                 Int_cantidad = detalle.Int_cantidad,
@@ -189,6 +192,12 @@ namespace api.Controllers
                     return StatusCode(500, $"Error interno del servidor: {ex.Message}");
                 }
             }
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, [FromBody] UpdateMovimientoRequestDto dto)
+        {
+            return Ok();
         }
     }
 }

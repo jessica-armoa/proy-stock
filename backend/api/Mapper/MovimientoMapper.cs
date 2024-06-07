@@ -42,8 +42,8 @@ namespace api.Mapper
             return new Movimiento
             {
                 Date_fecha = movimientoDto.Date_fecha,
-                Bool_borrado = movimientoDto.Bool_borrado,
-                DetallesDeMovimientos = movimientoDto.DetallesDeMovimientos.Select(d => d.ToDetalleFromUpdate()).ToList()
+                Bool_borrado = movimientoDto.Bool_borrado
+                //DetallesDeMovimientos = movimientoDto.DetallesDeMovimientos.Select(d => d.ToDetalleFromUpdate()).ToList()
             };
         }
     }

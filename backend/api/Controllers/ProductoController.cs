@@ -17,13 +17,17 @@ namespace api.Controllers
         private readonly IProductoRepository _productoRepo;
         private readonly IDepositoRepository _depositoRepo;
         private readonly IProveedorRepository _proveedorRepo;
-        private readonly IMarcaRepository _marcaRepo;
-        public ProductoController(IProductoRepository productoRepo, IDepositoRepository depositoRepo, IProveedorRepository proveedorRepo, IMarcaRepository marcaRepo)
+        private readonly IDetalleDeMovimientosRepository _detalleRepo;
+        public ProductoController(
+            IProductoRepository productoRepo, 
+            IDepositoRepository depositoRepo, 
+            IProveedorRepository proveedorRepo, 
+            IDetalleDeMovimientosRepository detalleRepo)
         {
             _productoRepo = productoRepo;
             _depositoRepo = depositoRepo;
             _proveedorRepo = proveedorRepo;
-            _marcaRepo = marcaRepo;
+            _detalleRepo = detalleRepo;
         }
 
         [HttpGet]
@@ -72,12 +76,12 @@ namespace api.Controllers
                 return BadRequest("El proveedor ingresado no existe!");
             }
 
-            if (!await _marcaRepo.MarcaExists(marcaId))
+            /*if (!await _marcaRepo.MarcaExists(marcaId))
             {
                 return BadRequest("La marca ingresada no existe!");
-            }
+            }*/
 
-            if(await _productoRepo.ProductoExistsName(productoDto.Str_nombre))
+            if (await _productoRepo.ProductoExistsName(productoDto.Str_nombre))
             {
                 return BadRequest("El producto que desea ingresar ya existe!!");
             }
@@ -100,7 +104,7 @@ namespace api.Controllers
                     }
                 }
             }
-            
+
             return CreatedAtAction(nameof(GetById), new { id = productoModel.Id }, productoModel.ToProductoDto());
         }
 
@@ -116,7 +120,7 @@ namespace api.Controllers
             {
                 return NotFound("El producto que desea actualizar no existe");
             }
-            
+
             return Ok(producto.ToProductoDto());
         }
 
@@ -128,15 +132,16 @@ namespace api.Controllers
                 return BadRequest(ModelState);
 
             var productoExistente = await _productoRepo.GetByIdAsync(id);
-            if(productoExistente == null)
-            {
-                return NotFound("El producto que desea eliminar no existe!!");    
-            }
-            var productoModel = await _productoRepo.DeleteAsync(id);
-            if (productoModel == null)
+            if (productoExistente == null)
             {
                 return NotFound("El producto que desea eliminar no existe!!");
             }
+
+            foreach (var detalle in productoExistente.DetallesDeMovimientos)
+            {
+                await _detalleRepo.DeleteAsync(detalle.Id);
+            };
+            var productoModel = await _productoRepo.DeleteAsync(id);
 
             return Ok($"Se borró correctamente el producto: {productoModel.Str_nombre}"); //No es necesario traer algo, puede ser vacio
         }
