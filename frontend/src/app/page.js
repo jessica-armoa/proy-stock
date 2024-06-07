@@ -47,11 +47,11 @@ function ProgressCard() {
         {titulo}
       </h4>
       <p className="text-tremor-metric font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong">
-        {valor_total}
+        Gs. {valor_total}
       </p>
       <p className="mt-4 flex items-center justify-between text-tremor-default text-tremor-content dark:text-dark-tremor-content">
         <span>{porcentaje}</span>
-        <span>{valor_objetivo}</span>
+        <span>Gs. {valor_objetivo}</span>
       </p>
       <ProgressBar value={32} className="mt-2" />
     </Card>
@@ -65,7 +65,7 @@ const Dashboard = () => {
       <div className="flex flex-col w-full h-full p-5 rounded-lg bg-ui-cardbg">
         <div className="mt-8 flex items-center space-x-2">
           <ProgressCard></ProgressCard>
-          
+          <VistaNR></VistaNR>
           <ListCard></ListCard>
         </div>
       </div>
