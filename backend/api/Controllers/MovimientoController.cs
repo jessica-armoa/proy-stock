@@ -190,67 +190,6 @@ namespace api.Controllers
                         }
                     }
 
-                    // Obtener el timbrado activo
-                    var timbradoActivo = await _timbradoRepo.GetTimbradoActivoAsync();
-                    if (timbradoActivo == null)
-                    {
-                        return BadRequest("No hay un timbrado activo disponible.");
-                    }
-
-                    //Obtener ultima nota de remision creada
-                    var ultimaNotaDeRemision = await _notaDeRemisionRepo.GetUltimaNotaDeRemisionAsync();
-                    int nuevoNumeroDeComprobanteActual = 1;
-
-                    if (ultimaNotaDeRemision != null && ultimaNotaDeRemision.Str_timbrado == timbradoActivo.Str_timbrado)
-                    {
-                        nuevoNumeroDeComprobanteActual = int.Parse(ultimaNotaDeRemision.Str_numero_de_comprobante_actual) + 1;
-                        if (nuevoNumeroDeComprobanteActual > 1000)
-                        {
-                            return BadRequest("El número de comprobante ha excedido el límite de 1000.");
-                        }
-                    }
-
-                    var nuevaNotaDeRemision = new NotaDeRemision
-                    {
-                        Str_numero = $"001-001-{nuevoNumeroDeComprobanteActual.ToString("D4")}",
-                        Str_timbrado = timbradoActivo.Str_timbrado,
-                        Str_numero_de_comprobante_inicial = "0001",
-                        Str_numero_de_comprobante_final = "1000",
-                        Str_numero_de_comprobante_actual = nuevoNumeroDeComprobanteActual.ToString("D4"),
-                        Date_fecha_de_expedicion = DateTime.Now,
-                        Date_fecha_de_vencimiento = DateTime.Now.AddMonths(1),
-                        MovimientoId = movimientoModel.Id,
-                        /*
-                        // Datos de Empresa
-                        EmpresaNombre = movimiento.empresa_nombre,
-                        EmpresaDireccion = movimiento.empresa_direccion,
-                        EmpresaTelefono = movimiento.empresa_telefono,
-                        EmpresaSucursal = movimiento.empresa_sucursal,
-                        EmpresaActividad = movimiento.empresa_actividad,
-
-                        // Otros datos
-                        Ruc = movimiento.ruc,
-                        DestinatarioNombre = movimiento.destinatario_nombre,
-                        DestinatarioDocumento = movimiento.destinatario_documento,
-                        PuntoPartida = movimiento.punto_partida,
-                        PuntoLlegada = movimiento.punto_llegada,
-                        TrasladoFechaInicio = movimiento.traslado_fecha_inicio,
-                        TrasladoFechaFin = movimiento.traslado_fecha_fin,
-                        TrasladoVehiculo = movimiento.traslado_vehiculo,
-                        TrasladoRuta = movimiento.traslado_ruta,
-                        TransportistaNombre = movimiento.traslado_transportista_nombre,
-                        TransportistaRuc = movimiento.traslado_transportista_ruc,
-                        ConductorNombre = movimiento.traslado_conductor_nombre,
-                        ConductorDocumento = movimiento.traslado_conductor_documento,
-                        ConductorDireccion = movimiento.traslado_conductor_direccion,
-                        Motivo = movimiento.traslado_motivo,
-                        MotivoDescripcion = movimiento.traslado_motivo_descripcion,
-                        ComprobanteVenta = movimiento.traslado_comprobante_venta
-                        */
-                    };
-
-                    await _notaDeRemisionRepo.CreateAsync(nuevaNotaDeRemision);
-
                     await _context.SaveChangesAsync();
                     await transaction.CommitAsync();
 
