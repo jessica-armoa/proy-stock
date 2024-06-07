@@ -24,7 +24,7 @@ namespace api.Repository
             return ferreteriaModel;
         }
 
-        public async Task<Ferreteria?> DeleteAsync(int id, FerreteriaDto ferreteriaDto)
+        public async Task<Ferreteria?> DeleteAsync(int id)
         {
             var ferreteriaExistente = await _context.ferreterias
                 .Where(f => f.Bool_borrado != true)
@@ -32,9 +32,6 @@ namespace api.Repository
 
             if(ferreteriaExistente == null) return null;
 
-            ferreteriaExistente.Str_nombre = ferreteriaDto.Str_nombre;
-            ferreteriaExistente.Str_ruc = ferreteriaDto.Str_ruc;
-            ferreteriaExistente.Str_telefono = ferreteriaDto.Str_telefono;
             ferreteriaExistente.Bool_borrado = true;
 
             await _context.SaveChangesAsync();

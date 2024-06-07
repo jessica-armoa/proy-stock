@@ -19,7 +19,7 @@ namespace api.Controllers
     public class MovimientoController : ControllerBase
     {
         private readonly IMovimientoRepository _movimientoRepo;
-        private readonly IDepositoRepository _depositoRepo;
+        //private readonly IDepositoRepository _depositoRepo;
         private readonly ITipoDeMovimientoRepository _tipoDeMovimientoRepo;
         private readonly ApplicationDbContext _context;
         private readonly IProductoRepository _productoRepo;
@@ -37,7 +37,7 @@ namespace api.Controllers
             ITimbradoRepository timbradoRepo)
         {
             _movimientoRepo = movimientoRepo;
-            _depositoRepo = depositoRepo;
+            //_depositoRepo = depositoRepo;
             _tipoDeMovimientoRepo = tipoDeMovimientoRepo;
             _context = context;
             _productoRepo = productoRepo;
@@ -62,7 +62,9 @@ namespace api.Controllers
                 DepositoOrigenId = m.DepositoOrigenId,
                 DepositoDestinoId = m.DepositoDestinoId,
                 Bool_borrado = m.Bool_borrado,
-                DetallesDeMovimientos = m.DetallesDeMovimientos.Select(d => new DetalleDeMovimientoDto
+                DetallesDeMovimientos = m.DetallesDeMovimientos
+                .Where(d => d.Bool_borrado != true)
+                .Select(d => new DetalleDeMovimientoDto
                 {
                     Id = d.Id,
                     ProductoId = d.ProductoId,
@@ -90,7 +92,7 @@ namespace api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CrearMovimiento([FromBody] MovimientoDto movimiento)
+        public async Task<IActionResult> Create([FromBody] MovimientoDto movimiento)
         {
             if (movimiento == null || movimiento.DetallesDeMovimientos == null || !movimiento.DetallesDeMovimientos.Any())
             {
@@ -117,20 +119,20 @@ namespace api.Controllers
                     {
                         var producto = await _context.productos
                             .Where(p => p.Bool_borrado != true)
-                            .FirstOrDefaultAsync(p => p.Id == detalle.ProductoId && p.DepositoId == movimiento.DepositoOrigenId);
+                            .FirstOrDefaultAsync(p => p.Id == detalle.ProductoId && p.DepositoId == movimientoModel.DepositoOrigenId);
 
-                        if (producto == null && tipoDeMovimiento.Str_descripcion.ToLower() != "ingreso")
+                        if (producto == null)
                         {
                             return BadRequest("Producto no encontrado en el depósito origen.");
                         }
 
                         if (tipoDeMovimiento.Str_descripcion.ToLower() == "ingreso")
                         {
-                            producto.Int_cantidad_actual += detalle.Int_cantidad;
                             var nuevoDetalle = new CreateDetalleRequestDto
                             {
                                 Int_cantidad = detalle.Int_cantidad,
                             };
+
                             var detalleModel = nuevoDetalle.ToDetalleFromCreate(movimientoModel.Id, detalle.ProductoId);
                             await _detalleRepo.CreateAsync(detalleModel);
                         }
@@ -140,11 +142,12 @@ namespace api.Controllers
                             {
                                 return BadRequest("Cantidad insuficiente en el depósito origen.");
                             }
-                            producto.Int_cantidad_actual -= detalle.Int_cantidad;
+
                             var nuevoDetalle = new CreateDetalleRequestDto
                             {
                                 Int_cantidad = detalle.Int_cantidad,
                             };
+
                             var detalleModel = nuevoDetalle.ToDetalleFromCreate(movimientoModel.Id, detalle.ProductoId);
                             await _detalleRepo.CreateAsync(detalleModel);
                         }
@@ -164,8 +167,17 @@ namespace api.Controllers
                             {
                                 var nuevoProductoDestino = new CreateProductoCantidadDto
                                 {
+                                    Str_ruta_imagen = producto.Str_ruta_imagen,
                                     Str_nombre = producto.Str_nombre,
-                                    Int_cantidad_actual = detalle.Int_cantidad
+                                    Str_descripcion = producto.Str_descripcion,
+                                    Int_cantidad_actual = detalle.Int_cantidad,
+                                    Int_cantidad_minima = producto.Int_cantidad_minima,
+                                    Dec_costo = producto.Dec_costo,
+                                    Dec_costo_PPP = producto.Dec_costo_PPP,
+                                    Int_iva = producto.Int_iva,
+                                    Dec_precio_mayorista = producto.Dec_precio_mayorista,
+                                    Dec_precio_minorista = producto.Dec_precio_minorista,
+                                    Bool_borrado = false
                                 };
                                 var productoModel = nuevoProductoDestino.ToProductoCantidadFromCreate(movimiento.DepositoDestinoId, producto.ProveedorId, producto.MarcaId);
                                 await _productoRepo.CreateAsync(productoModel);
@@ -201,6 +213,12 @@ namespace api.Controllers
                     return StatusCode(500, $"Error interno del servidor: {ex.Message}");
                 }
             }
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, [FromBody] UpdateMovimientoRequestDto dto)
+        {
+            return Ok();
         }
     }
 }
