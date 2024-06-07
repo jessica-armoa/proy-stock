@@ -8,7 +8,7 @@ class ProductsController {
   }
 
   getProduct(id) {
-    return axios.get(`${api}${id}`);
+    return axios.get(`${api}/${id}`);
   }
 
   createProduct(product) {
