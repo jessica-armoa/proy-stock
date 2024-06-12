@@ -3,7 +3,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import AuthController from '../../libs/UsuariosController';
+import AuthConfig from '../../controladores/UsuariosConfig';
 
 const Login = () => {
   console.log(process.env.NEXT_PUBLIC_API_URL)
@@ -21,7 +21,7 @@ const Login = () => {
     }
 
     try {
-      const response = await AuthController.login({ "username": username, "password": password });
+      const response = await AuthConfig.login({ "username": username, "password": password });
       console.log(response.data);
       localStorage.setItem("Token", response.data.token);
       localStorage.setItem("isAuthenticated", true);

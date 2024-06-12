@@ -11,11 +11,11 @@ class MovimientosConfig{
         return axios.get(`${api}/${id}`);
     }
 
-    createMovimiento(movimiento){
+    postMovimiento(movimiento){
         return axios.post(api, movimiento);
     }
 
-    updateMovimiento(id){
+    putMovimiento(id){
         return axios.put(`${api}/${id}`);
     }
 

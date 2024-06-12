@@ -2,8 +2,8 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Card, Dialog, DialogPanel, NumberInput, TextInput } from '@tremor/react';
 import { RiArrowDownSLine, RiCloseLine } from '@remixicon/react';
-import DepositosConfig from '../DepositosConfig';
-import FerreteriasConfig from '../../ferreterias/FerreteriasConfig';
+import DepositosConfig from '../../../controladores/DepositosConfig';
+import FerreteriasConfig from '../../../controladores/FerreteriasConfig';
 import { useNavigate } from 'react-router-dom';
 import { useRouter } from 'next/navigation';
 
@@ -59,7 +59,7 @@ export default function FormularioDepositos() {
                 str_telefono_empleado
             });
 
-            const response = await DepositosConfig.createDeposito(1, deposito);
+            const response = await DepositosConfig.postDeposito(1, deposito);
 
 
             // También puedes reiniciar los valores de los campos del formulario

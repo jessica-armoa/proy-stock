@@ -4,8 +4,8 @@ import { Button } from '@tremor/react';
 import { useRouter } from 'next/navigation'
 
 import dynamic from 'next/dynamic';// Dynamic imports
-const Sidebar = dynamic(() => import("@/components/sidebar/Sidebar"), { ssr: false });
-//const DataTable = dynamic(() => import("@/components/table"), { ssr: false });
+const Sidebar = dynamic(() => import("@/components/barraNavegacion/Sidebar"), { ssr: false });
+//const DataTable = dynamic(() => import("@/components/tabla"), { ssr: false });
 
 const Marcas = () => {
     const router = useRouter();

@@ -1,21 +1,23 @@
 import axios from "axios";
 
-const api = "https://proy-stock.azurewebsites.net/api/"+"producto";
-console.log(api);
+const api = process.env.NEXT_PUBLIC_API_URL+"producto";
+
 class ProductosConfig{
-    getProducto(){
+    getProductos(){
         return axios.get(api);
     }
 
-    getProductoById(id){
+    getProductoId(id){
         return axios.get(`${api}/${id}`);
     }
 
-    createProducto(depositoId, proveedorId, marcaId, producto){
+   
+    postProducto(depositoId, proveedorId, marcaId, producto) {
         return axios.post(`${api}/${depositoId}/${proveedorId}/${marcaId}`, producto);
     }
+    
 
-    updateProducto(id,producto){
+    putProducto(id,producto){
         return axios.put(`${api}/${id}`, producto, {
             headers: {
                 'Content-Type': 'application/json'

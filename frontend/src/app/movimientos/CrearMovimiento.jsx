@@ -1,5 +1,5 @@
 'use client'
-import Sidebar from "@/components/sidebar/Sidebar";
+import Sidebar from "@/components/barraNavegacion/Sidebar";
 import React, { useState } from 'react';
 import FormularioMovimientos from "./FormularioMovimientos";
 

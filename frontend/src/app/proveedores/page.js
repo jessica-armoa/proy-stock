@@ -2,11 +2,11 @@
 
 import React from 'react'
 import { Button } from '@tremor/react';
-import Photo from '@/components/productimg';
+import Photo from '@/components/productos';
 import { useRouter } from 'next/navigation'
 
 import dynamic from 'next/dynamic';// Dynamic imports
-const Sidebar = dynamic(() => import("@/components/sidebar/Sidebar"), { ssr: false });
+const Sidebar = dynamic(() => import("@/components/barraNavegacion/Sidebar"), { ssr: false });
 
 const Proveedores = () => {
     const router = useRouter();
