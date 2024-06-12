@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button, Dialog, DialogPanel, TextInput, SearchSelect, SearchSelectItem} from '@tremor/react';
 import { RiCloseLine } from '@remixicon/react';
-import MarcasConfig from '../MarcasConfig';
+import MarcasConfig from '../../../controladores/MarcasConfig';
 import ProveedoresConfig from '../../proveedores/ProveedoresConfig';
 
 export default function FormularioMarcas() {

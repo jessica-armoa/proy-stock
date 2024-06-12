@@ -1,7 +1,7 @@
 'use client'
 import dynamic from 'next/dynamic';
 import React from "react";
-import NotaRemisionPDF from "@/components/pdf/NotaRemisionPDF";
+import NotaRemisionPDF from "@/components/notaRemision/NotaRemisionPDF";
 import { Dialog, DialogPanel, Button } from "@tremor/react";
 import { RiTruckLine } from "@remixicon/react";
 

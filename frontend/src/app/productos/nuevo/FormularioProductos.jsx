@@ -1,14 +1,15 @@
 "use client";
 import React, { useEffect, useState } from 'react';
-import { Button, NumberInput, TextInput, Select, SelectItem, SearchSelect, SearchSelectItem, Divider } from '@tremor/react';
+import { Button, NumberInput, TextInput, SearchSelect, SearchSelectItem } from '@tremor/react';
 import ProveedoresConfig from '../../proveedores/ProveedoresConfig';
-import MarcasConfig from '../../marcas/MarcasConfig';
-import DepositosConfig from '../../depositos/DepositosConfig';
-import ProductosConfig from '../ProductosConfig';
+import MarcasConfig from '../../../controladores/MarcasConfig';
+import DepositosConfig from '../../../controladores/DepositosConfig';
+import ProductosConfig from '../../../controladores/ProductosConfig';
 import { useRouter } from 'next/navigation';
 
 export default function FormularioProductos() {
   // Definimos el estado para cada campo del formulario
+  const navigate = useRouter();
   const [str_imagen, setStr_imagen] = useState('');
   const [str_nombre, setStr_nombre] = useState('');
   const [str_descripcion, setStr_descripcion] = useState('');
@@ -56,7 +57,7 @@ export default function FormularioProductos() {
   useEffect(() => {
     const extraccionDepositos = async () => {
       try {
-        const respuestaDepositos = await DepositosConfig.getDeposito();
+        const respuestaDepositos = await DepositosConfig.getDepositos();
         setDepositos(respuestaDepositos.data);
       } catch (error) {
         console.error('Error al obtener lista de depositos: ', error);
@@ -88,20 +89,33 @@ export default function FormularioProductos() {
         dc_precio_minorista,
         fk_deposito
       });
-
+/*
+      {
+        "str_ruta_imagen": "string",
+        "str_nombre": "string",
+        "str_descripcion": "string",
+        "int_cantidad_minima": 100,
+        "dec_costo": 0,
+        "dec_costo_PPP": 0,
+        "int_iva": 0,
+        "dec_precio_mayorista": 0,
+        "dec_precio_minorista": 0,
+        "bool_borrado": true
+      }*/
       const producto = {
         "str_ruta_imagen": str_imagen,
         "str_nombre": str_nombre,
         "str_descripcion": str_descripcion,
-        "int_cantidad_actual": int_cantidad_actual,
         "int_cantidad_minima": int_cantidad_minima,
+        "dec_costo": dc_costo_PPP,
         "dec_costo_PPP": dc_costo_PPP,
         "int_iva": int_iva,
         "dec_precio_mayorista": dc_precio_mayorista,
-        "dec_precio_minorista": dc_precio_minorista
+        "dec_precio_minorista": dc_precio_minorista,
+        "bool_borrado": true
       }
 
-      const productoAgregado = await ProductosConfig.createProducto(1, fk_proveedor, fk_marca, producto);
+      const productoAgregado = await ProductosConfig.postProducto(1, fk_proveedor, fk_marca, producto);
       // También puedes reiniciar los valores de los campos del formulario
       setStr_imagen('');
       setStr_nombre('');
@@ -116,7 +130,7 @@ export default function FormularioProductos() {
       setDc_precio_mayorista(0);
       setDc_precio_minorista(0);
       setFk_deposito(0);
-      navigate("/productos");
+      navigate.push("/productos");
     } catch (error) {
       console.error('Error al enviar los datos del formulario: ', error);
     }
@@ -403,7 +417,7 @@ export default function FormularioProductos() {
           setDc_precio_mayorista(0);
           setDc_precio_minorista(0);
           setFk_deposito(0);
-          navigate('/productos');
+          navigate.push('/productos');
         }}>Descartar</Button>
         <Button variant="primary" type="submit" color='blue'>Guardar</Button>
       </div>

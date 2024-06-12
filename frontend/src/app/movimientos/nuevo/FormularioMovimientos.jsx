@@ -3,11 +3,9 @@
 import { useEffect, useState } from "react";
 import { Card, Select, SelectItem, SearchSelect, SearchSelectItem, Table, TableBody, TableCell, TableHead, TableHeaderCell, TableRow } from "@tremor/react";
 import { useRouter } from 'next/navigation';
-import DepositosConfig from "../../depositos/DepositosConfig";
-import ProductosConfig from "../../productos/ProductosConfig";
-import MovimientosConfig from "../MovimientosConfig";
-import DepositosController from "@/libs/DepositosController";
-import ProductsController from "@/libs/ProductsController";
+import DepositosConfig from "../../../controladores/DepositosConfig";
+import ProductosConfig from "../../../controladores/ProductosConfig";
+import MovimientosConfig from "../../../controladores/MovimientosConfig";
 
 let detalleIdCounter = 0;
 
@@ -84,8 +82,8 @@ export default function FormularioMovimientos() {
     useEffect(() => {
         const extraccionDepositos = async () => {
             try {
-                const respuestaDepositos = await DepositosController.getDepositos();
-                const respuestaProductos = await ProductsController.getProducts();
+                const respuestaDepositos = await DepositosConfig.getDepositos();
+                const respuestaProductos = await ProductosConfig.getProductos();
                 setDepositos(respuestaDepositos.data);
                 setDepositosDestinos(respuestaDepositos.data);
                 setArreglo_productos(respuestaProductos.data);
@@ -176,24 +174,27 @@ export default function FormularioMovimientos() {
     const calcularTotal = (subTotal) => {
         return subTotal;
     };
-
+let count = 100
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
             const movimientoActual = {
+                "id": count++,
                 "date_fecha": fecha,
                 "tipoDeMovimientoId": fk_tipo_de_movimiento,
                 "depositoOrigenId": fk_deposito_origen,
                 "depositoDestinoId": fk_deposito_destino,
                 "bool_borrado": false,
                 "detallesDeMovimientos": detallesMovimientos.map(detalle => ({
+                    "id": count++,
                     "int_cantidad": detalle.cantidad,
-                    "productoId": detalle.idProducto
+                    "productoId": detalle.idProducto,
+                    "bool_borrado": false
                 }))
             }
             console.log('Movimiento enviado', movimientoActual);
-            debugger;
-            const movimientoCreado = await MovimientosConfig.createMovimiento(movimientoActual);
+        
+            const movimientoCreado = await MovimientosConfig.postMovimiento(movimientoActual);
 
 
         } catch (error) {

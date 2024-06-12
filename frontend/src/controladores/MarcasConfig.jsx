@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const api = process.env.NEXT_PUBLIC_API_URL+"api/marca";
+const api = process.env.NEXT_PUBLIC_API_URL+"marca";
 
 class MarcasConfig{
     getMarca(){
@@ -11,11 +11,11 @@ class MarcasConfig{
         return axios.get(`${api}/${id}`);
     }
 
-    createMarca(proveedorId, marca){
+    postMarca(proveedorId, marca){
         return axios.post(`${api}/${proveedorId}`, marca);
     }
 
-    updateMarca(id){
+    putMarca(id){
         return axios.put(`${api}/${id}`);
     }
 

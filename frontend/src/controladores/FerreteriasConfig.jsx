@@ -7,15 +7,15 @@ class FerreteriasConfig{
         return axios.get(api);
     }
 
-    getFerreteriaById(id){
+    getFerreteriaId(id){
         return axios.get(`${api}/${id}`);
     }
 
-    createFerreteria(ferreteria){
+    psotFerreteria(ferreteria){
         return axios.post(api, ferreteria);
     }
 
-    updateFerreteria(id){
+    putFerreteria(id){
         return axios.put(`${api}/${id}`);
     }
 

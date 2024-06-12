@@ -3,19 +3,20 @@ import axios from "axios";
 const api = process.env.NEXT_PUBLIC_API_URL+"deposito";
 
 class DepositosConfig{
-    getDeposito(){
+    getDepositos(){
         return axios.get(api);
     }
 
-    getDepositoById(id){
+    getDepositoId(id){
         return axios.get(`${api}/${id}`);
     }
 
-    createDeposito(ferreteriaId, deposito){
+    postDeposito(ferreteriaId, deposito){
         return axios.post(`${api}/${ferreteriaId}`, deposito);
     }
 
-    updateDeposito(id, deposito) {
+    putDeposito(id, deposito) {
+        console.log("en el put", deposito)
         return axios.put(`${api}/${id}`, deposito, {
             headers: {
                 'Content-Type': 'application/json'

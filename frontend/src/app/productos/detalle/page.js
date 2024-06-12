@@ -3,14 +3,15 @@
 import React, { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import dynamic from "next/dynamic";
-import ProductsController from "../../../../libs/ProductsController";
+import ProductsConfig from "../../../../controladores/ProductosConfig";
 import withAuth from "@/components/auth/withAuth";
+//import ProductosConfig from "../../ProductosConfig";
 //import Photo from "../../../../components/productimg";
 
-// Dynamic imports
-const Sidebar = dynamic(() => import("@/components/sidebar/Sidebar"), { ssr: false });
-const DataTable = dynamic(() => import("@/components/table"), { ssr: false });
-const Photo = dynamic(() => import("@/components/productimg"), { ssr: false });
+// Dynamic imports/
+const Sidebar = dynamic(() => import("@/components/barraNavegacion/Sidebar"), { ssr: false });
+const DataTable = dynamic(() => import("@/components/tabla"), { ssr: false });
+const Photo = dynamic(() => import("@/components/productos"), { ssr: false });
 
 
 const Detalle = ({params}) => { //params lee los parametros de la url, en este caso de los subdirectorios, en este tenemos el dir [id]
@@ -24,7 +25,7 @@ const Detalle = ({params}) => { //params lee los parametros de la url, en este c
 
   useEffect(() => {
     if (product) {
-      ProductsController.getProduct(id).then((response) => {
+      ProductsConfig.getProductos().then((response) => {
         setProduct(response.data);
       });
     }
