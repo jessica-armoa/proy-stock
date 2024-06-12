@@ -4,6 +4,7 @@ const Sidebar = dynamic(() => import("@/components/barraNavegacion/Sidebar"), { 
 import FormularioMovimientos from "./FormularioMovimientos";
 
 
+
 export default function CrearMovimiento() {
     return (
         <div className="flex h-screen w-full bg-ui-background p-2 text-ui-text">
