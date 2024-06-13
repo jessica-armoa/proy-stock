@@ -21,7 +21,7 @@ namespace api.Dtos.Producto
         public int Int_cantidad_minima { get; set; }
         [Required]
         public decimal Dec_costo { get; set; } = 0;
-        public decimal Dec_costo_PPP { get; set; }
+        //public decimal Dec_costo_PPP { get; set; }
         [Required]
         public int Int_iva { get; set; }
         public decimal Dec_precio_mayorista { get; set; }
