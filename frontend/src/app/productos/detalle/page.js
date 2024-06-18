@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import dynamic from "next/dynamic";
-import ProductsConfig from "../../../../controladores/ProductosConfig";
+import ProductsConfig from "../../../controladores/ProductosConfig";
 import withAuth from "@/components/auth/withAuth";
 //import ProductosConfig from "../../ProductosConfig";
 //import Photo from "../../../../components/productimg";
