@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { Button } from "@tremor/react";
-import ProductsController from "../../libs/ProductsController";
+import ProductosConfig from "@/controladores/ProductosConfig";
 import withAuth from "@/components/auth/withAuth";
 import ExportPDF from "@/components/exportpdf";
 import { useRouter } from "next/navigation";
@@ -10,8 +10,8 @@ import Swal from "sweetalert2";
 import dynamic from "next/dynamic"; // Dynamic imports
 import { formatearPrecio } from "@/utils/format";
 
-const Sidebar = dynamic(() => import("@/components/sidebar/Sidebar"), { ssr: false });
-const DataTable = dynamic(() => import("@/components/table"), { ssr: false });
+const Sidebar = dynamic(() => import("@/components/barraNavegacion/Sidebar"), { ssr: false });
+const DataTable = dynamic(() => import("@/components/tabla"), { ssr: false });
 
 const Productos = () => {
   const router = useRouter();
@@ -21,7 +21,7 @@ const Productos = () => {
 
   useEffect(() => {
     if (products.length <= 0) {
-      ProductsController.getProducts().then((response) => {
+      ProductosConfig.getProductos().then((response) => {
         setProducts(response.data);
       });
     }
@@ -40,7 +40,7 @@ const Productos = () => {
       cancelButtonText: "Cancelar",
     }).then((result) => {
       if (result.isConfirmed) {
-        ProductsController.deleteProduct(id)
+        ProductsConfig.deleteProduct(id)
           .then(() => {
             setProducts(products.filter((product) => product.id !== id));
             Swal.fire("Borrado!", "El producto ha sido borrado.", "success");
@@ -65,7 +65,7 @@ const Productos = () => {
 
   const handleSave = () => {
     console.log(currentProduct)
-    ProductsController.updateProduct(currentProduct.id, currentProduct)
+    ProductosConfig.putProducto(currentProduct.id, currentProduct)
       .then(() => {
         setProducts(
           products.map((product) =>

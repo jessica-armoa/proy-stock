@@ -1,7 +1,7 @@
 import FormularioProductos from "./FormularioProductos";
 
 import dynamic from 'next/dynamic';// Dynamic imports
-const Sidebar = dynamic(() => import("@/components/sidebar/Sidebar"), { ssr: false });
+const Sidebar = dynamic(() => import("@/components/barraNavegacion/Sidebar"), { ssr: false });
 
 export default function CrearProducto(){
     return(
