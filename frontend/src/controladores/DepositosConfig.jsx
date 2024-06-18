@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const api = "https://proy-stock.azurewebsites.net/api/"+"deposito";
+const api = process.env.NEXT_PUBLIC_API_URL+"deposito";
 
 class DepositosConfig{
     getDepositos(){

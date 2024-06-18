@@ -138,7 +138,7 @@ const Detalle = ({params}) => { //params lee los parametros de la url, en este c
 
   return (
     <div>
-      <div className="flex h-screen w-full bg-ui-background p-2 text-ui-text">
+      <div className="flex h-screen bg-ui-background p-2 text-ui-text">
         <Sidebar />
         <div className="flex flex-col w-content h-full p-5 rounded-lg bg-ui-cardbg">
           <div className="container mx-auto">

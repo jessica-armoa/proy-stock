@@ -1,18 +1,78 @@
 "use client";
-import React, { useEffect, useState } from 'react';
-import { Button, NumberInput, TextInput, SearchSelect, SearchSelectItem } from '@tremor/react';
-import ProveedoresConfig from '../../proveedores/ProveedoresConfig';
-import MarcasConfig from '../../../controladores/MarcasConfig';
-import DepositosConfig from '../../../controladores/DepositosConfig';
-import ProductosConfig from '../../../controladores/ProductosConfig';
-import { useRouter } from 'next/navigation';
+import React, { useEffect, useState } from "react";
+import {
+  Button,
+  NumberInput,
+  TextInput,
+  SearchSelect,
+  SearchSelectItem,
+  Dialog,
+  DialogPanel,
+} from "@tremor/react";
+import ProveedoresConfig from "../../../controladores/ProveedoresConfig";
+import MarcasConfig from "../../../controladores/MarcasConfig";
+import DepositosConfig from "../../../controladores/DepositosConfig";
+import ProductosConfig from "../../../controladores/ProductosConfig";
+import { useRouter } from "next/navigation";
+import FormularioProveedores from "@/app/proveedores/nuevo/FormularioProveedores";
+import FormularioMarcas from "@/app/marcas/nuevo/FormularioMarcas";
+import { RiCloseLine } from "@remixicon/react";
 
 export default function FormularioProductos() {
+  //crear marca y proveedores modales
+  const [showCrearMarca, setShowCrearMarca] = useState(false);
+  const [showCrearProveedor, setShowCrearProveedor] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
+  const [isCreatingMarca, setIsCreatingMarca] = useState(false);
+  const [isCreatingProveedor, setIsCreatingProveedor] = useState(false);
+
+  const handleCrearMarca = () => {
+    setShowCrearMarca(true);
+  };
+
+  const handleCrearProveedor = () => {
+    setShowCrearProveedor(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowCrearMarca(false);
+    setShowCrearProveedor(false);
+  };
+
+  const handleMarcaCreada = (marcaId) => {
+    setFk_marca(marcaId);
+    setIsCreatingMarca(false);
+    handleCloseModal();
+  };
+
+  const handleProveedorCreado = (proveedorId) => {
+    setFk_proveedor(proveedorId);
+    setIsCreatingProveedor(false);
+    handleCloseModal();
+  };
+
+  const handleCancelarCreacionMarca = () => {
+    setIsCreatingMarca(false);
+    setFk_marca(null);
+    handleCloseModal();
+  };
+
+  const handleCancelarCreacionProveedor = () => {
+    setIsCreatingProveedor(false);
+    setFk_proveedor(null);
+    handleCloseModal();
+  };
+
+  useEffect(() => {
+    if (!showCrearMarca) setIsCreatingMarca(false);
+    if (!showCrearProveedor) setIsCreatingProveedor(false);
+  }, [showCrearMarca, showCrearProveedor]);
+
   // Definimos el estado para cada campo del formulario
   const navigate = useRouter();
-  const [str_imagen, setStr_imagen] = useState('');
-  const [str_nombre, setStr_nombre] = useState('');
-  const [str_descripcion, setStr_descripcion] = useState('');
+  const [str_imagen, setStr_imagen] = useState("");
+  const [str_nombre, setStr_nombre] = useState("");
+  const [str_descripcion, setStr_descripcion] = useState("");
   //const [fk_marca, setFk_marca] = useState('');
   //const [fk_categoria, setFk_categoria] = useState(''); // no se tiene categoria en el api
   //const [fk_proveedor, setFk_proveedor] = useState('');
@@ -32,9 +92,9 @@ export default function FormularioProductos() {
         const respuestaProveedores = await ProveedoresConfig.getProveedor();
         setProveedores(respuestaProveedores.data);
       } catch (error) {
-        console.error('Error al obtener lista de proveedores: ', error);
+        console.error("Error al obtener lista de proveedores: ", error);
       }
-    }
+    };
     extraccionProveedores();
   }, []);
 
@@ -46,9 +106,9 @@ export default function FormularioProductos() {
         const respuestaMarcas = await MarcasConfig.getMarca();
         setMarcas(respuestaMarcas.data);
       } catch (error) {
-        console.error('Error al obtener lista de marcas: ', error);
+        console.error("Error al obtener lista de marcas: ", error);
       }
-    }
+    };
     extraccionMarcas();
   }, []);
 
@@ -59,14 +119,13 @@ export default function FormularioProductos() {
       try {
         const respuestaDepositos = await DepositosConfig.getDepositos();
         setDepositos(respuestaDepositos.data);
+        console.log("respuesta", respuestaDepositos.data);
       } catch (error) {
-        console.error('Error al obtener lista de depositos: ', error);
+        console.error("Error al obtener lista de depositos: ", error);
       }
-    }
+    };
     extraccionDepositos();
   }, []);
-
-
 
   // Función para manejar el envío del formulario
   //const router = useRouter();
@@ -87,9 +146,9 @@ export default function FormularioProductos() {
         int_iva,
         dc_precio_mayorista,
         dc_precio_minorista,
-        fk_deposito
+        fk_deposito,
       });
-/*
+      /*
       {
         "str_ruta_imagen": "string",
         "str_nombre": "string",
@@ -103,23 +162,28 @@ export default function FormularioProductos() {
         "bool_borrado": true
       }*/
       const producto = {
-        "str_ruta_imagen": str_imagen,
-        "str_nombre": str_nombre,
-        "str_descripcion": str_descripcion,
-        "int_cantidad_minima": int_cantidad_minima,
-        "dec_costo": dc_costo_PPP,
-        "dec_costo_PPP": dc_costo_PPP,
-        "int_iva": int_iva,
-        "dec_precio_mayorista": dc_precio_mayorista,
-        "dec_precio_minorista": dc_precio_minorista,
-        "bool_borrado": true
-      }
+        str_ruta_imagen: str_imagen,
+        str_nombre: str_nombre,
+        str_descripcion: str_descripcion,
+        int_cantidad_minima: int_cantidad_minima,
+        dec_costo: dc_costo_PPP,
+        dec_costo_PPP: dc_costo_PPP,
+        int_iva: int_iva,
+        dec_precio_mayorista: dc_precio_mayorista,
+        dec_precio_minorista: dc_precio_minorista,
+        bool_borrado: false,
+      };
 
-      const productoAgregado = await ProductosConfig.postProducto(1, fk_proveedor, fk_marca, producto);
+      const productoAgregado = await ProductosConfig.postProducto(
+        fk_deposito,
+        fk_proveedor,
+        fk_marca,
+        producto
+      );
       // También puedes reiniciar los valores de los campos del formulario
-      setStr_imagen('');
-      setStr_nombre('');
-      setStr_descripcion('');
+      setStr_imagen("");
+      setStr_nombre("");
+      setStr_descripcion("");
       setFk_marca(0);
       //setFk_categoria('');
       setFk_proveedor(0);
@@ -132,9 +196,9 @@ export default function FormularioProductos() {
       setFk_deposito(0);
       navigate.push("/productos");
     } catch (error) {
-      console.error('Error al enviar los datos del formulario: ', error);
+      console.error("Error al enviar los datos del formulario: ", error);
     }
-  }
+  };
 
   // Para guardar la imagen
   const handleImageChange = (event) => {
@@ -150,10 +214,9 @@ export default function FormularioProductos() {
 
   return (
     <form onSubmit={handleSubmit}>
-
       <div className="space-y-4">
-        <div className='flex'>
-          <div className='w-1/4'>
+        <div className="flex">
+          <div className="w-1/4">
             <label
               htmlFor="str_imagen"
               className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
@@ -226,10 +289,25 @@ export default function FormularioProductos() {
                 <span className="text-red-500">*</span>
               </label>
 
-              <SearchSelect id="fk_marca" value={fk_marca} placeholder="Seleccionar Marca" onValueChange={(value) => setFk_marca(parseInt(value))} className='mt-2'>
-                {marcas.map(marca => (
-                  <SearchSelectItem key={marca.id} value={marca.id}>{marca.str_nombre}</SearchSelectItem>
+              <SearchSelect
+                id="fk_marca"
+                placeholder="Seleccionar Marca"
+                className="mt-2"
+                value={isCreatingMarca ? "" : fk_marca}
+                onValueChange={(value) => setFk_marca(parseInt(value))}
+                onCreate={() => {
+                  setIsCreatingMarca(true);
+                  setShowCrearMarca(true);
+                }}
+              >
+                {marcas.map((marca) => (
+                  <SearchSelectItem key={marca.id} value={marca.id}>
+                    {marca.str_nombre}
+                  </SearchSelectItem>
                 ))}
+                <SearchSelectItem value="crear" onClick={handleCrearMarca}>
+                  Crear Nueva Marca
+                </SearchSelectItem>
               </SearchSelect>
             </div>
 
@@ -241,11 +319,73 @@ export default function FormularioProductos() {
                 Proveedor
                 <span className="text-red-500">*</span>
               </label>
-              <SearchSelect id="fk_proveedor" value={fk_proveedor} placeholder='Seleccionar Proveedor' onValueChange={(value) => setFk_proveedor(parseInt(value))} className='mt-2'>
-                {proveedores.map(proveedor => (
-                  <SearchSelectItem key={proveedor.id} value={proveedor.id}>{proveedor.str_nombre}</SearchSelectItem>
+              <SearchSelect
+                id="fk_proveedor"
+                value={fk_proveedor}
+                placeholder="Seleccionar Proveedor"
+                className="mt-2"
+                onValueChange={(value) => setFk_proveedor(parseInt(value))}
+                onCreate={() => {
+                  setIsCreatingProveedor(true);
+                  setShowCrearProveedor(true);
+                }}
+              >
+                {proveedores.map((proveedor) => (
+                  <SearchSelectItem key={proveedor.id} value={proveedor.id}>
+                    {proveedor.str_nombre}
+                  </SearchSelectItem>
                 ))}
+                <SearchSelectItem value="crear" onClick={handleCrearProveedor}>
+                  Crear Nuevo Proveedor
+                </SearchSelectItem>
               </SearchSelect>
+
+              {/*controlar modales*/}
+
+              <Dialog
+                open={showCrearMarca}
+                onClose={handleCloseModal}
+                static={true}
+                className="z-[100]"
+              >
+                <DialogPanel className="sm:max-w-md">
+                  <button>
+                    <RiCloseLine
+                      className="h-5 w-5 shrink-0"
+                      aria-hidden={true}
+                      onClick={handleCloseModal}
+                    />
+                  </button>
+                  <FormularioMarcas callParentFunction={handleCloseModal}
+                    isOpen={showCrearMarca}
+                    onClose={handleCancelarCreacionMarca}
+                    onMarcaCreada={handleMarcaCreada}
+                  />
+                </DialogPanel>
+              </Dialog>
+              <Dialog
+                open={showCrearProveedor}
+                onClose={handleCloseModal}
+                static={true}
+                className="z-[100]"
+              >
+                <DialogPanel>
+                  <div className="w-full text-right">
+                    <button>
+                      <RiCloseLine
+                        className="h-5 w-5 shrink-0 text-right"
+                        aria-hidden={true}
+                        onClick={handleCloseModal}
+                      />
+                    </button>
+                  </div>
+                  <FormularioProveedores callParentFunction={handleCloseModal}
+                    isOpen={showCrearProveedor}
+                    onClose={handleCancelarCreacionProveedor}
+                    onProveedorCreado={handleProveedorCreado}
+                  />
+                </DialogPanel>
+              </Dialog>
             </div>
           </div>
           <div className="w-3/4 pl-4 space-y-4">
@@ -301,7 +441,8 @@ export default function FormularioProductos() {
                 Costo
                 <span className="text-red-500">*</span>
               </label>
-              <NumberInput enableStepper={false}
+              <NumberInput
+                enableStepper={false}
                 id="dc_costo_PPP"
                 name="dc_costo_PPP"
                 autoComplete="dc_costo_PPP"
@@ -345,7 +486,8 @@ export default function FormularioProductos() {
                 Precio Mayorista
                 <span className="text-red-500">*</span>
               </label>
-              <NumberInput enableStepper={false}
+              <NumberInput
+                enableStepper={false}
                 id="dc_precio_mayorista"
                 name="dc_precio_mayorista"
                 autoComplete="dc_precio_mayorista"
@@ -365,7 +507,8 @@ export default function FormularioProductos() {
                 Precio Minorista
                 <span className="text-red-500">*</span>
               </label>
-              <NumberInput enableStepper={false}
+              <NumberInput
+                enableStepper={false}
                 id="dc_precio_minorista"
                 name="dc_precio_minorista"
                 autoComplete="dc_precio_minorista"
@@ -387,39 +530,54 @@ export default function FormularioProductos() {
                 <span className="text-red-500">*</span>
               </label>
 
-              <SearchSelect id="fk_deposito" className='mt-2' placeholder='Depósito' value={fk_deposito} onValueChange={(value) => setFk_deposito(parseInt(value))}>
-                {depositos.map(deposito => (
-                  <SearchSelectItem key={deposito.id} value={deposito.id}>{deposito.str_nombre}</SearchSelectItem>
+              <SearchSelect
+                id="fk_deposito"
+                className="mt-2"
+                placeholder="Depósito"
+                value={fk_deposito}
+                onValueChange={(value) => setFk_deposito(parseInt(value))}
+              >
+                {console.log("depositos", depositos)}
+                {depositos.map((deposito) => (
+                  <SearchSelectItem key={deposito.id} value={deposito.id}>
+                    {deposito.str_nombre}
+                  </SearchSelectItem>
                 ))}
               </SearchSelect>
             </div>
           </div>
-
         </div>
-
       </div>
 
       <div className="flex items-center justify-end space-x-4">
-        <Button variant="secondary" color='blue' onClick={() => {
-          // Lógica para descartar
-          console.log("Formulario descartado");
-          // Reiniciar los valores del formulario
-          setStr_imagen('');
-          setStr_nombre('');
-          setStr_descripcion('');
-          setFk_marca(0);
-          //setFk_categoria(0);
-          setFk_proveedor(0);
-          setInt_cantidad_actual(0);
-          setInt_cantidad_minima(0);
-          setDc_costo_PPP(0);
-          setInt_iva(0);
-          setDc_precio_mayorista(0);
-          setDc_precio_minorista(0);
-          setFk_deposito(0);
-          navigate.push('/productos');
-        }}>Descartar</Button>
-        <Button variant="primary" type="submit" color='blue'>Guardar</Button>
+        <Button
+          variant="secondary"
+          color="blue"
+          onClick={() => {
+            // Lógica para descartar
+            console.log("Formulario descartado");
+            // Reiniciar los valores del formulario
+            setStr_imagen("");
+            setStr_nombre("");
+            setStr_descripcion("");
+            setFk_marca(0);
+            //setFk_categoria(0);
+            setFk_proveedor(0);
+            setInt_cantidad_actual(0);
+            setInt_cantidad_minima(0);
+            setDc_costo_PPP(0);
+            setInt_iva(0);
+            setDc_precio_mayorista(0);
+            setDc_precio_minorista(0);
+            setFk_deposito(0);
+            navigate.push("/productos");
+          }}
+        >
+          Cancelar
+        </Button>
+        <Button variant="primary" type="submit" color="blue">
+          Guardar
+        </Button>
       </div>
     </form>
   );

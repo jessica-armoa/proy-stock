@@ -22,23 +22,23 @@ export default function FormularioMovimientos() {
     const [fk_motivoId, setFk_MotivoId] = useState(0);
     const [motivos, setMotivos] = useState([]);
     const tiposDeMovimientos = [
-        { id: 1, str_descripcion: 'ingreso' },
-        { id: 2, str_descripcion: 'egreso' },
-        { id: 3, str_descripcion: 'transferencia' }
+        { id: 1, str_descripcion: 'Ingreso' },
+        { id: 2, str_descripcion: 'Egreso' },
+        { id: 3, str_descripcion: 'Transferencia' }
     ];
     const [fk_tipo_de_movimiento, setFk_tipo_de_movimiento] = useState(0);
     const motivosIngreso = [
         { id: 2, str_motivo: 'Compra' },
-        { id: 3, str_motivo: 'Devolucion de cliente' }
+        { id: 3, str_motivo: 'Devolución de cliente' }
     ];
 
     const motivosEgreso = [
         { id: 1, str_motivo: 'Venta Cliente' },
-        { id: 4, str_motivo: 'Devolucion a proveedor' },
-        { id: 7, str_motivo: 'Perdida por deterioro' }
+        { id: 4, str_motivo: 'Devolución a proveedor' },
+        { id: 7, str_motivo: 'Pérdida por deterioro' }
     ];
 
-    const motivosTransferencia = [{ id: 8, str_motivo: 'transferencia' }];
+    const motivosTransferencia = [{ id: 8, str_motivo: 'Transferencia' }];
 
     useEffect(() => {
         // Función para obtener los motivos según el tipo de movimiento seleccionado
@@ -179,17 +179,16 @@ let count = 100
         event.preventDefault();
         try {
             const movimientoActual = {
-                "id": count++,
+                
                 "date_fecha": fecha,
                 "tipoDeMovimientoId": fk_tipo_de_movimiento,
                 "depositoOrigenId": fk_deposito_origen,
-                "depositoDestinoId": fk_deposito_destino,
+                "depositoDestinoId": null,
                 "bool_borrado": false,
                 "detallesDeMovimientos": detallesMovimientos.map(detalle => ({
-                    "id": count++,
+
                     "int_cantidad": detalle.cantidad,
                     "productoId": detalle.idProducto,
-                    "bool_borrado": false
                 }))
             }
             console.log('Movimiento enviado', movimientoActual);

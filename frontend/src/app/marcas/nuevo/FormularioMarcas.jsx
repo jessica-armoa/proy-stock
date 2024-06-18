@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { Button,NumberInput, Dialog, DialogPanel, TextInput, SearchSelect, SearchSelectItem, Divider} from '@tremor/react';
 import { RiCloseLine } from '@remixicon/react';
 import MarcasConfig from '../../../controladores/MarcasConfig';
-import ProveedoresConfig from '../../proveedores/ProveedoresConfig';
+import ProveedoresConfig from '../../../controladores/ProveedoresConfig';
 
 export default function FormularioMarcas() {
 
@@ -37,7 +37,7 @@ export default function FormularioMarcas() {
                 "str_nombre": str_nombre
             };
 
-            const response = await MarcasConfig.createMarca(proveedorId, marca);
+            const response = await MarcasConfig.postMarca(proveedorId, marca);
             console.log({
                 str_nombre,
                 proveedorId
@@ -52,31 +52,12 @@ export default function FormularioMarcas() {
     }
 
     return (
-        <Dialog open={isOpen}
-            onClose={() => setIsOpen(false)}
-            static={true}
-            className="z-[100]">
-            <DialogPanel className="sm:max-w-md">
-                <div className="absolute right-0 top-0 pr-3 pt-3">
-                    <button
-                        type="button"
-                        className="rounded-tremor-small p-2 text-tremor-content-subtle hover:bg-tremor-background-subtle hover:text-tremor-content dark:text-dark-tremor-content-subtle hover:dark:bg-dark-tremor-background-subtle hover:dark:text-tremor-content"
-                        onClick={() => {
-                            setIsOpen(false);
-                            navigate.push('/marcas');
-                        }}
-                        aria-label="Close"
-                    >
-                        <RiCloseLine
-                            className="h-5 w-5 shrink-0"
-                            aria-hidden={true}
-                        />
-                    </button>
-                </div>
+        
                 <form onSubmit={handleSubmit}>
                     <h4 className="font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong">
                         Nueva Marca
                     </h4>
+                    
                     <div className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
 
                         <div className="col-span-full sm:col-span-3">
@@ -122,13 +103,11 @@ export default function FormularioMarcas() {
                                 console.log("Formulario descartado");
                                 // Reiniciar los valores del formulario
                                 setStr_nombre('');
-                                router.push('/marcas');
-                            }}>Descartar</Button>
+                                //router.push('/marcas');
+                            }}>Cancelar</Button>
                             <Button className='mt-8' variant="primary" type="submit">Guardar</Button>
                         </div>
                     </div>
                 </form>
-            </DialogPanel>
-        </Dialog>
     )
 }
