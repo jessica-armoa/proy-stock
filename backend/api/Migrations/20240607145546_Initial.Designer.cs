@@ -12,8 +12,8 @@ using api.Data;
 namespace api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240607131331_tabla_Notas_remision_modificada")]
-    partial class tabla_Notas_remision_modificada
+    [Migration("20240607145546_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -54,19 +54,19 @@ namespace api.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "940b3c0b-7e60-474c-95fc-ae493a31ff95",
+                            Id = "8f516641-0224-4bc2-97c6-0c295922f6a5",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "3e5a7970-f206-47eb-acf8-a0e1f84782c7",
+                            Id = "10baa15b-a71b-4213-b55f-6ad84922e56e",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "e40df266-077e-4ada-9679-8a9faed5802d",
+                            Id = "fa721ce1-b925-4356-8233-5a4e76f5fd5d",
                             Name = "Encargado",
                             NormalizedName = "ENCARGADO"
                         });
@@ -502,7 +502,7 @@ namespace api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("TrasladoRua")
+                    b.Property<string>("TrasladoRuta")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

@@ -398,7 +398,29 @@ namespace api.Migrations
                     Str_numero_de_comprobante_actual = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Date_fecha_de_expedicion = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Date_fecha_de_vencimiento = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    MovimientoId = table.Column<int>(type: "int", nullable: true)
+                    MovimientoId = table.Column<int>(type: "int", nullable: true),
+                    EmpresaNombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    EmpresaDireccion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    EmpresaTelefono = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    EmpresaSucursal = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    EmpresaActividad = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Ruc = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DestinatarioNombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DestinatarioDocumento = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PuntoPartida = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PuntoLlegada = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TrasladoFechaInicio = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TrasladoFechaFin = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TrasladoVehiculo = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TrasladoRuta = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TransportistaNombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TransportistaRuc = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ConductorNombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ConductorDocumento = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ConductorDireccion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Motivo = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MotivoDescripcion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ComprobanteVenta = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -441,9 +463,9 @@ namespace api.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "4406daa5-d78e-4b63-87ae-05f6ced3d839", null, "User", "USER" },
-                    { "7eaf94f4-1e75-42c0-a6e1-664596d02c45", null, "Encargado", "ENCARGADO" },
-                    { "aa0b1b6e-b535-4fc2-98c5-611f2f919550", null, "Admin", "ADMIN" }
+                    { "10baa15b-a71b-4213-b55f-6ad84922e56e", null, "User", "USER" },
+                    { "8f516641-0224-4bc2-97c6-0c295922f6a5", null, "Admin", "ADMIN" },
+                    { "fa721ce1-b925-4356-8233-5a4e76f5fd5d", null, "Encargado", "ENCARGADO" }
                 });
 
             migrationBuilder.CreateIndex(

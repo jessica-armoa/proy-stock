@@ -50,7 +50,7 @@ namespace api.Controllers
       var timbrado = await _timbradoRepo.GetTimbradoActivoAsync();
       if (timbrado == null)
       {
-        return NotFound();
+        return NotFound(new { Message = "No active timbrado found" });
       }
       return Ok(timbrado.ToTimbradoDto());
     }
