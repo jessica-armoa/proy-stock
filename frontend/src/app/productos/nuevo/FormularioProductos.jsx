@@ -23,8 +23,6 @@ export default function FormularioProductos() {
   const [showCrearMarca, setShowCrearMarca] = useState(false);
   const [showCrearProveedor, setShowCrearProveedor] = useState(false);
   const [isOpen, setIsOpen] = useState(true);
-  const [isCreatingMarca, setIsCreatingMarca] = useState(false);
-  const [isCreatingProveedor, setIsCreatingProveedor] = useState(false);
 
   const handleCrearMarca = () => {
     setShowCrearMarca(true);
@@ -39,34 +37,26 @@ export default function FormularioProductos() {
     setShowCrearProveedor(false);
   };
 
-  const handleMarcaCreada = (marcaId) => {
+  const handleMarcaCreada = async  (marcaId) => {
+    //console.log("yes",marcaId);
+    await extraccionMarcas();
     setFk_marca(marcaId);
-    setIsCreatingMarca(false);
-    handleCloseModal();
   };
 
   const handleProveedorCreado = (proveedorId) => {
     setFk_proveedor(proveedorId);
-    setIsCreatingProveedor(false);
     handleCloseModal();
   };
 
   const handleCancelarCreacionMarca = () => {
-    setIsCreatingMarca(false);
     setFk_marca(null);
     handleCloseModal();
   };
 
   const handleCancelarCreacionProveedor = () => {
-    setIsCreatingProveedor(false);
     setFk_proveedor(null);
     handleCloseModal();
   };
-
-  useEffect(() => {
-    if (!showCrearMarca) setIsCreatingMarca(false);
-    if (!showCrearProveedor) setIsCreatingProveedor(false);
-  }, [showCrearMarca, showCrearProveedor]);
 
   // Definimos el estado para cada campo del formulario
   const navigate = useRouter();
@@ -100,15 +90,17 @@ export default function FormularioProductos() {
 
   const [fk_marca, setFk_marca] = useState(0);
   const [marcas, setMarcas] = useState([]);
+
+  const extraccionMarcas = async () => {
+    try {
+      const respuestaMarcas = await MarcasConfig.getMarca();
+      setMarcas(respuestaMarcas.data);
+    } catch (error) {
+      console.error("Error al obtener lista de marcas: ", error);
+    }
+  };
+
   useEffect(() => {
-    const extraccionMarcas = async () => {
-      try {
-        const respuestaMarcas = await MarcasConfig.getMarca();
-        setMarcas(respuestaMarcas.data);
-      } catch (error) {
-        console.error("Error al obtener lista de marcas: ", error);
-      }
-    };
     extraccionMarcas();
   }, []);
 
@@ -119,7 +111,7 @@ export default function FormularioProductos() {
       try {
         const respuestaDepositos = await DepositosConfig.getDepositos();
         setDepositos(respuestaDepositos.data);
-        console.log("respuesta", respuestaDepositos.data);
+        //console.log("respuesta", respuestaDepositos.data);
       } catch (error) {
         console.error("Error al obtener lista de depositos: ", error);
       }
@@ -213,372 +205,366 @@ export default function FormularioProductos() {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div className="space-y-4">
-        <div className="flex">
-          <div className="w-1/4">
-            <label
-              htmlFor="str_imagen"
-              className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
-            >
-              Imagen
-              <span className="text-red-500">*</span>
-            </label>
-            <TextInput
-              type="text"
-              id="str_imagen"
-              name="str_imagen"
-              autoComplete="str_imagen"
-              placeholder="Imagen"
-              className="mt-2"
-              value={str_imagen}
-              onChange={(e) => setStr_imagen(e.target.value)}
-              required
-            />
-          </div>
-
-          <div className="w-2/4 pl-4 space-y-4">
-            <div className="mx-auto max-w-xs">
+    <>
+      <form onSubmit={handleSubmit}>
+        <div className="space-y-4">
+          <div className="flex">
+            <div className="w-1/4">
               <label
-                htmlFor="str_nombre"
+                htmlFor="str_imagen"
                 className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
               >
-                Nombre
+                Imagen
                 <span className="text-red-500">*</span>
               </label>
               <TextInput
                 type="text"
-                id="str_nombre"
-                name="str_nombre"
-                autoComplete="str_nombre"
-                placeholder="nombre"
+                id="str_imagen"
+                name="str_imagen"
+                autoComplete="str_imagen"
+                placeholder="Imagen"
                 className="mt-2"
-                value={str_nombre}
-                onChange={(e) => setStr_nombre(e.target.value)}
+                value={str_imagen}
+                onChange={(e) => setStr_imagen(e.target.value)}
                 required
               />
             </div>
 
-            <div className="mx-auto max-w-xs">
-              <label
-                htmlFor="str_descripcion"
-                className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
-              >
-                Descripción
-                <span className="text-red-500">*</span>
-              </label>
-              <TextInput
-                type="text"
-                id="str_descripcion"
-                name="str_descripcion"
-                autoComplete="str_descripcion"
-                placeholder="Descripción"
-                className="mt-2"
-                value={str_descripcion}
-                onChange={(e) => setStr_descripcion(e.target.value)}
-                required
-              />
-            </div>
+            <div className="w-2/4 pl-4 space-y-4">
+              <div className="mx-auto max-w-xs">
+                <label
+                  htmlFor="str_nombre"
+                  className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                >
+                  Nombre
+                  <span className="text-red-500">*</span>
+                </label>
+                <TextInput
+                  type="text"
+                  id="str_nombre"
+                  name="str_nombre"
+                  autoComplete="str_nombre"
+                  placeholder="nombre"
+                  className="mt-2"
+                  value={str_nombre}
+                  onChange={(e) => setStr_nombre(e.target.value)}
+                  required
+                />
+              </div>
 
-            <div className="mx-auto max-w-xs">
-              <label
-                htmlFor="fk_marca"
-                className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
-              >
-                Marca
-                <span className="text-red-500">*</span>
-              </label>
+              <div className="mx-auto max-w-xs">
+                <label
+                  htmlFor="str_descripcion"
+                  className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                >
+                  Descripción
+                  <span className="text-red-500">*</span>
+                </label>
+                <TextInput
+                  type="text"
+                  id="str_descripcion"
+                  name="str_descripcion"
+                  autoComplete="str_descripcion"
+                  placeholder="Descripción"
+                  className="mt-2"
+                  value={str_descripcion}
+                  onChange={(e) => setStr_descripcion(e.target.value)}
+                  required
+                />
+              </div>
 
-              <SearchSelect
-                id="fk_marca"
-                placeholder="Seleccionar Marca"
-                className="mt-2"
-                value={isCreatingMarca ? "" : fk_marca}
-                onValueChange={(value) => setFk_marca(parseInt(value))}
-                /*onCreate={() => {
-                  setIsCreatingMarca(true);
-                  setShowCrearMarca(true);
-                }}*/
-              >
-                {marcas.map((marca) => (
-                  <SearchSelectItem key={marca.id} value={marca.id}>
-                    {marca.str_nombre}
+              <div className="mx-auto max-w-xs">
+                <label
+                  htmlFor="fk_marca"
+                  className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                >
+                  Marca
+                  <span className="text-red-500">*</span>
+                </label>
+
+                <SearchSelect
+                  id="fk_marca"
+                  placeholder="Seleccionar Marca"
+                  className="mt-2"
+                  value={fk_marca}
+                  onValueChange={
+                    (value) => { value==='crear' ? false : setFk_marca(parseInt(value))}
+                  }
+                >
+                  {marcas.map((marca) => (
+                    <SearchSelectItem key={marca.id} value={marca.id}>
+                      {marca.str_nombre}
+                    </SearchSelectItem>
+                  ))}
+                  <SearchSelectItem value="crear" onClick={handleCrearMarca}>
+                    Crear Nueva Marca
                   </SearchSelectItem>
-                ))}
-                <SearchSelectItem value="crear" onClick={handleCrearMarca}>
-                  Crear Nueva Marca
-                </SearchSelectItem>
-              </SearchSelect>
-            </div>
+                </SearchSelect>
+              </div>
 
-            <div className="mx-auto max-w-xs">
-              <label
-                htmlFor="fk_proveedor"
-                className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
-              >
-                Proveedor
-                <span className="text-red-500">*</span>
-              </label>
-              <SearchSelect
-                id="fk_proveedor"
-                value={fk_proveedor}
-                placeholder="Seleccionar Proveedor"
-                className="mt-2"
-                onValueChange={(value) => setFk_proveedor(parseInt(value))}
-                /*onCreate={() => {
-                  setIsCreatingProveedor(true);
-                  setShowCrearProveedor(true);
-                }}*/
-              >
-                {proveedores.map((proveedor) => (
-                  <SearchSelectItem key={proveedor.id} value={proveedor.id}>
-                    {proveedor.str_nombre}
+              <div className="mx-auto max-w-xs">
+                <label
+                  htmlFor="fk_proveedor"
+                  className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                >
+                  Proveedor
+                  <span className="text-red-500">*</span>
+                </label>
+                <SearchSelect
+                  id="fk_proveedor"
+                  value={fk_proveedor}
+                  placeholder="Seleccionar Proveedor"
+                  className="mt-2"
+                  onValueChange={(value) => setFk_proveedor(parseInt(value))}
+                >
+                  {proveedores.map((proveedor) => (
+                    <SearchSelectItem key={proveedor.id} value={proveedor.id}>
+                      {proveedor.str_nombre}
+                    </SearchSelectItem>
+                  ))}
+                  <SearchSelectItem value="crear" onClick={handleCrearProveedor}>
+                    Crear Nuevo Proveedor
                   </SearchSelectItem>
-                ))}
-                <SearchSelectItem value="crear" onClick={handleCrearProveedor}>
-                  Crear Nuevo Proveedor
-                </SearchSelectItem>
-              </SearchSelect>
-
-              {/*controlar modales*/}
-
-              <Dialog
-                open={showCrearMarca}
-                onClose={handleCloseModal}
-                static={true}
-                className="z-[100]"
-              >
-                <DialogPanel className="sm:max-w-md">
-                  <button>
-                    <RiCloseLine
-                      className="h-5 w-5 shrink-0"
-                      aria-hidden={true}
-                      onClick={handleCloseModal}
-                    />
-                  </button>
-                  <FormularioMarcas  type={'modal'} closeDialog={handleCloseModal}
-                    isOpen={showCrearMarca}
-                    onClose={handleCancelarCreacionMarca}
-                    onMarcaCreada={handleMarcaCreada}
-                  />
-                </DialogPanel>
-              </Dialog>
-              <Dialog
-                open={showCrearProveedor}
-                onClose={handleCloseModal}
-                static={true}
-                className="z-[100]"
-              >
-                <DialogPanel>
-                  <div className="w-full text-right">
-                    <button>
-                      <RiCloseLine
-                        className="h-5 w-5 shrink-0 text-right"
-                        aria-hidden={true}
-                        onClick={handleCloseModal}
-                      />
-                    </button>
-                  </div>
-                  <FormularioProveedores type={'modal'} closeDialog={handleCloseModal}
-                    isOpen={showCrearProveedor}
-                    onClose={handleCancelarCreacionProveedor}
-                    onProveedorCreado={handleProveedorCreado}
-                  />
-                </DialogPanel>
-              </Dialog>
+                </SearchSelect>
+              </div>
             </div>
-          </div>
-          <div className="w-3/4 pl-4 space-y-4">
-            <div className="mx-auto max-w-xs">
-              <label
-                htmlFor="int_cantidad_actual"
-                className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
-              >
-                Cantidad
-                <span className="text-red-500">*</span>
-              </label>
-              <NumberInput
-                type="number"
-                id="int_cantidad_actual"
-                name="int_cantidad_actual"
-                autoComplete="int_cantidad_actual"
-                placeholder="Cantidad"
-                className="mt-2"
-                value={int_cantidad_actual}
-                min={0}
-                onChange={(e) => setInt_cantidad_actual(e.target.value)}
-                required
-              />
-            </div>
+            <div className="w-3/4 pl-4 space-y-4">
+              <div className="mx-auto max-w-xs">
+                <label
+                  htmlFor="int_cantidad_actual"
+                  className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                >
+                  Cantidad
+                  <span className="text-red-500">*</span>
+                </label>
+                <NumberInput
+                  type="number"
+                  id="int_cantidad_actual"
+                  name="int_cantidad_actual"
+                  autoComplete="int_cantidad_actual"
+                  placeholder="Cantidad"
+                  className="mt-2"
+                  value={int_cantidad_actual}
+                  min={0}
+                  onChange={(e) => setInt_cantidad_actual(e.target.value)}
+                  required
+                />
+              </div>
 
-            <div className="mx-auto max-w-xs">
-              <label
-                htmlFor="int_cantidad_minima"
-                className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
-              >
-                Cantidad Mínima
-                <span className="text-red-500">*</span>
-              </label>
-              <NumberInput
-                type="number"
-                id="int_cantidad_minima"
-                name="int_cantidad_minima"
-                autoComplete="int_cantidad_minima"
-                placeholder="Cantidad Minima"
-                className="mt-2"
-                value={int_cantidad_minima}
-                min={0}
-                onChange={(e) => setInt_cantidad_minima(e.target.value)}
-                required
-              />
-            </div>
+              <div className="mx-auto max-w-xs">
+                <label
+                  htmlFor="int_cantidad_minima"
+                  className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                >
+                  Cantidad Mínima
+                  <span className="text-red-500">*</span>
+                </label>
+                <NumberInput
+                  type="number"
+                  id="int_cantidad_minima"
+                  name="int_cantidad_minima"
+                  autoComplete="int_cantidad_minima"
+                  placeholder="Cantidad Minima"
+                  className="mt-2"
+                  value={int_cantidad_minima}
+                  min={0}
+                  onChange={(e) => setInt_cantidad_minima(e.target.value)}
+                  required
+                />
+              </div>
 
-            <div className="mx-auto max-w-xs">
-              <label
-                htmlFor="dc_costo_PPP"
-                className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
-              >
-                Costo
-                <span className="text-red-500">*</span>
-              </label>
-              <NumberInput
-                enableStepper={false}
-                id="dc_costo_PPP"
-                name="dc_costo_PPP"
-                autoComplete="dc_costo_PPP"
-                placeholder="Gs."
-                className="mt-2"
-                value={dc_costo_PPP}
-                min={0}
-                onChange={(e) => setDc_costo_PPP(e.target.value)}
-                required
-              />
-            </div>
+              <div className="mx-auto max-w-xs">
+                <label
+                  htmlFor="dc_costo_PPP"
+                  className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                >
+                  Costo
+                  <span className="text-red-500">*</span>
+                </label>
+                <NumberInput
+                  enableStepper={false}
+                  id="dc_costo_PPP"
+                  name="dc_costo_PPP"
+                  autoComplete="dc_costo_PPP"
+                  placeholder="Gs."
+                  className="mt-2"
+                  value={dc_costo_PPP}
+                  min={0}
+                  onChange={(e) => setDc_costo_PPP(e.target.value)}
+                  required
+                />
+              </div>
 
-            <div className="mx-auto max-w-xs">
-              <label
-                htmlFor="int_iva"
-                className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
-              >
-                IVA
-                <span className="text-red-500">*</span>
-              </label>
-              <NumberInput
-                id="int_iva"
-                name="int_iva"
-                autoComplete="int_iva"
-                value={int_iva}
-                min={0}
-                placeholder="IVA %"
-                className="mt-2"
-                onChange={(e) => setInt_iva(e.target.value)}
-                disabled
-                required
-              />
+              <div className="mx-auto max-w-xs">
+                <label
+                  htmlFor="int_iva"
+                  className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                >
+                  IVA
+                  <span className="text-red-500">*</span>
+                </label>
+                <NumberInput
+                  id="int_iva"
+                  name="int_iva"
+                  autoComplete="int_iva"
+                  value={int_iva}
+                  min={0}
+                  placeholder="IVA %"
+                  className="mt-2"
+                  onChange={(e) => setInt_iva(e.target.value)}
+                  disabled
+                  required
+                />
+              </div>
             </div>
-          </div>
-          <div className="w-3/4 pl-4 space-y-4">
-            <div className="mx-auto max-w-xs">
-              <label
-                htmlFor="dc_precio_mayorista"
-                className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
-              >
-                Precio Mayorista
-                <span className="text-red-500">*</span>
-              </label>
-              <NumberInput
-                enableStepper={false}
-                id="dc_precio_mayorista"
-                name="dc_precio_mayorista"
-                autoComplete="dc_precio_mayorista"
-                placeholder="Precio Mayorista"
-                className="mt-2"
-                value={dc_precio_mayorista}
-                min={0}
-                onChange={(e) => setDc_precio_mayorista(e.target.value)}
-                required
-              />
-            </div>
-            <div className="mx-auto max-w-xs">
-              <label
-                htmlFor="dc_precio_minorista"
-                className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
-              >
-                Precio Minorista
-                <span className="text-red-500">*</span>
-              </label>
-              <NumberInput
-                enableStepper={false}
-                id="dc_precio_minorista"
-                name="dc_precio_minorista"
-                autoComplete="dc_precio_minorista"
-                placeholder="Precio Minorista"
-                className="mt-2"
-                value={dc_precio_minorista}
-                min={0}
-                onChange={(e) => setDc_precio_minorista(e.target.value)}
-                required
-              />
-            </div>
+            <div className="w-3/4 pl-4 space-y-4">
+              <div className="mx-auto max-w-xs">
+                <label
+                  htmlFor="dc_precio_mayorista"
+                  className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                >
+                  Precio Mayorista
+                  <span className="text-red-500">*</span>
+                </label>
+                <NumberInput
+                  enableStepper={false}
+                  id="dc_precio_mayorista"
+                  name="dc_precio_mayorista"
+                  autoComplete="dc_precio_mayorista"
+                  placeholder="Precio Mayorista"
+                  className="mt-2"
+                  value={dc_precio_mayorista}
+                  min={0}
+                  onChange={(e) => setDc_precio_mayorista(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="mx-auto max-w-xs">
+                <label
+                  htmlFor="dc_precio_minorista"
+                  className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                >
+                  Precio Minorista
+                  <span className="text-red-500">*</span>
+                </label>
+                <NumberInput
+                  enableStepper={false}
+                  id="dc_precio_minorista"
+                  name="dc_precio_minorista"
+                  autoComplete="dc_precio_minorista"
+                  placeholder="Precio Minorista"
+                  className="mt-2"
+                  value={dc_precio_minorista}
+                  min={0}
+                  onChange={(e) => setDc_precio_minorista(e.target.value)}
+                  required
+                />
+              </div>
 
-            <div className="mx-auto max-w-xs">
-              <label
-                htmlFor="fk_deposito"
-                className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
-              >
-                Depósito
-                <span className="text-red-500">*</span>
-              </label>
+              <div className="mx-auto max-w-xs">
+                <label
+                  htmlFor="fk_deposito"
+                  className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                >
+                  Depósito
+                  <span className="text-red-500">*</span>
+                </label>
 
-              <SearchSelect
-                id="fk_deposito"
-                className="mt-2"
-                placeholder="Depósito"
-                value={fk_deposito}
-                onValueChange={(value) => setFk_deposito(parseInt(value))}
-              >
-                {console.log("depositos", depositos)}
-                {depositos.map((deposito) => (
-                  <SearchSelectItem key={deposito.id} value={deposito.id}>
-                    {deposito.str_nombre}
-                  </SearchSelectItem>
-                ))}
-              </SearchSelect>
+                <SearchSelect
+                  id="fk_deposito"
+                  className="mt-2"
+                  placeholder="Depósito"
+                  value={fk_deposito}
+                  onValueChange={(value) => setFk_deposito(parseInt(value))}
+                >
+                  {depositos.map((deposito) => (
+                    <SearchSelectItem key={deposito.id} value={deposito.id}>
+                      {deposito.str_nombre}
+                    </SearchSelectItem>
+                  ))}
+                </SearchSelect>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <div className="flex items-center justify-end space-x-4">
-        <Button
-          variant="secondary"
-          color="blue"
-          onClick={() => {
-            // Lógica para descartar
-            console.log("Formulario descartado");
-            // Reiniciar los valores del formulario
-            setStr_imagen("");
-            setStr_nombre("");
-            setStr_descripcion("");
-            setFk_marca(0);
-            //setFk_categoria(0);
-            setFk_proveedor(0);
-            setInt_cantidad_actual(0);
-            setInt_cantidad_minima(0);
-            setDc_costo_PPP(0);
-            setInt_iva(0);
-            setDc_precio_mayorista(0);
-            setDc_precio_minorista(0);
-            setFk_deposito(0);
-            navigate.push("/productos");
-          }}
-        >
-          Cancelar
-        </Button>
-        <Button variant="primary" type="submit" color="blue">
-          Guardar
-        </Button>
-      </div>
-    </form>
+        <div className="flex items-center justify-end space-x-4">
+          <Button
+            variant="secondary"
+            color="blue"
+            onClick={() => {
+              // Lógica para descartar
+              console.log("Formulario descartado");
+              // Reiniciar los valores del formulario
+              setStr_imagen("");
+              setStr_nombre("");
+              setStr_descripcion("");
+              setFk_marca(0);
+              //setFk_categoria(0);
+              setFk_proveedor(0);
+              setInt_cantidad_actual(0);
+              setInt_cantidad_minima(0);
+              setDc_costo_PPP(0);
+              setInt_iva(0);
+              setDc_precio_mayorista(0);
+              setDc_precio_minorista(0);
+              setFk_deposito(0);
+              navigate.push("/productos");
+            }}
+          >
+            Cancelar
+          </Button>
+          <Button variant="primary" type="submit" color="blue">
+            Guardar
+          </Button>
+        </div>
+      </form>
+
+      {/*controlar modales*/}
+
+      <Dialog
+        open={showCrearMarca}
+        onClose={handleCloseModal}
+        static={true}
+        className="z-[100]"
+      >
+        <DialogPanel className="sm:max-w-md">
+          <button>
+            <RiCloseLine
+              className="h-5 w-5 shrink-0"
+              aria-hidden={true}
+              onClick={handleCloseModal}
+            />
+          </button>
+          <FormularioMarcas type={'modal'} closeDialog={handleCloseModal} saveAction={handleMarcaCreada}
+            isOpen={showCrearMarca}
+            onClose={handleCancelarCreacionMarca}
+          />
+        </DialogPanel>
+      </Dialog>
+      <Dialog
+        open={showCrearProveedor}
+        onClose={handleCloseModal}
+        static={true}
+        className="z-[100]"
+      >
+        <DialogPanel>
+          <div className="w-full text-right">
+            <button>
+              <RiCloseLine
+                className="h-5 w-5 shrink-0 text-right"
+                aria-hidden={true}
+                onClick={handleCloseModal}
+              />
+            </button>
+          </div>
+          <FormularioProveedores type={'modal'} closeDialog={handleCloseModal}
+            isOpen={showCrearProveedor}
+            onClose={handleCancelarCreacionProveedor}
+            onProveedorCreado={handleProveedorCreado}
+          />
+        </DialogPanel>
+      </Dialog>
+    </>
   );
 }
