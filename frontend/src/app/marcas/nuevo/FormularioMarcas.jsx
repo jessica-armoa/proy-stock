@@ -6,7 +6,7 @@ import { RiCloseLine } from '@remixicon/react';
 import MarcasConfig from '../../../controladores/MarcasConfig';
 import ProveedoresConfig from '../../../controladores/ProveedoresConfig';
 
-export default function FormularioMarcas() {
+export default function FormularioMarcas({type='form', closeDialog=false}) {
 
     const [str_nombre, setStr_nombre] = useState('');
     const [proveedorId, setProveedorId] = useState(0);
@@ -48,6 +48,15 @@ export default function FormularioMarcas() {
             router.push('/marcas');
         } catch (error) {
             console.error('Error al enviar los datos del formulario: ', error);
+        }
+    }
+
+    const handleCancelClick=() => {
+        if (type === 'modal'){
+            closeDialog()
+        }
+        else{
+            setStr_nombre('')
         }
     }
 
@@ -98,13 +107,7 @@ export default function FormularioMarcas() {
                         </div>
 
                         <div className="col-span-full flex justify-center space-x-4">
-                            <Button className='mt-8' variant="secondary" onClick={() => {
-                                // Lógica para descartar
-                                console.log("Formulario descartado");
-                                // Reiniciar los valores del formulario
-                                setStr_nombre('');
-                                //router.push('/marcas');
-                            }}>Cancelar</Button>
+                            <Button className='mt-8' variant="secondary" type="button" onClick={handleCancelClick}>Cancelar</Button>
                             <Button className='mt-8' variant="primary" type="submit">Guardar</Button>
                         </div>
                     </div>

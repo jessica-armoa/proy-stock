@@ -295,10 +295,10 @@ export default function FormularioProductos() {
                 className="mt-2"
                 value={isCreatingMarca ? "" : fk_marca}
                 onValueChange={(value) => setFk_marca(parseInt(value))}
-                onCreate={() => {
+                /*onCreate={() => {
                   setIsCreatingMarca(true);
                   setShowCrearMarca(true);
-                }}
+                }}*/
               >
                 {marcas.map((marca) => (
                   <SearchSelectItem key={marca.id} value={marca.id}>
@@ -325,10 +325,10 @@ export default function FormularioProductos() {
                 placeholder="Seleccionar Proveedor"
                 className="mt-2"
                 onValueChange={(value) => setFk_proveedor(parseInt(value))}
-                onCreate={() => {
+                /*onCreate={() => {
                   setIsCreatingProveedor(true);
                   setShowCrearProveedor(true);
-                }}
+                }}*/
               >
                 {proveedores.map((proveedor) => (
                   <SearchSelectItem key={proveedor.id} value={proveedor.id}>
@@ -356,7 +356,7 @@ export default function FormularioProductos() {
                       onClick={handleCloseModal}
                     />
                   </button>
-                  <FormularioMarcas callParentFunction={handleCloseModal}
+                  <FormularioMarcas  type={'modal'} closeDialog={handleCloseModal}
                     isOpen={showCrearMarca}
                     onClose={handleCancelarCreacionMarca}
                     onMarcaCreada={handleMarcaCreada}
@@ -379,7 +379,7 @@ export default function FormularioProductos() {
                       />
                     </button>
                   </div>
-                  <FormularioProveedores callParentFunction={handleCloseModal}
+                  <FormularioProveedores type={'modal'} closeDialog={handleCloseModal}
                     isOpen={showCrearProveedor}
                     onClose={handleCancelarCreacionProveedor}
                     onProveedorCreado={handleProveedorCreado}

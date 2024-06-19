@@ -5,7 +5,10 @@ import ProveedoresConfig from "../../../controladores/ProveedoresConfig";
 
 import { useRouter } from "next/navigation";
 
-export default function FormularioProveedores( callParentFunction) {
+export default function FormularioProveedores({
+  type = "form",
+  closeDialog = false,
+}) {
   const router = useRouter();
 
   const [str_nombre, setStr_nombre] = useState("");
@@ -38,6 +41,17 @@ export default function FormularioProveedores( callParentFunction) {
       setStr_correo("");
     } catch (error) {
       console.error("Error al enviar los datos del formulario: ", error);
+    }
+  };
+
+  const handleCancelClick = () => {
+    if (type === "modal") {
+      closeDialog();
+    } else {
+      setStr_nombre("");
+      setStr_telefono("");
+      setStr_direccion("");
+      setStr_correo("");
     }
   };
 
@@ -134,17 +148,7 @@ export default function FormularioProveedores( callParentFunction) {
           type="button"
           color="blue"
           className="mt-5 mx-5"
-          onClick={() => {
-            // Lógica para descartar
-            console.log("Formulario descartado");
-            // Reiniciar los valores del formulario
-            setStr_nombre("");
-            setStr_telefono("");
-            setStr_direccion("");
-            setStr_correo("");
-            onclick={callParentFunction}
-            //router.push("/proveedores");
-          }}
+          onClick={handleCancelClick}
         >
           Cancelar
         </Button>
