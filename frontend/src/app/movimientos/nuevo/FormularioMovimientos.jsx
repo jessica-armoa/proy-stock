@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import DepositosConfig from "../../../controladores/DepositosConfig";
 import ProductosConfig from "../../../controladores/ProductosConfig";
 import MovimientosConfig from "../../../controladores/MovimientosConfig";
+import Swal from "sweetalert2";
 
 let detalleIdCounter = 0;
 
@@ -174,16 +175,16 @@ export default function FormularioMovimientos() {
     const calcularTotal = (subTotal) => {
         return subTotal;
     };
-let count = 100
+    let count = 100
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
             const movimientoActual = {
-                
+
                 "date_fecha": fecha,
                 "tipoDeMovimientoId": fk_tipo_de_movimiento,
-                "depositoOrigenId": fk_deposito_origen,
-                "depositoDestinoId": (fk_deposito_destino === 0 ? null: fk_deposito_destino),
+                "depositoOrigenId": (fk_deposito_origen === 0 ? null : fk_deposito_origen),
+                "depositoDestinoId": (fk_deposito_destino === 0 ? null : fk_deposito_destino),
                 "bool_borrado": false,
                 "detallesDeMovimientos": detallesMovimientos.map(detalle => ({
 
@@ -192,12 +193,19 @@ let count = 100
                 }))
             }
             console.log('Movimiento enviado', movimientoActual);
-        
-            const movimientoCreado = await MovimientosConfig.postMovimiento(movimientoActual);
+
+            const movimientoCreado = await MovimientosConfig.postMovimiento(movimientoActual).then(() => {
+                Swal.fire('Guardado', 'El movimiento fue creado exitosamente.', 'success');
+            });
 
 
         } catch (error) {
             console.error('Error al enviar los datos del formulario: ', error);
+            Swal.fire(
+                'Error',
+                'Oops! ocurrió un error al intentar guardar el movimiento.',
+                'error'
+            );
         }
 
     };
@@ -219,6 +227,8 @@ let count = 100
 
 
     const esTransferencia = fk_tipo_de_movimiento === 3;
+    const mostrarDepositoOrigen = fk_tipo_de_movimiento === 2 || fk_tipo_de_movimiento === 3;
+    const mostrarDepositoDestino = fk_tipo_de_movimiento === 1 || fk_tipo_de_movimiento === 3;
 
     return (
         <>
@@ -318,38 +328,26 @@ let count = 100
                                 </SearchSelect>
                             </div>
 
-                            <div>
-                                <label
-                                    htmlFor="depositoOrigen"
-                                    className="block text-sm font-medium text-gray-700"
-                                >
-                                    Depósito Origen
-                                </label>
-                                <SearchSelect id="fk_deposito_origen" className='mt-2' placeholder='Depósito' value={fk_deposito_origen} onValueChange={(value) => setFk_deposito_origen(parseInt(value))}>
-                                    {depositos.map(deposito => (
-                                        <SearchSelectItem key={deposito.id} value={deposito.id}>{deposito.str_nombre}</SearchSelectItem>
-                                    ))}
-                                </SearchSelect>
-                            </div>
+                            {mostrarDepositoOrigen && (
+                                <div>
+                                    <label
+                                        htmlFor="depositoOrigen"
+                                        className="block text-sm font-medium text-gray-700"
+                                    >
+                                        Depósito Origen
+                                    </label>
+                                    <SearchSelect id="fk_deposito_origen" className='mt-2' placeholder='Depósito' value={fk_deposito_origen} onValueChange={(value) => setFk_deposito_origen(parseInt(value))}>
+                                        {depositos.map(deposito => (
+                                            <SearchSelectItem key={deposito.id} value={deposito.id}>{deposito.str_nombre}</SearchSelectItem>
+                                        ))}
+                                    </SearchSelect>
+                                </div>
+                            )}
 
-
-
-                            {esTransferencia && (
+                            {mostrarDepositoDestino && (
                                 <>
                                     <div>
                                         <label htmlFor="fk_deposito_destino" className="block text-sm font-medium text-gray-700">Depósito Destino</label>
-                                        {/*<select
-                                            id="depositoDestino"
-                                            name="depositoDestino"
-                                            value={depositoDestino}
-                                            onChange={(e) => setDepositoDestino(e.target.value)}
-                                            className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-                                            required={esTransferencia}
-                                        >
-                                            <option value="" disabled>Seleccione un Depósito</option>
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                        </select>*/}
                                         <SearchSelect id="fk_deposito_destino" className='mt-2' placeholder='Depósito' value={fk_deposito_destino} onValueChange={(value) => setFk_deposito_destino(parseInt(value))}>
                                             {opcionesFiltradas.map(depositoDestino => (
 
@@ -357,6 +355,11 @@ let count = 100
                                             ))}
                                         </SearchSelect>
                                     </div>
+                                </>
+                            )}
+
+                            {esTransferencia && (
+                                <>
                                     <div>
                                         <label htmlFor="timbradoRemision" className="block text-sm font-medium text-gray-700">Timbrado</label>
                                         <input
