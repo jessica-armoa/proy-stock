@@ -20,7 +20,6 @@ namespace api.Controllers
     public class MovimientoController : ControllerBase
     {
         private readonly IMovimientoRepository _movimientoRepo;
-        //private readonly IDepositoRepository _depositoRepo;
         private readonly ITipoDeMovimientoRepository _tipoDeMovimientoRepo;
         private readonly ApplicationDbContext _context;
         private readonly IProductoRepository _productoRepo;
@@ -38,7 +37,6 @@ namespace api.Controllers
             ITimbradoRepository timbradoRepo)
         {
             _movimientoRepo = movimientoRepo;
-            //_depositoRepo = depositoRepo;
             _tipoDeMovimientoRepo = tipoDeMovimientoRepo;
             _context = context;
             _productoRepo = productoRepo;
@@ -242,6 +240,10 @@ namespace api.Controllers
                                 var detalleModel = nuevoDetalle.ToDetalleFromCreate(movimientoModel.Id, detalle.ProductoId);
                                 await _detalleRepo.CreateAsync(detalleModel);
                             }
+                        }
+                        else
+                        {
+
                         }
                     }
 

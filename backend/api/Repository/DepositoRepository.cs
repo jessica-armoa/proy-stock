@@ -173,7 +173,7 @@ namespace api.Repository
 
             depositoExistente.Str_nombre = depositoDto.Str_nombre;
             depositoExistente.Str_direccion = depositoDto.Str_direccion;
-            depositoExistente.Bool_borrado = depositoDto.Bool_borrado;
+            depositoExistente.Bool_borrado = false;
 
             await _context.SaveChangesAsync();
             return depositoExistente;
