@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from "react";
-import { Card, Select, SelectItem, SearchSelect, SearchSelectItem, Table, TableBody, TableCell, TableHead, TableHeaderCell, TableRow } from "@tremor/react";
+import { Card, Select, SelectItem, SearchSelect, SearchSelectItem, Table, TableBody, TableCell, TableHead, TableHeaderCell, TableRow, Button } from "@tremor/react";
 import { useRouter } from 'next/navigation';
 import DepositosConfig from "../../../controladores/DepositosConfig";
 import ProductosConfig from "../../../controladores/ProductosConfig";
@@ -72,8 +72,8 @@ export default function FormularioMovimientos() {
     //Manejo de listas de productos y Depósitos de Origen y Destino para los movimientos
     const [fk_producto, setFk_producto] = useState(0);
     const [arregloProductos, setArreglo_productos] = useState([]);
-    const [fk_deposito_origen, setFk_deposito_origen] = useState(null);
-    const [fk_deposito_destino, setFk_deposito_destino] = useState(null);
+    const [fk_deposito_origen, setFk_deposito_origen] = useState(0);
+    const [fk_deposito_destino, setFk_deposito_destino] = useState(0);
     const [depositos, setDepositos] = useState([]);
     const [depositosDestinos, setDepositosDestinos] = useState([]);
     //evento para mostrar solo destinos que no sean igual que su deposito origen
@@ -183,7 +183,7 @@ let count = 100
                 "date_fecha": fecha,
                 "tipoDeMovimientoId": fk_tipo_de_movimiento,
                 "depositoOrigenId": fk_deposito_origen,
-                "depositoDestinoId": null,
+                "depositoDestinoId": (fk_deposito_destino === 0 ? null: fk_deposito_destino),
                 "bool_borrado": false,
                 "detallesDeMovimientos": detallesMovimientos.map(detalle => ({
 
@@ -243,7 +243,7 @@ let count = 100
                             <div>
                                 <label htmlFor="fecha" className="block text-sm font-medium text-gray-700">Fecha</label>
                                 <input
-                                    type="date"
+                                    type="datetime-local"
                                     id="fecha"
                                     value={fecha}
                                     onChange={(e) => setFecha(e.target.value)}
@@ -412,14 +412,13 @@ let count = 100
                         </div>
 
                         <div className="flex justify-end mt-6 gap-2">
-                            <button type="button" onClick={() => navigate.push('/')} className="px-4 py-2 bg-gray-400 text-white rounded-md">Cancelar</button>
-                            <button
+                            <Button type="button" variant="secondary" color="blue" onClick={() => navigate.push('/movimientos')}>Cancelar</Button>
+                            <Button
                                 disabled={detallesMovimientos.length === 0}
-                                type="submit"
-                                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                                type="submit" variant="primary" color="blue"
                             >
                                 Guardar Movimiento
-                            </button>
+                            </Button>
                         </div>
                     </form>
                 </Card>
