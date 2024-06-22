@@ -411,13 +411,6 @@ namespace api.Migrations
                     PuntoLlegada = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     TrasladoFechaInicio = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     TrasladoFechaFin = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TrasladoVehiculo = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TrasladoRuta = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TransportistaNombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TransportistaRuc = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ConductorNombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ConductorDocumento = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ConductorDireccion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Motivo = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     MotivoDescripcion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ComprobanteVenta = table.Column<string>(type: "nvarchar(max)", nullable: false)
@@ -463,9 +456,9 @@ namespace api.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "10baa15b-a71b-4213-b55f-6ad84922e56e", null, "User", "USER" },
-                    { "8f516641-0224-4bc2-97c6-0c295922f6a5", null, "Admin", "ADMIN" },
-                    { "fa721ce1-b925-4356-8233-5a4e76f5fd5d", null, "Encargado", "ENCARGADO" }
+                    { "32ad10d4-d5de-4792-8335-72ef64d9775f", null, "User", "USER" },
+                    { "dd3eed36-3702-4c01-9043-7d679bcf85c9", null, "Encargado", "ENCARGADO" },
+                    { "e59c3450-5d85-4dff-bfae-7e0379c921a7", null, "Admin", "ADMIN" }
                 });
 
             migrationBuilder.CreateIndex(
