@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using api.Dtos.DetalleDeMovimiento;
+using api.Dtos.Deposito;
 
 namespace api.Dtos.Movimiento
 {
@@ -20,5 +21,7 @@ namespace api.Dtos.Movimiento
         //public string Str_depositoDestino { get; set; } = String.Empty;
         public bool Bool_borrado { get; set; } = false;
         public List<DetalleDeMovimientoDto> DetallesDeMovimientos { get; set; }
+        public DepositoDto DepositoOrigen { get; set; }
+        public DepositoDto DepositoDestino { get; set; }
     }
 }

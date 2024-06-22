@@ -6,6 +6,7 @@ using api.Data;
 using api.Dtos.DetalleDeMovimiento;
 using api.Dtos.Movimiento;
 using api.Dtos.Producto;
+using api.Dtos.Deposito;
 using api.Interfaces;
 using api.Mapper;
 using api.Models;
@@ -19,7 +20,6 @@ namespace api.Controllers
     public class MovimientoController : ControllerBase
     {
         private readonly IMovimientoRepository _movimientoRepo;
-        //private readonly IDepositoRepository _depositoRepo;
         private readonly ITipoDeMovimientoRepository _tipoDeMovimientoRepo;
         private readonly ApplicationDbContext _context;
         private readonly IProductoRepository _productoRepo;
@@ -37,7 +37,6 @@ namespace api.Controllers
             ITimbradoRepository timbradoRepo)
         {
             _movimientoRepo = movimientoRepo;
-            //_depositoRepo = depositoRepo;
             _tipoDeMovimientoRepo = tipoDeMovimientoRepo;
             _context = context;
             _productoRepo = productoRepo;
@@ -49,34 +48,76 @@ namespace api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            /*var movimientos = await _movimientoRepo.GetAllAsync();
-            var movimientosDto = movimientos.Select(m => m.ToMovimientoDto());
-            return Ok(movimientosDto);*/
+#pragma warning disable CS8601 // Possible null reference assignment.
             var movimientos = await _context.movimientos
-            .Include(m => m.DetallesDeMovimientos)
-            .Select(m => new MovimientoDto
-            {
-                Id = m.Id,
-                Date_fecha = m.Date_fecha,
-                TipoDeMovimientoId = m.TipoDeMovimientoId,
-                DepositoOrigenId = m.DepositoOrigenId,
-                DepositoDestinoId = m.DepositoDestinoId,
-                Bool_borrado = m.Bool_borrado,
-                DetallesDeMovimientos = m.DetallesDeMovimientos
-                .Where(d => d.Bool_borrado != true)
-                .Select(d => new DetalleDeMovimientoDto
+                .Include(m => m.DepositoOrigen)
+                .Include(m => m.DepositoDestino)
+                .Include(m => m.DetallesDeMovimientos)
+                    .ThenInclude(d => d.Producto)
+                .Select(static m => new MovimientoDto
                 {
-                    Id = d.Id,
-                    ProductoId = d.ProductoId,
-                    MovimientoId = d.MovimientoId,
-                    Int_cantidad = d.Int_cantidad,
-                    Bool_borrado = d.Bool_borrado
-                }).ToList()
-            })
-            .ToListAsync();
+                    Id = m.Id,
+                    Date_fecha = m.Date_fecha,
+                    TipoDeMovimientoId = m.TipoDeMovimientoId,
+                    DepositoOrigenId = m.DepositoOrigenId,
+                    DepositoDestinoId = m.DepositoDestinoId,
+                    Bool_borrado = m.Bool_borrado,
+                    DepositoOrigen = m.DepositoOrigen != null ? new DepositoDto
+                    {
+                        Id = m.DepositoOrigen.Id,
+                        Str_nombre = m.DepositoOrigen.Str_nombre,
+                        Str_direccion = m.DepositoOrigen.Str_direccion,
+                        Str_telefono = m.DepositoOrigen.Str_telefono,
+                        Str_encargado = m.DepositoOrigen.Str_encargado,
+                        Str_telefonoEncargado = m.DepositoOrigen.Str_telefonoEncargado,
+                        Bool_borrado = m.DepositoOrigen.Bool_borrado
+                    } : null,
+                    DepositoDestino = m.DepositoDestino != null ? new DepositoDto
+                    {
+                        Id = m.DepositoDestino.Id,
+                        Str_nombre = m.DepositoDestino.Str_nombre,
+                        Str_direccion = m.DepositoDestino.Str_direccion,
+                        Str_telefono = m.DepositoDestino.Str_telefono,
+                        Str_encargado = m.DepositoDestino.Str_encargado,
+                        Str_telefonoEncargado = m.DepositoDestino.Str_telefonoEncargado,
+                        Bool_borrado = m.DepositoDestino.Bool_borrado
+                    } : null,
+                    DetallesDeMovimientos = m.DetallesDeMovimientos
+                        .Where(d => d.Bool_borrado != true)
+                        .Select(static d => new DetalleDeMovimientoDto
+                        {
+                            Id = d.Id,
+                            ProductoId = d.ProductoId,
+                            MovimientoId = d.MovimientoId,
+                            Int_cantidad = d.Int_cantidad,
+                            Bool_borrado = d.Bool_borrado,
+                            Producto = d.Producto != null ? new ProductoDto
+                            {
+                                Id = d.Producto.Id,
+                                Str_ruta_imagen = d.Producto.Str_ruta_imagen,
+                                Str_nombre = d.Producto.Str_nombre,
+                                Str_descripcion = d.Producto.Str_descripcion,
+                                DepositoId = d.Producto.DepositoId,
+                                ProveedorId = d.Producto.ProveedorId,
+                                MarcaId = d.Producto.MarcaId,
+                                Int_cantidad_actual = d.Producto.Int_cantidad_actual,
+                                Int_cantidad_minima = d.Producto.Int_cantidad_minima,
+                                Dec_costo = d.Producto.Dec_costo,
+                                Dec_costo_PPP = d.Producto.Dec_costo_PPP,
+                                Int_iva = d.Producto.Int_iva,
+                                Dec_precio_mayorista = d.Producto.Dec_precio_mayorista,
+                                Dec_precio_minorista = d.Producto.Dec_precio_minorista,
+                                Bool_borrado = d.Producto.Bool_borrado
+                            } : null
+                        }).ToList()
+                })
+                .ToListAsync();
+            #pragma warning restore CS8601 // Possible null reference assignment.
 
             return Ok(movimientos);
         }
+
+
 
         [HttpGet]
         [Route("{id:int}")]
@@ -199,6 +240,10 @@ namespace api.Controllers
                                 var detalleModel = nuevoDetalle.ToDetalleFromCreate(movimientoModel.Id, detalle.ProductoId);
                                 await _detalleRepo.CreateAsync(detalleModel);
                             }
+                        }
+                        else
+                        {
+
                         }
                     }
 
