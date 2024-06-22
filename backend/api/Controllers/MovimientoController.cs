@@ -12,6 +12,7 @@ using api.Mapper;
 using api.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using api.Dtos.Deposito.api.Dtos.Deposito;
 
 namespace api.Controllers
 {
@@ -70,8 +71,8 @@ namespace api.Controllers
                         Str_nombre = m.DepositoOrigen.Str_nombre,
                         Str_direccion = m.DepositoOrigen.Str_direccion,
                         Str_telefono = m.DepositoOrigen.Str_telefono,
-                        Str_encargado = m.DepositoOrigen.Str_encargado,
-                        Str_telefonoEncargado = m.DepositoOrigen.Str_telefonoEncargado,
+                        EncargadoUsername = m.DepositoOrigen.Encargado.UserName,
+                        EncargadoEmail = m.DepositoOrigen.Encargado.Email,
                         Bool_borrado = m.DepositoOrigen.Bool_borrado
                     } : null,
                     DepositoDestino = m.DepositoDestino != null ? new DepositoDto
@@ -80,8 +81,8 @@ namespace api.Controllers
                         Str_nombre = m.DepositoDestino.Str_nombre,
                         Str_direccion = m.DepositoDestino.Str_direccion,
                         Str_telefono = m.DepositoDestino.Str_telefono,
-                        Str_encargado = m.DepositoDestino.Str_encargado,
-                        Str_telefonoEncargado = m.DepositoDestino.Str_telefonoEncargado,
+                        EncargadoUsername = m.DepositoOrigen.Encargado.UserName,
+                        EncargadoEmail = m.DepositoOrigen.Encargado.Email,
                         Bool_borrado = m.DepositoDestino.Bool_borrado
                     } : null,
                     DetallesDeMovimientos = m.DetallesDeMovimientos
