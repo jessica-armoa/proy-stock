@@ -40,7 +40,7 @@ const Productos = () => {
       cancelButtonText: "Cancelar",
     }).then((result) => {
       if (result.isConfirmed) {
-        ProductsConfig.deleteProduct(id)
+        ProductosConfig.deleteProducto(id)
           .then(() => {
             setProducts(products.filter((product) => product.id !== id));
             Swal.fire("Borrado!", "El producto ha sido borrado.", "success");

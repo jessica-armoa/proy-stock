@@ -119,7 +119,7 @@ export default function FormularioFerreteria() {
                 setStr_ruc('');
                 setStr_telefono('');
                 router.push('/ferreterias');
-            }}>Descartar</Button>    
+            }}>Cancelar</Button>    
         </form >
     )
 }

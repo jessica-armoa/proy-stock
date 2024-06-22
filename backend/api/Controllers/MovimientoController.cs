@@ -255,7 +255,15 @@ namespace api.Controllers
                 catch (Exception ex)
                 {
                     await transaction.RollbackAsync();
-                    return StatusCode(500, $"Error interno del servidor: {ex.Message}");
+                    // Log the exception details
+                    Console.WriteLine($"Error: {ex.Message}");
+                    if (ex.InnerException != null)
+                    {
+                        Console.WriteLine($"\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nInner Exception: {ex.InnerException.Message}\n\n\n\n\n\n\n\n\n\n\n\n\n");
+                    }
+                    return StatusCode(500, $"Error interno del servidor: {ex.Message}");
+
+
                 }
             }
         }

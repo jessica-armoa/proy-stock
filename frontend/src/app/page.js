@@ -1,7 +1,7 @@
 "use client";
 import dynamic from "next/dynamic";
 import withAuth from "@/components/auth/withAuth";
-import VistaNR from "./movimientos/VistaNR";
+//import VistaNR from "./movimientos/VistaNR";
 import { Card, List, ListItem, ProgressBar } from "@tremor/react";
 
 // Dynamic imports to prevent build-time errors
@@ -65,7 +65,6 @@ const Dashboard = () => {
       <div className="flex flex-col w-full h-full p-5 rounded-lg bg-ui-cardbg">
         <div className="mt-8 flex items-center space-x-2">
           <ProgressCard></ProgressCard>
-          <VistaNR></VistaNR>
           <ListCard></ListCard>
         </div>
       </div>

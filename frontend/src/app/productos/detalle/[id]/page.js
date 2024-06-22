@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import dynamic from "next/dynamic";
-import ProductsConfig from "../../../../controladores/ProductosConfig";
+import ProductosConfig from "../../../../controladores/ProductosConfig";
 import withAuth from "@/components/auth/withAuth";
 //import ProductosConfig from "../../ProductosConfig";
 //import Photo from "../../../../components/productimg";
@@ -25,7 +25,7 @@ const Detalle = ({params}) => { //params lee los parametros de la url, en este c
 
   useEffect(() => {
     if (product) {
-      ProductsConfig.getProductos().then((response) => {
+      ProductosConfig.getProductos().then((response) => {
         setProduct(response.data);
       });
     }
@@ -138,7 +138,7 @@ const Detalle = ({params}) => { //params lee los parametros de la url, en este c
 
   return (
     <div>
-      <div className="flex h-screen w-full bg-ui-background p-2 text-ui-text">
+      <div className="flex h-screen bg-ui-background p-2 text-ui-text">
         <Sidebar />
         <div className="flex flex-col w-content h-full p-5 rounded-lg bg-ui-cardbg">
           <div className="container mx-auto">
