@@ -41,17 +41,6 @@ namespace api.Models
         // Datos de Traslado
         public string TrasladoFechaInicio { get; set; } = string.Empty;
         public string TrasladoFechaFin { get; set; } = string.Empty;
-        public string TrasladoVehiculo { get; set; } = string.Empty;
-        public string TrasladoRuta { get; set; } = string.Empty;
-
-        // Datos del Transportista
-        public string TransportistaNombre { get; set; } = string.Empty;
-        public string TransportistaRuc { get; set; } = string.Empty;
-
-        // Datos del Conductor
-        public string ConductorNombre { get; set; } = string.Empty;
-        public string ConductorDocumento { get; set; } = string.Empty;
-        public string ConductorDireccion { get; set; } = string.Empty;
 
         // Datos del Motivo
         public string Motivo { get; set; } = string.Empty;
