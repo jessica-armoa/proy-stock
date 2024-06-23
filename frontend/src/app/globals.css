@@ -49,3 +49,14 @@
   bottom: 30px;
   width: 80%;
 }
+
+.overflow-y{
+  overflow-y:scroll
+}
+
+.truncate-y {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 150px; /* Ajusta este valor según tus necesidades */
+}
