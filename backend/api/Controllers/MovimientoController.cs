@@ -11,6 +11,7 @@ using api.Mapper;
 using api.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using api.Dtos.Deposito.api.Dtos.Deposito;
 
 namespace api.Controllers
 {
