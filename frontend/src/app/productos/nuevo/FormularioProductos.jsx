@@ -17,6 +17,7 @@ import { useRouter } from "next/navigation";
 import FormularioProveedores from "@/app/proveedores/nuevo/FormularioProveedores";
 import FormularioMarcas from "@/app/marcas/nuevo/FormularioMarcas";
 import { RiCloseLine } from "@remixicon/react";
+import Swal from "sweetalert2";
 
 export default function FormularioProductos() {
   //crear marca y proveedores modales
@@ -37,15 +38,25 @@ export default function FormularioProductos() {
     setShowCrearProveedor(false);
   };
 
-  const handleMarcaCreada = async(marcaId) => {
+  const handleMarcaCreada = async (marcaId) => {
     //console.log("yes",marcaId);
     await extraccionMarcas();
     setFk_marca(marcaId);
   };
 
-  const handleProveedorCreado = async(proveedorId) => {
-    await extraccionProveedores();
+  const handleProveedorCreado = (proveedorId) => {
     setFk_proveedor(proveedorId);
+    handleCloseModal();
+  };
+
+  const handleCancelarCreacionMarca = () => {
+    setFk_marca(null);
+    handleCloseModal();
+  };
+
+  const handleCancelarCreacionProveedor = () => {
+    setFk_proveedor(null);
+    handleCloseModal();
   };
 
   // Definimos el estado para cada campo del formulario
@@ -66,17 +77,15 @@ export default function FormularioProductos() {
 
   const [fk_proveedor, setFk_proveedor] = useState(0);
   const [proveedores, setProveedores] = useState([]);
-  
-  const extraccionProveedores = async () => {
-    try {
-      const respuestaProveedores = await ProveedoresConfig.getProveedor();
-      setProveedores(respuestaProveedores.data);
-    } catch (error) {
-      console.error("Error al obtener lista de proveedores: ", error);
-    }
-  };
-  
   useEffect(() => {
+    const extraccionProveedores = async () => {
+      try {
+        const respuestaProveedores = await ProveedoresConfig.getProveedor();
+        setProveedores(respuestaProveedores.data);
+      } catch (error) {
+        console.error("Error al obtener lista de proveedores: ", error);
+      }
+    };
     extraccionProveedores();
   }, []);
 
@@ -91,7 +100,6 @@ export default function FormularioProductos() {
       console.error("Error al obtener lista de marcas: ", error);
     }
   };
-  
 
   useEffect(() => {
     extraccionMarcas();
@@ -164,7 +172,9 @@ export default function FormularioProductos() {
         fk_proveedor,
         fk_marca,
         producto
-      );
+      ).then(() => {
+        Swal.fire('Guardado', 'El producto fue creado exitosamente.', 'success');
+      });
       // También puedes reiniciar los valores de los campos del formulario
       setStr_imagen("");
       setStr_nombre("");
@@ -182,6 +192,11 @@ export default function FormularioProductos() {
       navigate.push("/productos");
     } catch (error) {
       console.error("Error al enviar los datos del formulario: ", error);
+      Swal.fire(
+        'Error',
+        'Hubo un problema al guardar el producto',
+        'error'
+      );
     }
   };
 
@@ -210,7 +225,7 @@ export default function FormularioProductos() {
                 Imagen
                 <span className="text-red-500">*</span>
               </label>
-              <TextInput
+              {/*<TextInput
                 type="text"
                 id="str_imagen"
                 name="str_imagen"
@@ -220,7 +235,14 @@ export default function FormularioProductos() {
                 value={str_imagen}
                 onChange={(e) => setStr_imagen(e.target.value)}
                 required
-              />
+              />*/}
+              <input type='file' onChange={handleImageChange} className='mt-2' />
+              {str_imagen ?
+                <div>
+                  <div>
+                    <img src={str_imagen} alt='Imagen seleccionada' />
+                  </div>
+                </div> : null}
             </div>
 
             <div className="w-2/4 pl-4 space-y-4">
@@ -281,17 +303,17 @@ export default function FormularioProductos() {
                   className="mt-2"
                   value={fk_marca}
                   onValueChange={
-                    (value) => { value==='crear' ? false : setFk_marca(parseInt(value))}
+                    (value) => { value === 'crear' ? false : setFk_marca(parseInt(value)) }
                   }
                 >
-                  <SearchSelectItem value="crear" onClick={handleCrearMarca}>
-                  <Button type='button' variant="light" color="blue">Crear Nueva Marca</Button>
-                  </SearchSelectItem>
                   {marcas.map((marca) => (
                     <SearchSelectItem key={marca.id} value={marca.id}>
                       {marca.str_nombre}
                     </SearchSelectItem>
                   ))}
+                  <SearchSelectItem value="crear" onClick={handleCrearMarca}>
+                    Crear Nueva Marca
+                  </SearchSelectItem>
                 </SearchSelect>
               </div>
 
@@ -308,18 +330,16 @@ export default function FormularioProductos() {
                   value={fk_proveedor}
                   placeholder="Seleccionar Proveedor"
                   className="mt-2"
-                  onValueChange={
-                    (value) => { value==='crear' ? false : setFk_proveedor(parseInt(value))}
-                  }
+                  onValueChange={(value) => setFk_proveedor(parseInt(value))}
                 >
-                  <SearchSelectItem value="crear" onClick={handleCrearProveedor}>
-                    <Button type='button' variant="light" color="blue">Crear Nuevo Proveedor</Button>
-                  </SearchSelectItem>
                   {proveedores.map((proveedor) => (
                     <SearchSelectItem key={proveedor.id} value={proveedor.id}>
                       {proveedor.str_nombre}
                     </SearchSelectItem>
                   ))}
+                  <SearchSelectItem value="crear" onClick={handleCrearProveedor}>
+                    Crear Nuevo Proveedor
+                  </SearchSelectItem>
                 </SearchSelect>
               </div>
             </div>
@@ -531,7 +551,10 @@ export default function FormularioProductos() {
               onClick={handleCloseModal}
             />
           </button>
-          <FormularioMarcas type={'modal'} closeDialog={handleCloseModal} saveAction={handleMarcaCreada}/>
+          <FormularioMarcas type={'modal'} closeDialog={handleCloseModal} saveAction={handleMarcaCreada}
+            isOpen={showCrearMarca}
+            onClose={handleCancelarCreacionMarca}
+          />
         </DialogPanel>
       </Dialog>
       <Dialog
@@ -550,10 +573,10 @@ export default function FormularioProductos() {
               />
             </button>
           </div>
-          <FormularioProveedores type={'modal'} closeDialog={handleCloseModal} saveAction={handleProveedorCreado}
-            /*isOpen={showCrearProveedor}
+          <FormularioProveedores type={'modal'} closeDialog={handleCloseModal}
+            isOpen={showCrearProveedor}
             onClose={handleCancelarCreacionProveedor}
-            onProveedorCreado={handleProveedorCreado}*/
+            onProveedorCreado={handleProveedorCreado}
           />
         </DialogPanel>
       </Dialog>
