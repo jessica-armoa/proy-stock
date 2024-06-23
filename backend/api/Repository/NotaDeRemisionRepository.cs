@@ -41,5 +41,24 @@ namespace api.Interfaces
       _context.Entry(notaDeRemision).State = EntityState.Modified;
       await _context.SaveChangesAsync();
     }
+
+    public async Task<string> GetSiguienteNumeroAsync()
+    {
+      var lastNotaDeRemision = await _context.notas_de_remision
+          .OrderByDescending(n => n.Id)
+          .FirstOrDefaultAsync();
+
+      int lastNumero = 0;
+      if (lastNotaDeRemision != null && int.TryParse(lastNotaDeRemision.Str_numero, out lastNumero))
+      {
+        lastNumero++;
+      }
+      else
+      {
+        lastNumero = 1;
+      }
+
+      return lastNumero.ToString("D7"); // Formatea el número con siete dígitos
+    }
   }
 }

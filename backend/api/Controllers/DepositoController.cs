@@ -2,10 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using api.Data;
 using api.Dtos.Deposito;
 using api.Interfaces;
 using api.Mapper;
+using api.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace api.Controllers
 {
@@ -17,12 +21,17 @@ namespace api.Controllers
         private readonly IFerreteriaRepository _ferreteriaRepo;
         private readonly IProductoRepository _productoRepo;
         private readonly IDetalleDeMovimientosRepository _detalleRepo;
-        public DepositoController(IDepositoRepository depositoRepo, IFerreteriaRepository ferreteriaRepo, IProductoRepository productoRepo, IDetalleDeMovimientosRepository detalleRepo)
+        private readonly UserManager<Usuarios> _userManager;
+        private readonly ApplicationDbContext _context;
+
+        public DepositoController(IDepositoRepository depositoRepo, IFerreteriaRepository ferreteriaRepo, IProductoRepository productoRepo, IDetalleDeMovimientosRepository detalleRepo, UserManager<Usuarios> userManager, ApplicationDbContext context)
         {
             _depositoRepo = depositoRepo;
             _ferreteriaRepo = ferreteriaRepo;
             _productoRepo = productoRepo;
             _detalleRepo = detalleRepo;
+            _userManager = userManager;
+            _context = context;
         }
 
         [HttpGet]
@@ -32,11 +41,9 @@ namespace api.Controllers
             return Ok(depositos);
         }
 
-        [HttpGet]
-        [Route("{id:int}")]
+        [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
-
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
@@ -46,11 +53,9 @@ namespace api.Controllers
             return Ok(deposito);
         }
 
-        [HttpPost]
-        [Route("{ferreteriaId:int}")]
+        [HttpPost("{ferreteriaId:int}")]
         public async Task<IActionResult> Post([FromRoute] int ferreteriaId, CreateDepositoRequestDto depositoDto)
         {
-
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
@@ -59,16 +64,38 @@ namespace api.Controllers
                 return BadRequest("La ferreteria ingresada no existe!");
             }
 
-            var depositoModel = depositoDto.ToDepositoFromCreate(ferreteriaId);
-            await _depositoRepo.CreateAsync(depositoModel);
-            return CreatedAtAction(nameof(GetById), new { id = depositoModel.Id }, depositoModel);
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                var encargado = new Usuarios
+                {
+                    UserName = depositoDto.EncargadoUsername,
+                    Email = depositoDto.EncargadoEmail
+                };
+
+                var result = await _userManager.CreateAsync(encargado, depositoDto.EncargadoPassword);
+                if (!result.Succeeded)
+                {
+                    return BadRequest(result.Errors);
+                }
+
+                await _userManager.AddToRoleAsync(encargado, "Encargado");
+
+                var depositoModel = depositoDto.ToDepositoFromCreate(ferreteriaId, encargado.Id);
+                await _depositoRepo.CreateAsync(depositoModel);
+                await transaction.CommitAsync();
+                return CreatedAtAction(nameof(GetById), new { id = depositoModel.Id }, depositoModel);
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                return StatusCode(500, $"Error interno del servidor: {ex.Message}");
+            }
         }
 
-        [HttpPut]
-        [Route("{id:int}")]
+        [HttpPut("{id:int}")]
         public async Task<IActionResult> Update([FromRoute] int id, UpdateDepositoRequestDto updateDto)
         {
-
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
@@ -78,8 +105,7 @@ namespace api.Controllers
             return Ok(deposito.ToDepositoDto());
         }
 
-        [HttpDelete]
-        [Route("{id:int}")]
+        [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
             if (!ModelState.IsValid)
@@ -91,9 +117,9 @@ namespace api.Controllers
                 return NotFound("El deposito que desea eliminar no existe!!");
             }
 
-            foreach(var producto in depositoExistente.Productos)
+            foreach (var producto in depositoExistente.Productos)
             {
-                foreach(var detalle in producto.DetallesDeMovimientos)
+                foreach (var detalle in producto.DetallesDeMovimientos)
                 {
                     await _detalleRepo.DeleteAsync(detalle.Id);
                 };
