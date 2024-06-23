@@ -1,21 +1,21 @@
 import axios from "axios";
 
-const api = process.env.NEXT_PUBLIC_API_URL+"deposito";
+const api = process.env.NEXT_PUBLIC_API_URL+"reporte";
 
-class DepositosConfig{
-    getDepositos(){
+class ReportesConfig{
+    getReportes(){
         return axios.get(api);
     }
 
-    getDepositoId(id){
+    getReporteId(id){
         return axios.get(`${api}/${id}`);
     }
 
-    postDeposito(ferreteriaId, deposito){
+    postReporte(ferreteriaId, deposito){
         return axios.post(`${api}/${ferreteriaId}`, deposito);
     }
 
-    putDeposito(id, deposito) {
+    putReporte(id, deposito) {
         console.log("en el put", deposito)
         return axios.put(`${api}/${id}`, deposito, {
             headers: {
@@ -23,9 +23,9 @@ class DepositosConfig{
             }
         });
     }
-    deleteDeposito(id){
+    deleteReporte(id){
         return axios.delete(`${api}/${id}`);
     }
 }
 
-export default new DepositosConfig();
+export default new ReportesConfig();

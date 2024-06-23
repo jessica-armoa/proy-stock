@@ -5,7 +5,7 @@ namespace api.Dtos.Producto
     public class CreateProductoRequestDto
     {
         [Required]
-        [MaxLength(200, ErrorMessage = "La ruta de imagen no puede ser mayor de 200 caracteres")]
+        [MaxLength(200000, ErrorMessage = "La ruta de imagen no puede ser mayor de 200000 caracteres")]
         public string Str_ruta_imagen { get; set; } = String.Empty;
 
         [Required]
@@ -21,7 +21,7 @@ namespace api.Dtos.Producto
         public int Int_cantidad_minima { get; set; }
         [Required]
         public decimal Dec_costo { get; set; } = 0;
-        public decimal Dec_costo_PPP { get; set; }
+        //public decimal Dec_costo_PPP { get; set; }
         [Required]
         public int Int_iva { get; set; }
         public decimal Dec_precio_mayorista { get; set; }

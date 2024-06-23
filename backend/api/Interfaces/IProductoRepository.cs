@@ -10,6 +10,7 @@ namespace api.Interfaces
     public interface IProductoRepository
     {
         Task<List<Producto>> GetAllAsync();
+        Task<List<Producto>> ObtenerProductosPorDepositoAsync(int depositoId);
         Task<Producto?> GetByIdAsync(int? id);
         Task<Producto?> GetByNombreAsync(string nombre);
         Task<Producto> CreateAsync(Producto productoModel);
