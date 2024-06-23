@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const api = "https://proy-stock.azurewebsites.net/api/"+"deposito";
+const api = "http://localhost:5282/api/"+"deposito";
 
 class DepositosConfig{
     getDepositos(){

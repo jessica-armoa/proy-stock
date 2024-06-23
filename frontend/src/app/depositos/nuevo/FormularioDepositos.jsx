@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from 'react';
-import { Button, Card, Dialog, DialogPanel, NumberInput, TextInput } from '@tremor/react';
-import { RiArrowDownSLine, RiCloseLine } from '@remixicon/react';
+import { Button, Card, Dialog, DialogPanel, TextInput } from '@tremor/react';
+import { RiCloseLine } from '@remixicon/react';
 import DepositosConfig from '../../../controladores/DepositosConfig';
 import FerreteriasConfig from '../../../controladores/FerreteriasConfig';
 import { useNavigate } from 'react-router-dom';
@@ -14,14 +14,14 @@ export default function FormularioDepositos() {
 
     const [str_nombre, setStr_nombre] = useState('');
     const [str_direccion, setStr_direccion] = useState('');
-
-    const [str_empleado, setStr_empleado] = useState('');
     const [str_telefono, setStr_telefono] = useState('');
-    const [str_telefono_empleado, setStr_telefono_empleado] = useState('');
 
+    const [encargadoUsername, setEncargadoUsername] = useState('');
+    const [encargadoEmail, setEncargadoEmail] = useState('');
+    const [encargadoPassword, setEncargadoPassword] = useState('');
+    const [repeatPassword, setRepeatPassword] = useState('');
 
-    const [isHabilitado, setIsHabilitado] = useState(true);
-
+    const [isPasswordMatch, setIsPasswordMatch] = useState(true);
 
     const [fk_ferreteria, setFk_ferreteria] = useState(0);
     const [ferreterias, setFerreterias] = useState([]);
@@ -38,40 +38,50 @@ export default function FormularioDepositos() {
         extraccionFerreterias();
     }, []);
 
+    const handlePasswordChange = (e) => {
+        setEncargadoPassword(e.target.value);
+        setIsPasswordMatch(e.target.value === repeatPassword);
+    };
+
+    const handleRepeatPasswordChange = (e) => {
+        setRepeatPassword(e.target.value);
+        setIsPasswordMatch(e.target.value === encargadoPassword);
+    };
+
     const handleSubmit = async (event) => {
         event.preventDefault();
-        try {
-            // Aquí juntamos los datos del deposito, para enviarlos al servidor
+        if (!isPasswordMatch) {
+            return;
+        }
 
+        try {
             const deposito = {
                 "str_nombre": str_nombre,
                 "str_direccion": str_direccion,
                 "str_telefono": str_telefono,
-                "str_encargado": str_empleado,
-                "str_telefonoEncargado": str_telefono_empleado
-            }
+                "encargadoUsername": encargadoUsername,
+                "encargadoEmail": encargadoEmail,
+                "encargadoPassword": encargadoPassword
+            };
 
-            console.log({
-                str_nombre,
-                str_direccion,
-                str_telefono,
-                str_empleado,
-                str_telefono_empleado
-            });
+            console.log(deposito);
 
             const response = await DepositosConfig.postDeposito(1, deposito);
 
-
-            // También puedes reiniciar los valores de los campos del formulario
             setStr_nombre('');
             setStr_direccion('');
+            setStr_telefono('');
+            setEncargadoUsername('');
+            setEncargadoEmail('');
+            setEncargadoPassword('');
+            setRepeatPassword('');
             setFk_ferreteria(0);
 
             navigate.push('/depositos');
         } catch (error) {
             console.error('Error al enviar los datos del formulario: ', error);
         }
-    }
+    };
 
     return (
         <Dialog open={isOpen}
@@ -97,10 +107,15 @@ export default function FormularioDepositos() {
                 </div>
 
                 <form onSubmit={handleSubmit}>
-                    <h4 className="font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong">
+                    <h4 className="font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong mb-4">
                         Nuevo Depósito
                     </h4>
                     <div className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
+                        <div className="col-span-full">
+                            <h5 className="font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong mb-2">
+                                Datos del Depósito
+                            </h5>
+                        </div>
                         <div className="col-span-full sm:col-span-3">
                             <label
                                 htmlFor="str_nombre"
@@ -114,7 +129,7 @@ export default function FormularioDepositos() {
                                 id="str_nombre"
                                 name="str_nombre"
                                 autoComplete="str_nombre"
-                                placeholder="Nombre de Deposito"
+                                placeholder="Nombre de Depósito"
                                 className="mt-2"
                                 value={str_nombre}
                                 onChange={(e) => setStr_nombre(e.target.value)}
@@ -143,28 +158,6 @@ export default function FormularioDepositos() {
                             />
                         </div>
 
-                        {/*<div className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">*/}
-                        <div className="col-span-full sm:col-span-3">
-                            <label
-                                htmlFor="str_empleado"
-                                className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
-                            >
-                                Encargado
-                                <span className="text-red-500">*</span>
-                            </label>
-                            <TextInput
-                                type="text"
-                                id="str_empleado"
-                                name="str_empleado"
-                                autoComplete="str_empleado"
-                                placeholder="Empleado encargado"
-                                className="mt-2"
-                                value={str_empleado}
-                                onChange={(e) => setStr_empleado(e.target.value)}
-                                required
-                            />
-                        </div>
-
                         <div className="col-span-full sm:col-span-3">
                             <label
                                 htmlFor="str_telefono"
@@ -178,7 +171,7 @@ export default function FormularioDepositos() {
                                 id="str_telefono"
                                 name="str_telefono"
                                 autoComplete="str_telefono"
-                                placeholder="Telefono del Depósito"
+                                placeholder="Teléfono del Depósito"
                                 className="mt-2"
                                 value={str_telefono}
                                 onChange={(e) => setStr_telefono(e.target.value)}
@@ -186,60 +179,132 @@ export default function FormularioDepositos() {
                             />
                         </div>
 
+                        <div className="col-span-full">
+                            <h5 className="font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong mt-6 mb-2">
+                                Datos del Encargado
+                            </h5>
+                        </div>
+
                         <div className="col-span-full sm:col-span-3">
                             <label
-                                htmlFor="str_telefono_empleado"
+                                htmlFor="encargadoUsername"
                                 className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
                             >
-                                Teléfono del Encargado
+                                Nombre de Usuario del Encargado
                                 <span className="text-red-500">*</span>
                             </label>
                             <TextInput
                                 type="text"
-                                id="str_telefono_empleado"
-                                name="str_telefono_empleado"
-                                autoComplete="str_telefono_empleado"
-                                placeholder="Telefono del Encargado"
+                                id="encargadoUsername"
+                                name="encargadoUsername"
+                                autoComplete="encargadoUsername"
+                                placeholder="Nombre de usuario del encargado"
                                 className="mt-2"
-                                value={str_telefono_empleado}
-                                onChange={(e) => setStr_telefono_empleado(e.target.value)}
+                                value={encargadoUsername}
+                                onChange={(e) => setEncargadoUsername(e.target.value)}
                                 required
                             />
                         </div>
 
-                        {/* <div className="none col-span-full sm:col-span-3">
-                    <label
-                        htmlFor="fk_ferreteria"
-                        className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
-                    >
-                        Ferreteria
-                        <span className="text-red-500">*</span>
-                    </label>
-                    <select id="fk_ferreteria" value={fk_ferreteria} onChange={(e) => setFk_ferreteria(parseInt(e.target.value))}>
-                        <option value={0}>Seleccionar Ferreteria</option>
-                        {ferreterias.map(ferreteria => (
-                            <option key={ferreteria.id} value={ferreteria.id}>{ferreteria.str_nombre}</option>
-                        ))}
-                    </select>
-                </div>*/}
+                        <div className="col-span-full sm:col-span-3">
+                            <label
+                                htmlFor="encargadoEmail"
+                                className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                            >
+                                Email del Encargado
+                                <span className="text-red-500">*</span>
+                            </label>
+                            <TextInput
+                                type="email"
+                                id="encargadoEmail"
+                                name="encargadoEmail"
+                                autoComplete="encargadoEmail"
+                                placeholder="Email del encargado"
+                                className="mt-2"
+                                value={encargadoEmail}
+                                onChange={(e) => setEncargadoEmail(e.target.value)}
+                                required
+                            />
+                        </div>
 
+                        <div className="col-span-full sm:col-span-3">
+                            <label
+                                htmlFor="encargadoPassword"
+                                className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                            >
+                                Contraseña del Encargado
+                                <span className="text-red-500">*</span>
+                            </label>
+                            <TextInput
+                                type="password"
+                                id="encargadoPassword"
+                                name="encargadoPassword"
+                                autoComplete="encargadoPassword"
+                                placeholder="Contraseña del encargado"
+                                className="mt-2"
+                                value={encargadoPassword}
+                                onChange={handlePasswordChange}
+                                required
+                            />
+                        </div>
 
-                        <div className="col-span-full flex justify-center space-x-4">
+                        <div className="col-span-full sm:col-span-3">
+                            <label
+                                htmlFor="repeatPassword"
+                                className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                            >
+                                Repetir Contraseña
+                                <span className="text-red-500">*</span>
+                            </label>
+                            <TextInput
+                                type="password"
+                                id="repeatPassword"
+                                name="repeatPassword"
+                                autoComplete="repeatPassword"
+                                placeholder="Repetir contraseña"
+                                className="mt-2"
+                                value={repeatPassword}
+                                onChange={handleRepeatPasswordChange}
+                                required
+                            />
+                        </div>
+
+                        {!isPasswordMatch && (
+                            <div className="col-span-full text-red-500 text-center">
+                                Las contraseñas no coinciden.
+                            </div>
+                        )}
+
+                        <div className="col-span-full flex justify-center space-x-4 mt-4">
                             <Button variant="secondary" onClick={() => {
-                                // Lógica para descartar
-                                console.log("Formulario descartado");
-                                // Reiniciar los valores del formulario
                                 setStr_nombre('');
                                 setStr_direccion('');
+                                setStr_telefono('');
+                                setEncargadoUsername('');
+                                setEncargadoEmail('');
+                                setEncargadoPassword('');
+                                setRepeatPassword('');
                                 setFk_ferreteria(0);
                                 setIsOpen(false);
                                 navigate.push('/depositos');
                             }}>Cancelar</Button>
-                            <Button variant="primary" type="submit">Guardar</Button>
+                            <Button
+                                variant="primary"
+                                type="submit"
+                                disabled={!isPasswordMatch}
+                                onMouseOver={(e) => {
+                                    if (!isPasswordMatch) {
+                                        e.target.title = "Las contraseñas no coinciden.";
+                                    } else {
+                                        e.target.title = "";
+                                    }
+                                }}
+                            >
+                                Guardar
+                            </Button>
                         </div>
                     </div>
                 </form>
-
             </DialogPanel>
         </Dialog>
     )
