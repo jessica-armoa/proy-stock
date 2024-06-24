@@ -39,7 +39,7 @@ namespace api.Controllers
             var ferreteria = await _ferreteriaRepo.GetByIdAsync(id);
             if(ferreteria == null) return NotFound();
 
-            return Ok(ferreteria);
+            return Ok(ferreteria.ToFerreteriaDto());
         }
 
         [HttpPost]

@@ -25,16 +25,16 @@ namespace api.Mapper
                 Int_iva = productoModel.Int_iva,
                 Dec_precio_mayorista = productoModel.Dec_precio_mayorista,
                 Dec_precio_minorista = productoModel.Dec_precio_minorista,
+                DepositoId = productoModel.DepositoId,
+                DepositoNombre = productoModel.Deposito.Str_nombre,
+                ProveedorId = productoModel.ProveedorId,
+                ProveedorNombre = productoModel.Proveedor.Str_nombre,
+                MarcaId = productoModel.MarcaId,
+                MarcaNombre = productoModel.Marca.Str_nombre,
+                Bool_borrado = productoModel.Bool_borrado,
                 DetallesDeMovimientos = productoModel.DetallesDeMovimientos
                     .Where(d => d.Bool_borrado != true)
-                    .Select(d => d.ToDetalleDeMovimientoDto()).ToList(),
-                DepositoId = productoModel.DepositoId,
-                DepositoNombre = productoModel.Deposito?.Str_nombre,
-                ProveedorId = productoModel.ProveedorId,
-                ProveedorNombre = productoModel.Proveedor?.Str_nombre,
-                MarcaId = productoModel.MarcaId,
-                MarcaNombre = productoModel.Marca?.Str_nombre,
-                Bool_borrado = productoModel.Bool_borrado
+                    .Select(d => d.ToDetalleDeMovimientoDto()).ToList()    
             };
         }
 

@@ -33,7 +33,7 @@ namespace api.Repository
             if (productoExistente == null) return null;
 
             productoExistente.Bool_borrado = true;
-            
+
             await _context.SaveChangesAsync();
             return productoExistente;
         }
@@ -46,17 +46,6 @@ namespace api.Repository
             .Include(p => p.Deposito)
             .Include(p => p.Proveedor)
             .Include(p => p.Marca)
-            /*.Select(p => new Producto
-            {
-                Id = p.Id,
-                DetallesDeMovimientos = p.DetallesDeMovimientos.Select(d => new DetalleDeMovimiento
-                {
-                    Id= d.Id,
-                    Int_cantidad= d.Int_cantidad,
-                    MovimientoId = d.MovimientoId,
-                    ProductoId = d.ProductoId    
-                }).ToList(),
-            })*/
             .ToListAsync();
         }
 
@@ -89,7 +78,7 @@ namespace api.Repository
         {
             var productoExistente = await _context.productos
                 .Where(p => p.Bool_borrado != true)
-                .FirstOrDefaultAsync(s => s.Id == id);
+                .FirstOrDefaultAsync(p => p.Id == id);
 
             if (productoExistente == null) return null;
 
@@ -150,7 +139,18 @@ namespace api.Repository
         {
             return await _context.productos
             .Where(p => p.Bool_borrado != true && p.DepositoId == depositoId)
+            .Include(p => p.DetallesDeMovimientos)
+            .Include(p => p.Deposito)
+            .Include(p => p.Proveedor)
+            .Include(p => p.Marca)
             .ToListAsync();
+        }
+
+        public async Task<Producto?> ObtenerProductoEnDeposito(string productoNombre, int? depositoId)
+        {
+            return await _context.productos
+                .Where(p => p.Bool_borrado != true)
+                .FirstOrDefaultAsync(p => p.Str_nombre == productoNombre && p.DepositoId == depositoId);
         }
     }
 }
