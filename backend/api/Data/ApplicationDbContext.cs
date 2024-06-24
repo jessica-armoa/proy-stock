@@ -6,23 +6,26 @@ using Microsoft.AspNetCore.Authorization.Infrastructure;
 
 namespace api.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<Usuarios>{
+    public class ApplicationDbContext : IdentityDbContext<Usuarios>
+    {
         public ApplicationDbContext(DbContextOptions dbContextOptions)
         : base(dbContextOptions)
         {
 
         }
 
+        public DbSet<MotivoPorTipoDeMovimiento> motivos_por_tipo_de_movimiento { get; set; }
         public DbSet<Deposito> depositos { get; set; }
         public DbSet<Ferreteria> ferreterias { get; set; }
         public DbSet<Marca> marcas { get; set; }
-        public DbSet<Motivos> motivos { get; set; }
+        public DbSet<Motivo> motivos { get; set; }
         public DbSet<Movimiento> movimientos { get; set; }
         public DbSet<Producto> productos { get; set; }
         public DbSet<Proveedor> proveedores { get; set; }
         public DbSet<TipoDeMovimiento> tipos_de_movimientos { get; set; }
         public DbSet<Categoria> categorias { get; set; }
         public DbSet<DetalleDeMovimiento> detalles_de_movimientos { get; set; }
+        
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -39,6 +42,7 @@ namespace api.Data
                 .WithMany()
                 .HasForeignKey(m => m.DepositoOrigenId)
                 .OnDelete(DeleteBehavior.Restrict); // Esto asegura que no se elimine en cascada si eliminas un depósito
+
 
             // Otros ajustes de modelo aquí si es necesario
             List<IdentityRole> roles = new List<IdentityRole>{
