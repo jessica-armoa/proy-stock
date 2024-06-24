@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using api.Dtos.NotaDeRemision;
 using api.Interfaces;
 using api.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -48,11 +49,39 @@ namespace api.Controllers
     }
 
     [HttpPost]
-    public async Task<ActionResult<NotaDeRemision>> CreateAsync(NotaDeRemision notaDeRemision)
+    public async Task<ActionResult<NotaDeRemision>> CreateAsync(CreateNotaDeRemisionDto notaDeRemisionDto)
     {
       try
       {
+        // Crear la entidad NotaDeRemision a partir del DTO
+        var notaDeRemision = new NotaDeRemision
+        {
+          Str_numero = notaDeRemisionDto.Str_numero,
+          TimbradoId = notaDeRemisionDto.TimbradoId,
+          MovimientoId = notaDeRemisionDto.MovimientoId,
+          Date_fecha_de_expedicion = notaDeRemisionDto.Date_fecha_de_expedicion,
+          Date_fecha_de_vencimiento = notaDeRemisionDto.Date_fecha_de_vencimiento,
+          EmpresaNombre = notaDeRemisionDto.EmpresaNombre,
+          EmpresaDireccion = notaDeRemisionDto.EmpresaDireccion,
+          EmpresaTelefono = notaDeRemisionDto.EmpresaTelefono,
+          EmpresaSucursal = notaDeRemisionDto.EmpresaSucursal,
+          EmpresaActividad = notaDeRemisionDto.EmpresaActividad,
+          Ruc = notaDeRemisionDto.Ruc,
+          DestinatarioNombre = notaDeRemisionDto.DestinatarioNombre,
+          DestinatarioDocumento = notaDeRemisionDto.DestinatarioDocumento,
+          PuntoPartida = notaDeRemisionDto.PuntoPartida,
+          PuntoLlegada = notaDeRemisionDto.PuntoLlegada,
+          TrasladoFechaInicio = notaDeRemisionDto.TrasladoFechaInicio,
+          TrasladoFechaFin = notaDeRemisionDto.TrasladoFechaFin,
+          Motivo = notaDeRemisionDto.Motivo,
+          MotivoDescripcion = notaDeRemisionDto.MotivoDescripcion,
+          ComprobanteVenta = notaDeRemisionDto.ComprobanteVenta,
+        };
+
+        // Llamar al repositorio para crear la nota de remisión
         await _notaDeRemisionRepository.CreateAsync(notaDeRemision);
+
+        // Devolver la nota de remisión creada
         return CreatedAtAction(nameof(GetByIdAsync), new { id = notaDeRemision.Id }, notaDeRemision);
       }
       catch (Exception ex)
@@ -60,6 +89,8 @@ namespace api.Controllers
         return StatusCode(500, $"Error interno del servidor: {ex.Message}");
       }
     }
+
+
 
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateAsync(int id, NotaDeRemision notaDeRemision)

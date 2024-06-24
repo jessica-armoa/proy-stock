@@ -17,9 +17,27 @@ namespace api.Interfaces
 
     public async Task CreateAsync(NotaDeRemision notaDeRemision)
     {
+      if (notaDeRemision.MovimientoId.HasValue)
+      {
+        // Buscar el movimiento correspondiente al MovimientoId proporcionado
+        var movimiento = await _context.movimientos
+            .FirstOrDefaultAsync(m => m.Id == notaDeRemision.MovimientoId.Value);
+
+        if (movimiento != null)
+        {
+          notaDeRemision.Movimiento = movimiento;
+        }
+        else
+        {
+          throw new Exception("No se encontró un movimiento adecuado para asignar.");
+        }
+      }
+
+      // Agregar la nota de remisión al contexto y guardar los cambios
       _context.notas_de_remision.Add(notaDeRemision);
       await _context.SaveChangesAsync();
     }
+
 
     public async Task<List<NotaDeRemision>> GetAllAsync()
     {
