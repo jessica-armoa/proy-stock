@@ -52,6 +52,4 @@ namespace api.Dtos.NotaDeRemision
     public string MotivoDescripcion { get; set; } = string.Empty;
     public string ComprobanteVenta { get; set; } = string.Empty;
   }
-
-
 }
