@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using api.Dtos.DetalleDeMovimiento;
 using api.Dtos.Deposito;
-using api.Dtos.Deposito.api.Dtos.Deposito;
 
 namespace api.Dtos.Movimiento
 {
