@@ -9,69 +9,28 @@ import MovimientosConfig from "../../../controladores/MovimientosConfig";
 import TiposDeMovimientosConfig from "@/controladores/TiposDeMovimientosConfig";
 import MotivosConfig from "@/controladores/MotivosConfig";
 import MotivosPorTipoDeMovimientoConfig from "@/controladores/MotivosPorTipoDeMovimientoConfig";
+import Swal from "sweetalert2";
 
 let detalleIdCounter = 0;
 
 export default function FormularioMovimientos() {
     const navigate = useRouter();
 
-    //const [numeroDocumento, setNumeroDocumento] = useState('');
-
     const [timbrado, setTimbrado] = useState('');
 
     //Encabezado de Movimientos
     const [responsable, setResponsable] = useState('');
     const [fecha, setFecha] = useState('');
-    const [fk_motivoId, setFk_MotivoId] = useState(0);
+    //const [fk_motivoId, setFk_MotivoId] = useState(0);
     const [motivos, setMotivos] = useState([]);
     const [tiposDeMovimientos, setTiposDeMovimientos] = useState([]);
     const [motivosPorTipoDeMovimiento, setMotivosPorTipoDeMovimiento] = useState([]);
-    const [fk_motivo_por_tipo_de_movimiento, setFk_motivo_por_tipo_de_movimiento] = useState(0);
-    const [motivoPorTipoDeMovimiento, setMotivoPorTipoDeMovimiento] = useState({});
-    {/*const tiposDeMovimientos = [
-        { id: 1, str_descripcion: 'Ingreso' },
-        { id: 2, str_descripcion: 'Egreso' },
-        { id: 3, str_descripcion: 'Transferencia' }
-    ];*/}
+    const [fk_motivo_por_tipo_de_movimiento, setFk_motivo_por_tipo_de_movimiento] = useState(null);
+   
     const [fk_tipo_de_movimiento, setFk_tipo_de_movimiento] = useState(0);
 
 
-    {/*const motivosIngreso = [
-        { id: 2, str_motivo: 'Compra' },
-        { id: 3, str_motivo: 'Devolución de cliente' }
-    ];
-
-    const motivosEgreso = [
-        { id: 1, str_motivo: 'Venta Cliente' },
-        { id: 4, str_motivo: 'Devolución a proveedor' },
-        { id: 7, str_motivo: 'Pérdida por deterioro' }
-    ];
-
-    const motivosTransferencia = [{ id: 8, str_motivo: 'Transferencia' }];*/}
-
-    useEffect(() => {
-        // Función para obtener los motivos según el tipo de movimiento seleccionado
-        const obtenerMotivos = (tipoMovimientoId) => {
-            switch (tipoMovimientoId) {
-                case 1: // Ingreso
-                    setMotivos(motivosIngreso);
-                    break;
-                case 2: // Egreso
-                    setMotivos(motivosEgreso);
-                    break;
-                case 3: // Transferencia
-                    setMotivos(motivosTransferencia);
-                    break;
-                default:
-                    setMotivos([]); // Si el tipo de movimiento no coincide con ninguno de los anteriores, se establecen motivos vacíos
-                    break;
-            }
-        };
-
-        // Llamar a la función para establecer los motivos al principio y cada vez que cambie el tipo de movimiento seleccionado
-        obtenerMotivos(fk_tipo_de_movimiento);
-    }, [fk_tipo_de_movimiento]);
-    //const [detallesMovimientos, setDetallesMovimientos] = useState([{ idDetalle: detalleIdCounter++, descripcion: '', cantidad: 1, precio: 0, total: 0 }])
+   
 
     //Este es el arreglo de detalles que se le va a pasar a detalles de movimientos
     const [detallesMovimientos, setDetallesMovimientos] = useState([]);
@@ -109,6 +68,34 @@ export default function FormularioMovimientos() {
         extraccionDepositos();
     }, []);
 
+    const [userDepositoId, setUserDepositoId] = useState(null);
+    const [rol, setRol] = useState(null);
+    const [depositoEncargado, setDepositoEncargado] = useState(null);
+    const [selectedItem, setSelectedItem] = useState('');
+    useEffect(() => {
+        const userData = localStorage.getItem("user");
+
+        if (userData) {
+            const user = JSON.parse(userData);
+            setResponsable(user.userName);
+            setRol(user.role);
+            const userDeposito = depositos.find(deposito => deposito.encargadoUsername === user.userName);
+            if (userDeposito) {
+                setUserDepositoId(userDeposito.id);
+            } else {
+                setUserDepositoId(null);
+            }
+            console.log(userDeposito ? userDeposito.id : "No se encontró el depósito");
+            //console.log(userDepositoId);
+            //console.log(user.deposito);
+        }
+
+        const storedSelectedItem = localStorage.getItem('selectedItem');
+        if (storedSelectedItem) {
+            setSelectedItem(storedSelectedItem);
+        }
+    }, [depositos]);
+
     useEffect(() => {
         const extraccionDeMotivosPorTipoDeMovimiento = async () => {
             try {
@@ -119,7 +106,9 @@ export default function FormularioMovimientos() {
                 setTiposDeMovimientos(respuestaTiposDeMovimientos.data);
                 setMotivos(respuestaMotivos.data);
                 setMotivosPorTipoDeMovimiento(respuestaMotivosPorTipoDeMovimiento.data);
-                console.log(respuestaMotivosPorTipoDeMovimiento.data);                
+                console.log(respuestaMotivosPorTipoDeMovimiento.data);    
+                console.log(respuestaMotivos.data);
+                console.log(respuestaTiposDeMovimientos.data);            
             } catch (error) {
                 console.log('Error al obtener Motivos por tipo de Movimiento', error);
             }
@@ -173,26 +162,7 @@ export default function FormularioMovimientos() {
     const [datosVehiculo, setDatosVehiculo] = useState('');
     const [conductor, setConductor] = useState('');
 
-    //<-- Estas funciones agregaban producto pero lo que agregamos son detalles y no productos.-->
-    //<-- Estas funciones no se están utilizando así que se van a eliminar más adelante.-->
-    {/*const manejarCambioProducto = (id, nombre, valor) => {
-        const detallesLista = detallesMovimientos.map(detalle =>
-            detalle.idDetalle === id ? { ...detalle, [nombre]: valor, total: nombre === 'precio' || nombre === 'cantidad' ? (nombre === 'precio' ? detalle.cantidad * parseFloat(valor) : parseInt(valor) * detalle.precio) : detalle.total } : detalle
-        );
-        setDetallesMovimientos(detallesLista);
-    };
-
-    const manejarAgregarProducto = () => {
-        setDetallesMovimientos([...detallesMovimientos, { idDetalle: 0, descripcion: '', cantidad: 1, precio: 0, total: 0 }]);
-    };
-
-    const manejarQuitarProducto = (id) => {
-        setDetallesMovimientos(detallesMovimientos.filter(detalle => detalle.idDetalle != id));
-    };*/}
-
-    //Estas funciones se utilizan para manejar los detalles del movimientos
-    // manejarAgregarDetalle
-
+   
 
 
 
@@ -208,29 +178,35 @@ export default function FormularioMovimientos() {
         return subTotal;
     };
     let count = 100
+
+
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
             const movimientoActual = {
-
                 "date_fecha": fecha,
-                "tipoDeMovimientoId": fk_tipo_de_movimiento,
-                "depositoOrigenId": fk_deposito_origen,
-                "depositoDestinoId": (fk_deposito_destino === 0 ? null : fk_deposito_destino),
                 "bool_borrado": false,
                 "detallesDeMovimientos": detallesMovimientos.map(detalle => ({
-
                     "int_cantidad": detalle.cantidad,
+                    "dec_costo": detalle.precio,
                     "productoId": detalle.idProducto,
+                    "bool_borrado": false
                 }))
             }
             console.log('Movimiento enviado', movimientoActual);
 
-            const movimientoCreado = await MovimientosConfig.postMovimiento(movimientoActual);
+            const movimientoCreado = await MovimientosConfig.postMovimiento(fk_motivo_por_tipo_de_movimiento, fk_deposito_origen, fk_deposito_destino, movimientoActual).then(() => {
+                Swal.fire('Guardado', 'El movimiento fue creado exitosamente.', 'success');
+            });
 
 
         } catch (error) {
             console.error('Error al enviar los datos del formulario: ', error);
+            Swal.fire(
+                'Error',
+                'Oops! ocurrió un error al intentar guardar el movimiento.',
+                'error'
+            );
         }
 
     };
@@ -251,7 +227,18 @@ export default function FormularioMovimientos() {
     //const motivos = tipoMovimiento === 'transferencia' ? motivosTransferencia : ('ingreso' ? motivosIngreso : motivosEgreso);
 
 
-    const esTransferencia = fk_tipo_de_movimiento === 3;
+    //const esTransferencia = fk_tipo_de_movimiento === 3;
+    const [isDepositoOrigenVisible, setIsDepositoOrigenVisible] = useState(false);
+    const [isDepositoDestinoVisible, setIsDepositoDestinoVisible] = useState(false);
+    const [isTransferencia, setIsTransferencia] = useState(false);
+    useEffect(() => {
+        // Actualiza la visibilidad del depósito origen basado en el motivo seleccionado
+        const selectedMotivo = motivosPorTipoDeMovimiento.find(motivo => motivo.id === fk_motivo_por_tipo_de_movimiento);
+        const tipoMovimientoId = selectedMotivo ? selectedMotivo.tipodemovimientoId : null;
+        setIsDepositoOrigenVisible(tipoMovimientoId === 2 || tipoMovimientoId === 3);
+        setIsDepositoDestinoVisible(tipoMovimientoId === 1 || tipoMovimientoId === 3);
+        setIsTransferencia(tipoMovimientoId === 3);
+    }, [fk_motivo_por_tipo_de_movimiento, motivosPorTipoDeMovimiento]);
 
     return (
         <>
@@ -287,72 +274,26 @@ export default function FormularioMovimientos() {
 
                             <div>
                                 <label
-                                    htmlFor="fk_tipo_de_movimiento"
+                                    htmlFor="fk_motivo_por_tipo_de_movimiento"
                                     className="block text-sm font-medium text-gray-700"
                                 >
-                                    Tipo de Movimiento
+                                    Motivo por Tipo de Movimiento
                                 </label>
-                                {/*<select
-                                    id="fk_tipo_de_movimiento"
-                                    name="fk_tipo_de_movimiento"
-                                    value={fk_tipo_de_movimiento}
-                                    onChange={(e) => {
-                                        setFk_tipo_de_movimiento(e.target.value);
-                                        setMotivo('');
-                                    }}
-                                    className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-                                    required
-                                >
-                                    <option value="" disabled>
-                                        Seleccione un tipo
-                                    </option>
-                                    <option value="ingreso">Ingreso</option>
-                                    <option value="egreso">Egreso</option>
-                                    <option value="transferencia">Transferencia</option>
-                                </select>*/}
+                                
                                 <SearchSelect id="fk_motivo_por_tipo_de_movimiento" className='mt-2' placeholder='Motivo por Tipo de Movimiento' value={fk_motivo_por_tipo_de_movimiento} onValueChange={(value) => {
                                     setFk_motivo_por_tipo_de_movimiento(parseInt(value));
                                     console.log(fk_motivo_por_tipo_de_movimiento);
                                     //setMotivo('');
                                 }}>
-                                    {motivosPorTipoDeMovimiento.map(motivos_por_tipo_de_movimiento => (
-                                        <SearchSelectItem key={motivos_por_tipo_de_movimiento.id} value={motivos_por_tipo_de_movimiento.id}>{motivos_por_tipo_de_movimiento.str_descripcion}</SearchSelectItem>
+                                    {motivosPorTipoDeMovimiento.map(motivo_por_tipo_de_movimiento => (
+                                        <SearchSelectItem key={motivo_por_tipo_de_movimiento.id} value={motivo_por_tipo_de_movimiento.id}>{motivo_por_tipo_de_movimiento.str_descripcion}</SearchSelectItem>
                                     ))}
                                 </SearchSelect>
                             </div>
 
-                            {/*<div>
-                                <label
-                                    htmlFor="motivo"
-                                    className="block text-sm font-medium text-gray-700"
-                                >
-                                    Motivo
-                                </label>*/}
-                                {/*<select
-                                    id="motivo"
-                                    name="motivo"
-                                    value={motivo}
-                                    onChange={(e) => setMotivo(e.target.value)}
-                                    className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-                                    required
-                                >
-                                    <option value="" disabled>
-                                        Seleccione un Motivo
-                                    </option>
-                                    {motivos.map(motivo => (
-                                        <option key={motivo.id} value={motivo.id}>
-                                            {motivo.str}
-                                        </option>
-                                    ))}
-                                </select>*/}
-                                {/*<SearchSelect id="fk_motivoId" className='mt-2' placeholder='Motivo' value={fk_motivoId} onValueChange={(value) => setFk_MotivoId(parseInt(value))}>
-                                    {motivos.map(motivosSeleccionados => (
-                                        <SearchSelectItem key={motivosSeleccionados.id} value={motivosSeleccionados.id}>{motivosSeleccionados.str_motivo}</SearchSelectItem>
-                                    ))}
-                                </SearchSelect>
-                            </div>*/}
+                          
 
-                            <div className={`mb-4 ${(fk_motivo_por_tipo_de_movimiento.tipodemovimientoId === 2 || fk_motivo_por_tipo_de_movimiento.tipodemovimientoId === 3) ? 'visible' : 'invisible'}`}>
+                            <div className={`mb-4 ${isDepositoOrigenVisible ? 'visible' : 'invisible'}`}>
                                 <label
                                     htmlFor="depositoOrigen"
                                     className="block text-sm font-medium text-gray-700"
@@ -366,20 +307,8 @@ export default function FormularioMovimientos() {
                                 </SearchSelect>
                             </div>
 
-                            <div className={`mb-4 ${(fk_motivo_por_tipo_de_movimiento.tipodemovimientoId === 1 || fk_motivo_por_tipo_de_movimiento.tipodemovimientoId === 3) ? 'visible' : 'invisible'}`}>
+                            <div className={`mb-4 ${isDepositoDestinoVisible ? 'visible' : 'invisible'}`}>
                                 <label htmlFor="fk_deposito_destino" className="block text-sm font-medium text-gray-700">Depósito Destino</label>
-                                {/*<select
-                                            id="depositoDestino"
-                                            name="depositoDestino"
-                                            value={depositoDestino}
-                                            onChange={(e) => setDepositoDestino(e.target.value)}
-                                            className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-                                            required={esTransferencia}
-                                        >
-                                            <option value="" disabled>Seleccione un Depósito</option>
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                        </select>*/}
                                 <SearchSelect id="fk_deposito_destino" className='mt-2' placeholder='Depósito' value={fk_deposito_destino} onValueChange={(value) => setFk_deposito_destino(parseInt(value))}>
                                     {opcionesFiltradas.map(depositoDestino => (
 
@@ -388,7 +317,7 @@ export default function FormularioMovimientos() {
                                 </SearchSelect>
                             </div>
 
-                            {(fk_motivo_por_tipo_de_movimiento.tipodemovimientoId === 3) && (
+                            {isTransferencia && (
                                 <>
 
                                     <div>
@@ -399,7 +328,7 @@ export default function FormularioMovimientos() {
                                             value={timbradoRemision}
                                             onChange={(e) => setTimbradoRemision(e.target.value)}
                                             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm"
-                                            required={esTransferencia}
+                                            required={isTransferencia}
                                         />
                                     </div>
 
@@ -411,7 +340,7 @@ export default function FormularioMovimientos() {
                                             value={numeroNotaRemision}
                                             onChange={(e) => setNumeroNotaRemision(e.target.value)}
                                             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm"
-                                            required={esTransferencia}
+                                            required={isTransferencia}
                                         />
                                     </div>
 
@@ -425,7 +354,7 @@ export default function FormularioMovimientos() {
                                             value={datosVehiculo}
                                             onChange={(e) => setDatosVehiculo(e.target.value)}
                                             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm"
-                                            required={esTransferencia}
+                                            required={isTransferencia}
                                         />
                                     </div>
 
@@ -437,7 +366,7 @@ export default function FormularioMovimientos() {
                                             value={conductor}
                                             onChange={(e) => setConductor(e.target.value)}
                                             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm"
-                                            required={esTransferencia}
+                                            required={isTransferencia}
                                         />
                                     </div>
                                 </>
