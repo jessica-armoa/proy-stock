@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using api.Controllers;
 using api.Dtos.Deposito;
-using api.Dtos.Deposito.api.Dtos.Deposito;
 using api.Models;
 
 namespace api.Interfaces

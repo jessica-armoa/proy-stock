@@ -26,7 +26,7 @@ namespace api.Repository
           .ThenInclude(p => p.Proveedor)
           .Include(d => d.Producto)
           .ThenInclude(p => p.Deposito)
-          .Where(d => d.Movimiento.TipoDeMovimiento.MotivoId == 1) //El motivo 1 siempre es venta a cliente
+          //.Where(d => d.Movimiento.TipoDeMovimiento.MotivoId == 1) //El motivo 1 siempre es venta a cliente
           .GroupBy(d => d.ProductoId)
           .Select(g => new Producto
           {
@@ -58,7 +58,7 @@ namespace api.Repository
           .ThenInclude(p => p.Proveedor)
           .Include(d => d.Producto)
           .ThenInclude(p => p.Deposito)
-          .Where(d => d.Movimiento.TipoDeMovimiento.MotivoId == 1) //El motivo 1 siempre es venta a cliente
+          //.Where(d => d.Movimiento.TipoDeMovimiento.MotivoId == 1) //El motivo 1 siempre es venta a cliente
           .GroupBy(d => d.ProductoId)
           .Select(g => new Producto
           {
@@ -90,7 +90,7 @@ namespace api.Repository
           .ThenInclude(p => p.Proveedor)
           .Include(d => d.Producto)
           .ThenInclude(p => p.Deposito)
-          .Where(d => d.Movimiento.TipoDeMovimiento.Motivo.Bool_perdida)
+          //.Where(d => d.Movimiento.TipoDeMovimiento.Motivo.Bool_perdida)
           .OrderByDescending(d => d.Movimiento.Date_fecha) // Ordenar por fecha de movimiento en orden descendente
           .GroupBy(d => d.ProductoId)
           .Select(g => new Producto

@@ -1,15 +1,9 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using api.Data;
 using api.Dtos.Deposito;
-using api.Dtos.Movimiento;
-using api.Dtos.Producto;
-using api.Dtos.DetalleDeMovimiento;
 using api.Interfaces;
 using api.Models;
 using Microsoft.EntityFrameworkCore;
-using api.Dtos.Deposito.api.Dtos.Deposito;
+
 
 namespace api.Repository
 {

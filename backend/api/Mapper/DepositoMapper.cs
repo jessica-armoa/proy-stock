@@ -5,7 +5,7 @@ namespace api.Mapper
 {
     public static class DepositoMapper
     {
-        public static Depo ToDepositoDto(this Deposito depositoModel)
+        public static DepositoDto ToDepositoDto(this Deposito depositoModel)
         {
             return new DepositoDto
             {

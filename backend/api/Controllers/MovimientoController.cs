@@ -12,7 +12,6 @@ using api.Mapper;
 using api.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using api.Dtos.Deposito.api.Dtos.Deposito;
 
 namespace api.Controllers
 {
@@ -39,9 +38,9 @@ namespace api.Controllers
             , IMotivoPorTipoDeMovimientoRepository motivoPorTipoMovimientoRepo
             , IMotivoRepository motivoRepo
             , ApplicationDbContext context
-            , IAsientoRepository asientoRepo,
-            INotaDeRemisionRepository notaDeRemisionRepo,
-            ITimbradoRepository timbradoRepo)
+            , IAsientoRepository asientoRepo
+            , INotaDeRemisionRepository notaDeRemisionRepo
+            , ITimbradoRepository timbradoRepo)
         {
             _movimientoRepo = movimientoRepo;
             _tipoDeMovimientoRepo = tipoDeMovimientoRepo;
@@ -64,8 +63,6 @@ namespace api.Controllers
 
             return Ok(movimientosDto);
         }
-
-
 
         [HttpGet]
         [Route("{id:int}")]
@@ -147,7 +144,7 @@ namespace api.Controllers
                                 movimientoId = movimientoModel.Id,
                                 Str_cuenta = "1.1.1.1",
                                 Str_concepto = "Compra",
-                                Dec_debe = total,
+                                Dec_debe = total - iva,
                                 Dec_haber = 0,
                                 Bool_borrado = false
                             };
@@ -168,7 +165,7 @@ namespace api.Controllers
                                 Str_cuenta = "1.1.1.1.2",
                                 Str_concepto = "Cuenta por pagar",
                                 Dec_debe = 0,
-                                Dec_haber = total + iva,
+                                Dec_haber = total,
                                 Bool_borrado = false
                             };
 
@@ -188,7 +185,7 @@ namespace api.Controllers
                                 movimientoId = movimientoModel.Id,
                                 Str_cuenta = "1.1.1.1.3",
                                 Str_concepto = "Cuentas por cobrar",
-                                Dec_debe = total + iva,
+                                Dec_debe = total,
                                 Dec_haber = 0,
                                 Bool_borrado = false
                             };
@@ -199,7 +196,7 @@ namespace api.Controllers
                                 Str_cuenta = "1.1.1.1.4",
                                 Str_concepto = "Ventas",
                                 Dec_debe = 0,
-                                Dec_haber = total,
+                                Dec_haber = total - iva,
                                 Bool_borrado = false
                             };
 
@@ -265,7 +262,7 @@ namespace api.Controllers
                                     producto.Int_cantidad_actual -= detalle.Int_cantidad;
 
                                     productoEnOrigen.Int_cantidad_actual += detalle.Int_cantidad;
-                                    productoEnOrigen.Dec_costo = ((productoEnOrigen.Int_cantidad_actual*productoEnOrigen.Dec_costo_PPP)+(detalle.Int_cantidad*detalle.Dec_costo))/(productoEnOrigen.Int_cantidad_actual+detalle.Int_cantidad);
+                                    productoEnOrigen.Dec_costo = ((productoEnOrigen.Int_cantidad_actual * productoEnOrigen.Dec_costo_PPP) + (detalle.Int_cantidad * detalle.Dec_costo)) / (productoEnOrigen.Int_cantidad_actual + detalle.Int_cantidad);
                                     await _detalleRepo.CreateAsync(detalle);
                                 }
                             }
@@ -305,7 +302,7 @@ namespace api.Controllers
                                 {
                                     detalle.Dec_costo = producto.Dec_costo_PPP;
                                     producto.Int_cantidad_actual -= detalle.Int_cantidad;
-                                    productoEnDestino.Dec_costo_PPP = ((productoEnDestino.Int_cantidad_actual*productoEnDestino.Dec_costo_PPP)+(detalle.Int_cantidad*detalle.Dec_costo))/(productoEnDestino.Int_cantidad_actual+detalle.Int_cantidad);
+                                    productoEnDestino.Dec_costo_PPP = ((productoEnDestino.Int_cantidad_actual * productoEnDestino.Dec_costo_PPP) + (detalle.Int_cantidad * detalle.Dec_costo)) / (productoEnDestino.Int_cantidad_actual + detalle.Int_cantidad);
                                     productoEnDestino.Int_cantidad_actual += detalle.Int_cantidad;
 
                                     await _detalleRepo.CreateAsync(detalle);
