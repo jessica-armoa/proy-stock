@@ -25,7 +25,7 @@ const Detalle = ({params}) => { //params lee los parametros de la url, en este c
 
   useEffect(() => {
     if (product) {
-      ProductosConfig.getProductos().then((response) => {
+      ProductosConfig.getProductoId(id).then((response) => {
         setProduct(response.data);
       });
     }
@@ -162,9 +162,8 @@ const Detalle = ({params}) => { //params lee los parametros de la url, en este c
                 <p>Codigo: {product.id}</p>
                 <p>Nombre:{product.str_nombre} </p>
                 <p>Descripcion: {product.str_descripcion} </p>
-                <p>Marca: {product.marcaId} </p>
-                <p>Proveedor: {product.proveedorId}</p>
-                <p>Contacto: 0984 235701</p>
+                <p>Marca: {product.marcaNombre} </p>
+                <p>Proveedor: {product.proveedorNombre}</p>
               </div>
               <div>
                 <p>Cantidad: {product.int_cantidad_actual}</p>
