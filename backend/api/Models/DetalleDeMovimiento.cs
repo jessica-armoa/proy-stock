@@ -11,6 +11,7 @@ namespace api.Models
     {
         public int Id { get; set; }
         public int Int_cantidad { get; set; }
+        public decimal Dec_costo { get; set; }
         public int? MovimientoId { get; set; }
         public Movimiento? Movimiento { get; set; }
         public int? ProductoId { get; set; }

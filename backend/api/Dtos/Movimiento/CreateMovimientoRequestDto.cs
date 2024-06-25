@@ -9,7 +9,7 @@ namespace api.Dtos.Movimiento
     public class CreateMovimientoRequestDto
     {
         public DateTime Date_fecha { get; set; }
-        public bool Bool_borrado { get; set; } = false;
-
+        public bool Bool_borrado { get; set; }
+        public List<CreateDetalleRequestDto> DetallesDeMovimientos { get; set; } = [];
     }
 }
