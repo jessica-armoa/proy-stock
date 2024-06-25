@@ -98,36 +98,6 @@ namespace api.Repository
             return productoExistente;
         }
 
-        public async Task ActualizarCostoPPPAsync()
-        {
-            // Obtener todos los productos
-            var productos = await GetAllAsync();
-            var depositos = await _context.depositos
-                .Where(d => d.Bool_borrado != true)
-                .Include(d => d.Productos)
-                .Include(d => d.Movimientos)
-                .ToListAsync();
-
-            if (!productos.Any())
-            {
-                throw new InvalidOperationException("No se encontraron productos.");
-            }
-
-            foreach (var deposito in depositos)
-            {
-                var costoTotal = deposito.Productos
-                    .Where(p => p.Bool_borrado != true)
-                    .Sum(p => p.Dec_costo);
-                var costoPPP = costoTotal / deposito.Productos.Count;
-                foreach (var producto in deposito.Productos)
-                {
-                    producto.Dec_costo_PPP = costoPPP;
-                }
-            }
-
-            await _context.SaveChangesAsync();
-        }
-
         public async Task<bool> ProductoExistsName(string nombreProducto)
         {
             return await _context.productos

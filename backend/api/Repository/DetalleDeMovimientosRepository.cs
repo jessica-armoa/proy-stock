@@ -56,25 +56,27 @@ namespace api.Repository
                 {
                     return null;
                 }
+                productoEnDestino.Dec_costo_PPP = (((productoEnDestino.Int_cantidad_actual * productoEnDestino.Dec_costo_PPP) + (detalleModel.Int_cantidad * detalleModel.Dec_costo)) / (productoEnDestino.Int_cantidad_actual + detalleModel.Int_cantidad));
                 productoEnDestino.Int_cantidad_actual += detalleModel.Int_cantidad;
-                productoEnDestino.Dec_costo = detalleModel.Dec_costo;
+
             }
 
             if (tipoDeMovimiento.Str_tipo.ToLower() == "egreso")
             {
-                var productoEnDestino = await _context.productos
+                var productoEnOrigen = await _context.productos
                     .Where(p => p.Bool_borrado != true)
-                    .FirstOrDefaultAsync(p => p.Id == detalleModel.ProductoId);
+                    .FirstOrDefaultAsync(p => p.Id == detalleModel.ProductoId && p.DepositoId == movimientoDetalle.DepositoOrigenId);
 
-                if (productoEnDestino == null)
+                if (productoEnOrigen == null)
                 {
                     return null;
                 }
-                detalleModel.Dec_costo = productoEnDestino.Dec_costo_PPP;
-                productoEnDestino.Int_cantidad_actual -= detalleModel.Int_cantidad;
+
+                detalleModel.Dec_costo = productoEnOrigen.Dec_costo_PPP;
+                productoEnOrigen.Int_cantidad_actual -= detalleModel.Int_cantidad;
             }
-            
-            await _productoRepo.ActualizarCostoPPPAsync();
+
+
             await _context.detalles_de_movimientos.AddAsync(detalleModel);
             await _context.SaveChangesAsync();
             return detalleModel;
@@ -85,9 +87,11 @@ namespace api.Repository
             throw new NotImplementedException();
         }
 
-        public Task<bool> DetalleExists(int id)
+        public async Task<bool> DetalleExists(int id)
         {
-            throw new NotImplementedException();
+            return await _context.detalles_de_movimientos
+            .Where(d => d.Bool_borrado != true)
+            .AnyAsync(d => d.Id == id);
         }
 
         public async Task<List<DetalleDeMovimiento>> GetAllAsync()
@@ -102,241 +106,160 @@ namespace api.Repository
                 .ToListAsync();
         }
 
-        public Task<DetalleDeMovimiento?> GetByIdAsync(int id)
+        public async Task<DetalleDeMovimiento?> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _context.detalles_de_movimientos
+                .Where(d => d.Bool_borrado != true)
+                .Include(d => d.Producto).ThenInclude(d => d.Proveedor)
+                .Include(d => d.Producto).ThenInclude(d => d.Deposito)
+                .Include(d => d.Movimiento).ThenInclude(d => d.MotivoPorTipoDeMovimiento)
+                .Include(d => d.Movimiento).ThenInclude(d => d.DepositoOrigen)
+                .Include(d => d.Movimiento).ThenInclude(d => d.DepositoDestino)
+                .FirstOrDefaultAsync(d => d.Id == id);
         }
 
         public Task<DetalleDeMovimiento?> UpdateAsync(int id, DetalleDeMovimiento detalleDto)
         {
             throw new NotImplementedException();
         }
-        /*public async Task<DetalleDeMovimiento> CreateAsync(DetalleDeMovimiento detalleModel)
-{
-   var movimientoDetalle = await _context.movimientos
-       .Where(m => m.Bool_borrado != true)
-       .FirstOrDefaultAsync(m => m.Id == detalleModel.MovimientoId);
+        /*
 
-   if (movimientoDetalle == null)
-   {
-       return null;
-   }
+        public async Task<DetalleDeMovimiento?> DeleteAsync(int id)
+        {
+           var detalleExistente = await _context.detalles_de_movimientos
+               .Where(d => d.Bool_borrado != true)
+               .FirstOrDefaultAsync(d => d.Id == id);
 
-   var tipoDeMovimiento = await _context.tipos_de_movimientos
-       .Where(t => t.Bool_borrado != true)
-       .FirstOrDefaultAsync(t => t.Id == movimientoDetalle.TipoDeMovimientoId);
+           if (detalleExistente == null) return null;
 
-   if (tipoDeMovimiento == null)
-   {
-       return null;
-   }
+           var movimientoDetalle = await _context.movimientos
+               .Where(m => m.Bool_borrado != true)
+               .FirstOrDefaultAsync(m => m.Id == detalleExistente.MovimientoId);
 
-   if (tipoDeMovimiento.Str_tipo.ToLower() == "ingreso")
-   {
-       var productoEnOrigen = await _context.productos
-           .Where(p => p.Bool_borrado != true)
-           .FirstOrDefaultAsync(p => p.Id == detalleModel.ProductoId);
+           if (movimientoDetalle == null) return null;
 
-       if (tipoDeMovimiento == null || productoEnOrigen == null)
-       {
-           return null;
-       }
-       productoEnOrigen.Int_cantidad_actual += detalleModel.Int_cantidad;
-   }
+           var tipoDeMovimiento = await _context.tipos_de_movimientos
+               .Where(t => t.Bool_borrado != true)
+               .FirstOrDefaultAsync(t => t.Id == movimientoDetalle.TipoDeMovimientoId);
 
-   if (tipoDeMovimiento.Str_tipo.ToLower() == "egreso")
-   {
-       var productoEnOrigen = await _context.productos
-           .Where(p => p.Bool_borrado != true)
-           .FirstOrDefaultAsync(p => p.Id == detalleModel.ProductoId);
+           if (tipoDeMovimiento == null) return null;
 
-       if (tipoDeMovimiento == null || productoEnOrigen == null)
-       {
-           return null;
-       }
-       productoEnOrigen.Int_cantidad_actual -= detalleModel.Int_cantidad;
-   }
+           if (tipoDeMovimiento.Str_tipo.ToLower() == "ingreso")
+           {
+               var productoDetalle = await _context.productos
+               .Where(p => p.Bool_borrado != true)
+               .FirstOrDefaultAsync(p => p.Id == detalleExistente.ProductoId);
 
-   await _context.detalles_de_movimientos.AddAsync(detalleModel);
-   await _context.SaveChangesAsync();
-   return detalleModel;
-}
+               if (productoDetalle == null) return null;
+               productoDetalle.Int_cantidad_actual -= detalleExistente.Int_cantidad;
+           }
 
-public async Task<DetalleDeMovimiento?> DeleteAsync(int id)
-{
-   var detalleExistente = await _context.detalles_de_movimientos
-       .Where(d => d.Bool_borrado != true)
-       .FirstOrDefaultAsync(d => d.Id == id);
+           if (tipoDeMovimiento.Str_tipo.ToLower() == "egreso")
+           {
+               var productoDetalle = await _context.productos
+               .Where(p => p.Bool_borrado != true)
+               .FirstOrDefaultAsync(p => p.Id == detalleExistente.ProductoId);
 
-   if (detalleExistente == null) return null;
+               if (productoDetalle == null) return null;
+               productoDetalle.Int_cantidad_actual += detalleExistente.Int_cantidad;
+           }
 
-   var movimientoDetalle = await _context.movimientos
-       .Where(m => m.Bool_borrado != true)
-       .FirstOrDefaultAsync(m => m.Id == detalleExistente.MovimientoId);
+           if (tipoDeMovimiento.Str_tipo.ToLower() == "transferencia")
+           {
+               var productoEnOrigen = await _context.productos
+                   .Where(p => p.Bool_borrado != true)
+                   .FirstOrDefaultAsync(p => p.Id == detalleExistente.ProductoId && p.DepositoId == movimientoDetalle.DepositoOrigenId);
 
-   if (movimientoDetalle == null) return null;
+               var productoEnDestino = await _context.productos
+                   .Where(p => p.Bool_borrado != true)
+                   .FirstOrDefaultAsync(p => p.Id == detalleExistente.ProductoId && p.DepositoId == movimientoDetalle.DepositoDestinoId);
 
-   var tipoDeMovimiento = await _context.tipos_de_movimientos
-       .Where(t => t.Bool_borrado != true)
-       .FirstOrDefaultAsync(t => t.Id == movimientoDetalle.TipoDeMovimientoId);
+               if (productoEnDestino == null)
+               {
+                   return null;
+               }
 
-   if (tipoDeMovimiento == null) return null;
-
-   if (tipoDeMovimiento.Str_tipo.ToLower() == "ingreso")
-   {
-       var productoDetalle = await _context.productos
-       .Where(p => p.Bool_borrado != true)
-       .FirstOrDefaultAsync(p => p.Id == detalleExistente.ProductoId);
-
-       if (productoDetalle == null) return null;
-       productoDetalle.Int_cantidad_actual -= detalleExistente.Int_cantidad;
-   }
-
-   if (tipoDeMovimiento.Str_tipo.ToLower() == "egreso")
-   {
-       var productoDetalle = await _context.productos
-       .Where(p => p.Bool_borrado != true)
-       .FirstOrDefaultAsync(p => p.Id == detalleExistente.ProductoId);
-
-       if (productoDetalle == null) return null;
-       productoDetalle.Int_cantidad_actual += detalleExistente.Int_cantidad;
-   }
-
-   if (tipoDeMovimiento.Str_tipo.ToLower() == "transferencia")
-   {
-       var productoEnOrigen = await _context.productos
-           .Where(p => p.Bool_borrado != true)
-           .FirstOrDefaultAsync(p => p.Id == detalleExistente.ProductoId && p.DepositoId == movimientoDetalle.DepositoOrigenId);
-
-       var productoEnDestino = await _context.productos
-           .Where(p => p.Bool_borrado != true)
-           .FirstOrDefaultAsync(p => p.Id == detalleExistente.ProductoId && p.DepositoId == movimientoDetalle.DepositoDestinoId);
-
-       if (productoEnDestino == null)
-       {
-           return null;
-       }
-
-       productoEnOrigen.Int_cantidad_actual += detalleExistente.Int_cantidad;
-       productoEnDestino.Int_cantidad_actual -= detalleExistente.Int_cantidad;
-   }
+               productoEnOrigen.Int_cantidad_actual += detalleExistente.Int_cantidad;
+               productoEnDestino.Int_cantidad_actual -= detalleExistente.Int_cantidad;
+           }
 
 
-   detalleExistente.Bool_borrado = true;
+           detalleExistente.Bool_borrado = true;
 
-   await _context.SaveChangesAsync();
-   return detalleExistente;
-}
+           await _context.SaveChangesAsync();
+           return detalleExistente;
+        }
 
-public async Task<bool> DetalleExists(int id)
-{
-   return await _context.detalles_de_movimientos
-   .Where(d => d.Bool_borrado != true)
-   .AnyAsync(d => d.Id == id);
-}
+        public async Task<DetalleDeMovimiento?> UpdateAsync(int id, DetalleDeMovimiento detalleDto)
+        {
+           var detalleAntiguo = await _context.detalles_de_movimientos
+               .Where(d => d.Bool_borrado != true)
+               .FirstOrDefaultAsync(d => d.Id == id);
 
-public async Task<List<DetalleDeMovimiento>> GetAllAsync()
-{
-   return await _context.detalles_de_movimientos
-   .Where(d => d.Bool_borrado != true)
-   .Include(d => d.Movimiento)
-   .Include(d => d.Producto)
-   .Select(d => new DetalleDeMovimiento
-   {
-       Id = d.Id,
-       Int_cantidad = d.Int_cantidad,
-       MovimientoId = d.MovimientoId,
-       ProductoId = d.ProductoId
-   })
-   .ToListAsync();
-}
+           if (detalleAntiguo == null) return null;
 
-public async Task<DetalleDeMovimiento?> GetByIdAsync(int id)
-{
-   return await _context.detalles_de_movimientos
-   .Where(d => d.Bool_borrado != true)
-   .Include(d => d.Movimiento)
-   .Include(d => d.Producto)
-   .Select(d => new DetalleDeMovimiento
-   {
-       Id = d.Id,
-       Int_cantidad = d.Int_cantidad,
-       MovimientoId = d.MovimientoId,
-       ProductoId = d.ProductoId,
-   })
-   .FirstOrDefaultAsync(d => d.Id == id);
-}
+           var movimientoDetalle = await _context.movimientos
+               .Where(m => m.Bool_borrado != true)
+               .FirstOrDefaultAsync(m => m.Id == detalleAntiguo.MovimientoId);
 
-public async Task<DetalleDeMovimiento?> UpdateAsync(int id, DetalleDeMovimiento detalleDto)
-{
-   var detalleAntiguo = await _context.detalles_de_movimientos
-       .Where(d => d.Bool_borrado != true)
-       .FirstOrDefaultAsync(d => d.Id == id);
+           if (movimientoDetalle == null) return null;
 
-   if (detalleAntiguo == null) return null;
+           var tipoDeMovimiento = await _context.tipos_de_movimientos
+               .Where(t => t.Bool_borrado != true)
+               .FirstOrDefaultAsync(t => t.Id == movimientoDetalle.TipoDeMovimientoId);
 
-   var movimientoDetalle = await _context.movimientos
-       .Where(m => m.Bool_borrado != true)
-       .FirstOrDefaultAsync(m => m.Id == detalleAntiguo.MovimientoId);
+           if (tipoDeMovimiento == null) return null;
 
-   if (movimientoDetalle == null) return null;
+           if (tipoDeMovimiento.Str_tipo.ToLower() == "ingreso")
+           {
+               var productoDetalle = await _context.productos
+               .Where(p => p.Bool_borrado != true)
+               .FirstOrDefaultAsync(p => p.Id == detalleAntiguo.ProductoId);
 
-   var tipoDeMovimiento = await _context.tipos_de_movimientos
-       .Where(t => t.Bool_borrado != true)
-       .FirstOrDefaultAsync(t => t.Id == movimientoDetalle.TipoDeMovimientoId);
+               if (productoDetalle == null) return null;
+               productoDetalle.Int_cantidad_actual -= detalleAntiguo.Int_cantidad;
+               productoDetalle.Int_cantidad_actual += detalleDto.Int_cantidad;
+           }
 
-   if (tipoDeMovimiento == null) return null;
+           if (tipoDeMovimiento.Str_tipo.ToLower() == "egreso")
+           {
+               var productoDetalle = await _context.productos
+               .Where(p => p.Bool_borrado != true)
+               .FirstOrDefaultAsync(p => p.Id == detalleAntiguo.ProductoId);
 
-   if (tipoDeMovimiento.Str_tipo.ToLower() == "ingreso")
-   {
-       var productoDetalle = await _context.productos
-       .Where(p => p.Bool_borrado != true)
-       .FirstOrDefaultAsync(p => p.Id == detalleAntiguo.ProductoId);
+               if (productoDetalle == null) return null;
+               productoDetalle.Int_cantidad_actual += detalleAntiguo.Int_cantidad;
+               productoDetalle.Int_cantidad_actual -= detalleDto.Int_cantidad;
+           }
 
-       if (productoDetalle == null) return null;
-       productoDetalle.Int_cantidad_actual -= detalleAntiguo.Int_cantidad;
-       productoDetalle.Int_cantidad_actual += detalleDto.Int_cantidad;
-   }
+           if (tipoDeMovimiento.Str_tipo.ToLower() == "transferencia")
+           {
+               var productoEnOrigen = await _context.productos
+                   .Where(p => p.Bool_borrado != true)
+                   .FirstOrDefaultAsync(p => p.Id == detalleAntiguo.ProductoId && p.DepositoId == movimientoDetalle.DepositoOrigenId);
 
-   if (tipoDeMovimiento.Str_tipo.ToLower() == "egreso")
-   {
-       var productoDetalle = await _context.productos
-       .Where(p => p.Bool_borrado != true)
-       .FirstOrDefaultAsync(p => p.Id == detalleAntiguo.ProductoId);
+               var productoEnDestino = await _context.productos
+                   .Where(p => p.Bool_borrado != true)
+                   .FirstOrDefaultAsync(p => p.Id == detalleAntiguo.ProductoId && p.DepositoId == movimientoDetalle.DepositoDestinoId);
 
-       if (productoDetalle == null) return null;
-       productoDetalle.Int_cantidad_actual += detalleAntiguo.Int_cantidad;
-       productoDetalle.Int_cantidad_actual -= detalleDto.Int_cantidad;
-   }
+               if (productoEnDestino == null || productoEnOrigen == null)
+               {
+                   return null;
+               }
+               //Borrar las cantidades antiguas
+               productoEnOrigen.Int_cantidad_actual += detalleAntiguo.Int_cantidad;
+               productoEnDestino.Int_cantidad_actual -= detalleAntiguo.Int_cantidad;
+               //Cargar las cantidades nuevas
+               productoEnOrigen.Int_cantidad_actual -= detalleDto.Int_cantidad;
+               productoEnDestino.Int_cantidad_actual += detalleDto.Int_cantidad;
+           }
 
-   if (tipoDeMovimiento.Str_tipo.ToLower() == "transferencia")
-   {
-       var productoEnOrigen = await _context.productos
-           .Where(p => p.Bool_borrado != true)
-           .FirstOrDefaultAsync(p => p.Id == detalleAntiguo.ProductoId && p.DepositoId == movimientoDetalle.DepositoOrigenId);
+           detalleAntiguo.Int_cantidad -= detalleAntiguo.Int_cantidad;
+           detalleAntiguo.Int_cantidad += detalleDto.Int_cantidad;
+           detalleAntiguo.Bool_borrado = false;
 
-       var productoEnDestino = await _context.productos
-           .Where(p => p.Bool_borrado != true)
-           .FirstOrDefaultAsync(p => p.Id == detalleAntiguo.ProductoId && p.DepositoId == movimientoDetalle.DepositoDestinoId);
-
-       if (productoEnDestino == null || productoEnOrigen == null)
-       {
-           return null;
-       }
-       //Borrar las cantidades antiguas
-       productoEnOrigen.Int_cantidad_actual += detalleAntiguo.Int_cantidad;
-       productoEnDestino.Int_cantidad_actual -= detalleAntiguo.Int_cantidad;
-       //Cargar las cantidades nuevas
-       productoEnOrigen.Int_cantidad_actual -= detalleDto.Int_cantidad;
-       productoEnDestino.Int_cantidad_actual += detalleDto.Int_cantidad;
-   }
-
-   detalleAntiguo.Int_cantidad -= detalleAntiguo.Int_cantidad;
-   detalleAntiguo.Int_cantidad += detalleDto.Int_cantidad;
-   detalleAntiguo.Bool_borrado = false;
-
-   await _context.SaveChangesAsync();
-   return detalleAntiguo;
-}*/
+           await _context.SaveChangesAsync();
+           return detalleAntiguo;
+        }*/
     }
 }

@@ -18,7 +18,6 @@ namespace api.Interfaces
         Task<Producto?> DeleteAsync(int id); 
         Task<bool> ProductoExists(int id);
         Task<bool> ProductoExistsName(string nombreProducto);
-        Task ActualizarCostoPPPAsync();
         Task<Producto?> ObtenerProductoEnDeposito(string productoNombre, int? depositoId);
     }
 }

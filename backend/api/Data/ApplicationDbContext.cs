@@ -25,6 +25,7 @@ namespace api.Data
         public DbSet<TipoDeMovimiento> tipos_de_movimientos { get; set; }
         public DbSet<Categoria> categorias { get; set; }
         public DbSet<DetalleDeMovimiento> detalles_de_movimientos { get; set; }
+        public DbSet<Asiento> asientos { get; set; }
         
         public DbSet<NotaDeRemision> notas_de_remision { get; set; }
         public DbSet<Timbrado> timbrados { get; set; }
