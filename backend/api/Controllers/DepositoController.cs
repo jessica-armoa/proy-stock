@@ -67,24 +67,24 @@ namespace api.Controllers
             using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
-                var encargado = new Usuarios
-                {
-                    UserName = depositoDto.EncargadoUsername,
-                    Email = depositoDto.EncargadoEmail
-                };
+                Usuarios encargado = null;
 
-                var result = await _userManager.CreateAsync(encargado, depositoDto.EncargadoPassword);
-                if (!result.Succeeded)
+                if (!string.IsNullOrEmpty(depositoDto.EncargadoUsername))
                 {
-                    return BadRequest(result.Errors);
+                    encargado = await _userManager.Users.FirstOrDefaultAsync(u => u.UserName == depositoDto.EncargadoUsername);
+                    if (encargado == null)
+                        if (encargado == null)
+                    {
+                        return BadRequest("El usuario encargado no existe.");
+                    }
                 }
 
-                await _userManager.AddToRoleAsync(encargado, "Encargado");
-
-                var depositoModel = depositoDto.ToDepositoFromCreate(ferreteriaId, encargado.Id);
+                var depositoModel = depositoDto.ToDepositoFromCreate(ferreteriaId, encargado?.Id);
                 await _depositoRepo.CreateAsync(depositoModel);
                 await transaction.CommitAsync();
-                return CreatedAtAction(nameof(GetById), new { id = depositoModel.Id }, depositoModel);
+
+                var depositoDtoResult = depositoModel.ToDepositoDto();
+                return CreatedAtAction(nameof(GetById), new { id = depositoModel.Id }, depositoDtoResult);
             }
             catch (Exception ex)
             {
