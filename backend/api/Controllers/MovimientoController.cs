@@ -21,7 +21,6 @@ namespace api.Controllers
     public class MovimientoController : ControllerBase
     {
         private readonly IMovimientoRepository _movimientoRepo;
-        //private readonly IDepositoRepository _depositoRepo;
         private readonly ITipoDeMovimientoRepository _tipoDeMovimientoRepo;
         private readonly ApplicationDbContext _context;
         private readonly IProductoRepository _productoRepo;
@@ -39,7 +38,6 @@ namespace api.Controllers
             ITimbradoRepository timbradoRepo)
         {
             _movimientoRepo = movimientoRepo;
-            //_depositoRepo = depositoRepo;
             _tipoDeMovimientoRepo = tipoDeMovimientoRepo;
             _context = context;
             _productoRepo = productoRepo;
@@ -244,6 +242,10 @@ namespace api.Controllers
                                 await _detalleRepo.CreateAsync(detalleModel);
                             }
                         }
+                        else
+                        {
+
+                        }
                     }
 
                     await _context.SaveChangesAsync();
@@ -254,7 +256,15 @@ namespace api.Controllers
                 catch (Exception ex)
                 {
                     await transaction.RollbackAsync();
-                    return StatusCode(500, $"Error interno del servidor: {ex.Message}");
+                    // Log the exception details
+                    Console.WriteLine($"Error: {ex.Message}");
+                    if (ex.InnerException != null)
+                    {
+                        Console.WriteLine($"\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nInner Exception: {ex.InnerException.Message}\n\n\n\n\n\n\n\n\n\n\n\n\n");
+                    }
+                    return StatusCode(500, $"Error interno del servidor: {ex.Message}");
+
+
                 }
             }
         }

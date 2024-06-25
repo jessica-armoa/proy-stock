@@ -1,11 +1,12 @@
 'use client'
 
 import { useEffect, useState } from "react";
-import { Card, Select, SelectItem, SearchSelect, SearchSelectItem, Table, TableBody, TableCell, TableHead, TableHeaderCell, TableRow } from "@tremor/react";
+import { Card, Select, SelectItem, SearchSelect, SearchSelectItem, Table, TableBody, TableCell, TableHead, TableHeaderCell, TableRow, Button } from "@tremor/react";
 import { useRouter } from 'next/navigation';
 import DepositosConfig from "../../../controladores/DepositosConfig";
 import ProductosConfig from "../../../controladores/ProductosConfig";
 import MovimientosConfig from "../../../controladores/MovimientosConfig";
+import Swal from "sweetalert2";
 
 let detalleIdCounter = 0;
 
@@ -22,23 +23,23 @@ export default function FormularioMovimientos() {
     const [fk_motivoId, setFk_MotivoId] = useState(0);
     const [motivos, setMotivos] = useState([]);
     const tiposDeMovimientos = [
-        { id: 1, str_descripcion: 'ingreso' },
-        { id: 2, str_descripcion: 'egreso' },
-        { id: 3, str_descripcion: 'transferencia' }
+        { id: 1, str_descripcion: 'Ingreso' },
+        { id: 2, str_descripcion: 'Egreso' },
+        { id: 3, str_descripcion: 'Transferencia' }
     ];
     const [fk_tipo_de_movimiento, setFk_tipo_de_movimiento] = useState(0);
     const motivosIngreso = [
         { id: 2, str_motivo: 'Compra' },
-        { id: 3, str_motivo: 'Devolucion de cliente' }
+        { id: 3, str_motivo: 'Devolución de cliente' }
     ];
 
     const motivosEgreso = [
         { id: 1, str_motivo: 'Venta Cliente' },
-        { id: 4, str_motivo: 'Devolucion a proveedor' },
-        { id: 7, str_motivo: 'Perdida por deterioro' }
+        { id: 4, str_motivo: 'Devolución a proveedor' },
+        { id: 7, str_motivo: 'Pérdida por deterioro' }
     ];
 
-    const motivosTransferencia = [{ id: 8, str_motivo: 'transferencia' }];
+    const motivosTransferencia = [{ id: 8, str_motivo: 'Transferencia' }];
 
     useEffect(() => {
         // Función para obtener los motivos según el tipo de movimiento seleccionado
@@ -72,8 +73,8 @@ export default function FormularioMovimientos() {
     //Manejo de listas de productos y Depósitos de Origen y Destino para los movimientos
     const [fk_producto, setFk_producto] = useState(0);
     const [arregloProductos, setArreglo_productos] = useState([]);
-    const [fk_deposito_origen, setFk_deposito_origen] = useState(null);
-    const [fk_deposito_destino, setFk_deposito_destino] = useState(null);
+    const [fk_deposito_origen, setFk_deposito_origen] = useState(0);
+    const [fk_deposito_destino, setFk_deposito_destino] = useState(0);
     const [depositos, setDepositos] = useState([]);
     const [depositosDestinos, setDepositosDestinos] = useState([]);
     //evento para mostrar solo destinos que no sean igual que su deposito origen
@@ -174,31 +175,37 @@ export default function FormularioMovimientos() {
     const calcularTotal = (subTotal) => {
         return subTotal;
     };
-let count = 100
+    let count = 100
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
             const movimientoActual = {
-                "id": count++,
+
                 "date_fecha": fecha,
                 "tipoDeMovimientoId": fk_tipo_de_movimiento,
-                "depositoOrigenId": fk_deposito_origen,
-                "depositoDestinoId": fk_deposito_destino,
+                "depositoOrigenId": (fk_deposito_origen === 0 ? null : fk_deposito_origen),
+                "depositoDestinoId": (fk_deposito_destino === 0 ? null : fk_deposito_destino),
                 "bool_borrado": false,
                 "detallesDeMovimientos": detallesMovimientos.map(detalle => ({
-                    "id": count++,
+
                     "int_cantidad": detalle.cantidad,
                     "productoId": detalle.idProducto,
-                    "bool_borrado": false
                 }))
             }
             console.log('Movimiento enviado', movimientoActual);
-        
-            const movimientoCreado = await MovimientosConfig.postMovimiento(movimientoActual);
+
+            const movimientoCreado = await MovimientosConfig.postMovimiento(movimientoActual).then(() => {
+                Swal.fire('Guardado', 'El movimiento fue creado exitosamente.', 'success');
+            });
 
 
         } catch (error) {
             console.error('Error al enviar los datos del formulario: ', error);
+            Swal.fire(
+                'Error',
+                'Oops! ocurrió un error al intentar guardar el movimiento.',
+                'error'
+            );
         }
 
     };
@@ -220,6 +227,8 @@ let count = 100
 
 
     const esTransferencia = fk_tipo_de_movimiento === 3;
+    const mostrarDepositoOrigen = fk_tipo_de_movimiento === 2 || fk_tipo_de_movimiento === 3;
+    const mostrarDepositoDestino = fk_tipo_de_movimiento === 1 || fk_tipo_de_movimiento === 3;
 
     return (
         <>
@@ -244,7 +253,7 @@ let count = 100
                             <div>
                                 <label htmlFor="fecha" className="block text-sm font-medium text-gray-700">Fecha</label>
                                 <input
-                                    type="date"
+                                    type="datetime-local"
                                     id="fecha"
                                     value={fecha}
                                     onChange={(e) => setFecha(e.target.value)}
@@ -319,38 +328,26 @@ let count = 100
                                 </SearchSelect>
                             </div>
 
-                            <div>
-                                <label
-                                    htmlFor="depositoOrigen"
-                                    className="block text-sm font-medium text-gray-700"
-                                >
-                                    Depósito Origen
-                                </label>
-                                <SearchSelect id="fk_deposito_origen" className='mt-2' placeholder='Depósito' value={fk_deposito_origen} onValueChange={(value) => setFk_deposito_origen(parseInt(value))}>
-                                    {depositos.map(deposito => (
-                                        <SearchSelectItem key={deposito.id} value={deposito.id}>{deposito.str_nombre}</SearchSelectItem>
-                                    ))}
-                                </SearchSelect>
-                            </div>
+                            {mostrarDepositoOrigen && (
+                                <div>
+                                    <label
+                                        htmlFor="depositoOrigen"
+                                        className="block text-sm font-medium text-gray-700"
+                                    >
+                                        Depósito Origen
+                                    </label>
+                                    <SearchSelect id="fk_deposito_origen" className='mt-2' placeholder='Depósito' value={fk_deposito_origen} onValueChange={(value) => setFk_deposito_origen(parseInt(value))}>
+                                        {depositos.map(deposito => (
+                                            <SearchSelectItem key={deposito.id} value={deposito.id}>{deposito.str_nombre}</SearchSelectItem>
+                                        ))}
+                                    </SearchSelect>
+                                </div>
+                            )}
 
-
-
-                            {esTransferencia && (
+                            {mostrarDepositoDestino && (
                                 <>
                                     <div>
                                         <label htmlFor="fk_deposito_destino" className="block text-sm font-medium text-gray-700">Depósito Destino</label>
-                                        {/*<select
-                                            id="depositoDestino"
-                                            name="depositoDestino"
-                                            value={depositoDestino}
-                                            onChange={(e) => setDepositoDestino(e.target.value)}
-                                            className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-                                            required={esTransferencia}
-                                        >
-                                            <option value="" disabled>Seleccione un Depósito</option>
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                        </select>*/}
                                         <SearchSelect id="fk_deposito_destino" className='mt-2' placeholder='Depósito' value={fk_deposito_destino} onValueChange={(value) => setFk_deposito_destino(parseInt(value))}>
                                             {opcionesFiltradas.map(depositoDestino => (
 
@@ -358,6 +355,11 @@ let count = 100
                                             ))}
                                         </SearchSelect>
                                     </div>
+                                </>
+                            )}
+
+                            {esTransferencia && (
+                                <>
                                     <div>
                                         <label htmlFor="timbradoRemision" className="block text-sm font-medium text-gray-700">Timbrado</label>
                                         <input
@@ -413,14 +415,13 @@ let count = 100
                         </div>
 
                         <div className="flex justify-end mt-6 gap-2">
-                            <button type="button" onClick={() => navigate.push('/')} className="px-4 py-2 bg-gray-400 text-white rounded-md">Cancelar</button>
-                            <button
+                            <Button type="button" variant="secondary" color="blue" onClick={() => navigate.push('/movimientos')}>Cancelar</Button>
+                            <Button
                                 disabled={detallesMovimientos.length === 0}
-                                type="submit"
-                                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                                type="submit" variant="primary" color="blue"
                             >
                                 Guardar Movimiento
-                            </button>
+                            </Button>
                         </div>
                     </form>
                 </Card>
