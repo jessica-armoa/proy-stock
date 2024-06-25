@@ -104,21 +104,38 @@ namespace api.Interfaces
 
     public async Task<string> GetSiguienteNumeroAsync()
     {
-      var lastNotaDeRemision = await _context.notas_de_remision
-          .OrderByDescending(n => n.Id)
+      // Consulta para obtener el timbrado activo dentro del rango de fechas actuales
+      var timbradoActivo = await _context.timbrados
+          .Where(t => t.Date_inicio_vigencia <= DateTime.Now && t.Date_fin_vigencia >= DateTime.Now)
           .FirstOrDefaultAsync();
 
-      int lastNumero = 0;
-      if (lastNotaDeRemision != null && int.TryParse(lastNotaDeRemision.Str_numero, out lastNumero))
+      // Verifica si no se encontró un timbrado activo
+      if (timbradoActivo == null)
       {
-        lastNumero++;
-      }
-      else
-      {
-        lastNumero = 1;
+        // Lanza una excepción si no hay timbrado activo
+        throw new InvalidOperationException("No existe timbrado activo");
       }
 
-      return lastNumero.ToString("D7"); // Formatea el número con siete dígitos
+      int siguienteNumero = timbradoActivo.Secuencia_actual;
+
+      // Verifica si el número de secuencia excede la cantidad permitida
+      if (siguienteNumero > timbradoActivo.Cantidad)
+      {
+        // Lanza una excepción si la secuencia actual supera la cantidad permitida
+        throw new InvalidOperationException("Secuencia actual supera la cantidad permitida.");
+      }
+
+      // Formatea el número de secuencia a 7 dígitos
+      string formattedSequence = siguienteNumero.ToString("D7");
+      string siguienteNumeroCompleto = $"{timbradoActivo.Codigo_establecimiento}-{timbradoActivo.Punto_de_expedicion}-{formattedSequence}";
+
+      // Actualiza el número de secuencia en la base de datos
+      timbradoActivo.Secuencia_actual = siguienteNumero;
+      _context.timbrados.Update(timbradoActivo);
+      await _context.SaveChangesAsync();
+
+      // Devuelve el número completo
+      return siguienteNumeroCompleto;
     }
   }
 }

@@ -87,12 +87,16 @@ namespace api.Controllers
         }
 
         [HttpGet("getSiguienteNumero")]
-        public async Task<ActionResult<int>> GetSiguienteNumeroAsync()
+        public async Task<ActionResult<string>> GetSiguienteNumeroAsync()
         {
             try
             {
-                var nextNumber = await _notaDeRemisionRepository.GetSiguienteNumeroAsync();
-                return Ok(nextNumber);
+                var siguienteNumero = await _notaDeRemisionRepository.GetSiguienteNumeroAsync();
+                return Ok(siguienteNumero);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
             }
             catch (Exception ex)
             {
