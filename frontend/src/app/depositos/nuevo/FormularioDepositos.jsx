@@ -18,7 +18,7 @@ export default function FormularioDepositos() {
   const navigate = useRouter();
 
   const [isOpen, setIsOpen] = useState(true);
-
+  const [encargados, setEncargados] = useState([]);
   const [str_nombre, setStr_nombre] = useState("");
   const [str_direccion, setStr_direccion] = useState("");
   const [str_telefono, setStr_telefono] = useState("");
@@ -30,7 +30,7 @@ export default function FormularioDepositos() {
   const [repeatPassword, setRepeatPassword] = useState("");
 
   const [isPasswordMatch, setIsPasswordMatch] = useState(true);
-
+  
   const [fk_ferreteria, setFk_ferreteria] = useState(0);
   const [ferreterias, setFerreterias] = useState([]);
   const [showCrearEncargado, setShowCrearEncargado] = useState(false);
@@ -41,6 +41,22 @@ export default function FormularioDepositos() {
   const handleCloseModal = () => {
     setShowCrearEncargado(false);
   };
+
+  const handleEncargadoCreado = async(fk_encargado) => {
+    //console.log("yes",marcaId);
+    await listaEncargados();
+    setFk_encargado(fk_encargado);
+  };
+
+  const getListaEncargados = async () => {
+    try {
+      const listaEncargados = await EncargadosConfig.getEmpleados();
+      setEncargados(listaEncargados.data);
+    } catch (error) {
+      console.error("Error al obtener lista de encargados: ", error);
+    }
+  };
+
   useEffect(() => {
     const extraccionFerreterias = async () => {
       try {
@@ -199,7 +215,47 @@ export default function FormularioDepositos() {
             </SearchSelect>
           </div>
         </div>
+        <div className="col-span-full flex justify-end space-x-4 mt-4">
+              <Button
+                variant="secondary"
+                color="blue"
+                type="button"
+                //onClick={navigate.push("/depositos")}
+              >
+                Cancelar
+              </Button>
+              <Button
+                variant="primary"
+                color="blue"
+                type="submit"
+                
+              >
+                Guardar
+              </Button>
+            </div>
       </form>
+
+                {/*
+                  <Dialog
+                  open={showCrearMarca}
+                  onClose={handleCloseModal}
+                  static={true}
+                  className="z-[100]"
+                >
+                  <DialogPanel className="sm:max-w-md">
+                    <button>
+                      <RiCloseLine
+                        className="h-5 w-5 shrink-0"
+                        aria-hidden={true}
+                        onClick={handleCloseModal}
+                      />
+                    </button>
+                    <FormularioMarcas type={'modal'} closeDialog={handleCloseModal} saveAction={handleMarcaCreada}/>
+                  </DialogPanel>
+                </Dialog>
+                */}
+
+
       <form>
         <Dialog
           open={showCrearEncargado}
@@ -208,6 +264,7 @@ export default function FormularioDepositos() {
           className="z-[100]"
         >
           <DialogPanel className="sm:max-w-md">
+          <div className="w-full text-right">
             <button>
               <RiCloseLine
                 className="h-5 w-5 shrink-0"
@@ -215,12 +272,13 @@ export default function FormularioDepositos() {
                 onClick={handleCloseModal}
               />
             </button>
+            </div>
             <div className="col-span-full">
               <h5 className="font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong mt-6 mb-2">
-                Datos del Encargado
+                Crear nuevo Encargado
               </h5>
             </div>
-            <div className="col-span-full sm:col-span-3">
+            <div className="col-span-full sm:col-span-3 m-5">
               <label
                 htmlFor="nombreEncargado"
                 className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
@@ -240,7 +298,7 @@ export default function FormularioDepositos() {
                 required
               />
             </div>
-            <div className="col-span-full sm:col-span-3">
+            <div className="col-span-full sm:col-span-3 m-5">
               <label
                 htmlFor="encargadoUsername"
                 className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
@@ -260,7 +318,7 @@ export default function FormularioDepositos() {
                 required
               />
             </div>
-            <div className="col-span-3">
+            <div className="col-span-3 m-5">
               <label
                 htmlFor="encargadoEmail"
                 className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
@@ -280,7 +338,7 @@ export default function FormularioDepositos() {
                 required
               />
             </div>
-            <div className="col-span-3">
+            <div className="col-span-3 m-5">
               <label
                 htmlFor="encargadoPassword"
                 className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
@@ -300,7 +358,7 @@ export default function FormularioDepositos() {
                 required
               />
             </div>
-            <div className="col-span-3">
+            <div className="col-span-3 m-5">
               <label
                 htmlFor="repeatPassword"
                 className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
@@ -326,15 +384,18 @@ export default function FormularioDepositos() {
               </div>
             )}
             
-            <div className="col-span-full flex justify-center space-x-4 mt-4">
+            <div className="col-span-full flex justify-end space-x-4 mt-4">
               <Button
                 variant="secondary"
+                type="button"
+                color="blue"
                 onClick={handleCloseModal}
               >
                 Cancelar
               </Button>
               <Button
                 variant="primary"
+                color="blue"
                 type="submit"
                 disabled={!isPasswordMatch}
                 onMouseOver={(e) => {
@@ -344,6 +405,7 @@ export default function FormularioDepositos() {
                     e.target.title = "";
                   }
                 }}
+                onClick={handleEncargadoCreado}
               >
                 Guardar
               </Button>
