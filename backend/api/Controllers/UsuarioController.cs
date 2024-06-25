@@ -144,7 +144,30 @@ namespace api.Controllers
       {
         return StatusCode(500, e);
       }
-
     }
+
+    [HttpGet("all")]
+    public async Task<IActionResult> GetAll()
+    {
+      var usuarios = await _userManager.Users.ToListAsync();
+      var usuariosDto = new List<UsuarioDto>();
+
+      foreach (var usuario in usuarios)
+      {
+        var roles = await _userManager.GetRolesAsync(usuario);
+        var role = roles.FirstOrDefault();
+
+        usuariosDto.Add(new UsuarioDto
+        {
+          UserName = usuario.UserName,
+          Email = usuario.Email,
+          Role = role
+        });
+      }
+
+      return Ok(usuariosDto);
+    }
+
+
   }
 }
