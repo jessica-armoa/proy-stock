@@ -14,14 +14,8 @@ namespace api.Dtos.Deposito
         public string Str_direccion { get; set; } = string.Empty;
         [Required]
         public string Str_telefono { get; set; } = string.Empty;
-
-        [Required]
         public string EncargadoUsername { get; set; } = string.Empty;
-        [Required]
-        [EmailAddress]
-        public string EncargadoEmail { get; set; } = string.Empty;
-        [Required]
-        public string EncargadoPassword { get; set; } = string.Empty;
+
     }
 
 

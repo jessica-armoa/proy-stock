@@ -51,19 +51,19 @@ namespace api.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "053ce821-6f00-4b56-b212-c5d3c1d70ac1",
+                            Id = "d3449252-639c-4ad9-b568-d1d0cd220deb",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "14909982-f042-4f92-88f8-fde3554aca2c",
+                            Id = "1942d817-c287-4dea-ba00-0951d1314efa",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "a2949bda-19e7-402d-9cf2-8ac0d1872dc9",
+                            Id = "1a1f049f-769e-4873-bde7-03723f6d7830",
                             Name = "Encargado",
                             NormalizedName = "ENCARGADO"
                         });
@@ -453,21 +453,8 @@ namespace api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Str_numero_de_comprobante_actual")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Str_numero_de_comprobante_final")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Str_numero_de_comprobante_inicial")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Str_timbrado")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("TimbradoId")
+                        .HasColumnType("int");
 
                     b.Property<string>("TrasladoFechaFin")
                         .IsRequired()
@@ -480,6 +467,8 @@ namespace api.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("MovimientoId");
+
+                    b.HasIndex("TimbradoId");
 
                     b.ToTable("notas_de_remision");
                 });
@@ -588,11 +577,25 @@ namespace api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("Cantidad")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Codigo_establecimiento")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("Date_fin_vigencia")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("Date_inicio_vigencia")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Punto_de_expedicion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Secuencia_actual")
+                        .HasColumnType("int");
 
                     b.Property<string>("Str_timbrado")
                         .IsRequired()
@@ -827,7 +830,15 @@ namespace api.Migrations
                         .WithMany()
                         .HasForeignKey("MovimientoId");
 
+                    b.HasOne("api.Models.Timbrado", "Timbrado")
+                        .WithMany()
+                        .HasForeignKey("TimbradoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Movimiento");
+
+                    b.Navigation("Timbrado");
                 });
 
             modelBuilder.Entity("api.Models.Producto", b =>
