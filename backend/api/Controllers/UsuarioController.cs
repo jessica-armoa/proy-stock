@@ -48,7 +48,7 @@ namespace api.Controllers
       );
     }
 
-    [HttpPost("register")]
+    [HttpPost("register-admin")]
     public async Task<ActionResult> CrearUsuario([FromBody] CreateUsuarioDto CreateUsuarioDto)
     {
       try{
@@ -91,6 +91,57 @@ namespace api.Controllers
         }
 
       } catch (Exception e){
+        return StatusCode(500, e);
+      }
+    }
+
+    [HttpPost("register-encargado")]
+    public async Task<ActionResult> CrearEncargado([FromBody] CreateUsuarioDto CreateUsuarioDto)
+    {
+      try
+      {
+        if (!ModelState.IsValid)
+          return BadRequest(ModelState);
+
+        var usuario = new Usuarios
+        {
+          UserName = CreateUsuarioDto.UserName,
+          Email = CreateUsuarioDto.Email,
+        };
+
+        var result = await _userManager.CreateAsync(usuario, CreateUsuarioDto.Password);
+
+        if (result.Succeeded)
+        {
+          var roleResult = await _userManager.AddToRoleAsync(usuario, "Encargado");
+          if (roleResult.Succeeded)
+          {
+            var roles = await _userManager.GetRolesAsync(usuario);
+            var role = roles.FirstOrDefault();
+
+            return Ok(
+              new NuevoUsuarioDto
+              {
+                UserName = usuario.UserName,
+                Email = usuario.Email,
+                Token = _tokenService.CreateToken(usuario),
+                Role = role
+              }
+            );
+          }
+          else
+          {
+            return StatusCode(500, roleResult.Errors);
+          }
+        }
+        else
+        {
+          return StatusCode(500, result.Errors);
+        }
+
+      }
+      catch (Exception e)
+      {
         return StatusCode(500, e);
       }
 
