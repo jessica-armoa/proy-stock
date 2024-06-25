@@ -1,12 +1,11 @@
 using api.Dtos.Deposito;
-using api.Dtos.Deposito.api.Dtos.Deposito;
 using api.Models;
 
 namespace api.Mapper
 {
     public static class DepositoMapper
     {
-        public static DepositoDto ToDepositoDto(this Deposito depositoModel)
+        public static Depo ToDepositoDto(this Deposito depositoModel)
         {
             return new DepositoDto
             {

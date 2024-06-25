@@ -48,122 +48,28 @@ namespace api.Repository
                 .AnyAsync(d => d.Id == id);
         }
 
-        public async Task<List<DepositoDto>> GetAllAsync()
+        public async Task<List<Deposito>> GetAllAsync()
         {
             return await _context.depositos
-                .Where(d => !d.Bool_borrado)
-                .Include(d => d.Movimientos)
-                .Include(d => d.Productos)
-                .Include(d => d.Ferreteria)
-                .Include(d => d.Encargado)
-                .Select(d => new DepositoDto
-                {
-                    Id = d.Id,
-                    Str_nombre = d.Str_nombre,
-                    Str_direccion = d.Str_direccion,
-                    Str_telefono = d.Str_telefono,
-                    Bool_borrado = d.Bool_borrado,
-                    FerreteriaId = d.FerreteriaId,
-                    Str_ferreteriaNombre = d.Ferreteria.Str_nombre,
-                    Str_ferreteriaTelefono = d.Ferreteria.Str_telefono,
-                    EncargadoUsername = d.Encargado.UserName,
-                    EncargadoEmail = d.Encargado.Email,
-                    Movimientos = d.Movimientos.Select(m => new MovimientoDto
-                    {
-                        Id = m.Id,
-                        Date_fecha = m.Date_fecha,
-                        TipoDeMovimientoId = m.TipoDeMovimientoId,
-                        DepositoOrigenId = m.DepositoOrigenId,
-                        DepositoDestinoId = m.DepositoDestinoId
-                    }).ToList(),
-                    Productos = d.Productos.Select(p => new ProductoDto
-                    {
-                        Id = p.Id,
-                        Str_ruta_imagen = p.Str_ruta_imagen,
-                        Str_nombre = p.Str_nombre,
-                        Str_descripcion = p.Str_descripcion,
-                        Int_cantidad_actual = p.Int_cantidad_actual,
-                        Int_cantidad_minima = p.Int_cantidad_minima,
-                        Dec_costo = p.Dec_costo,
-                        Dec_costo_PPP = p.Dec_costo_PPP,
-                        Int_iva = p.Int_iva,
-                        Dec_precio_mayorista = p.Dec_precio_mayorista,
-                        Dec_precio_minorista = p.Dec_precio_minorista,
-                        DetallesDeMovimientos = p.DetallesDeMovimientos.Select(d => new DetalleDeMovimientoDto
-                        {
-                            Id = d.Id,
-                            Int_cantidad = d.Int_cantidad,
-                            MovimientoId = d.MovimientoId,
-                            ProductoId = d.ProductoId
-                        }).ToList(),
-                        DepositoId = p.DepositoId,
-                        DepositoNombre = p.Deposito.Str_nombre,
-                        ProveedorId = p.ProveedorId,
-                        ProveedorNombre = p.Proveedor.Str_nombre,
-                        MarcaId = p.MarcaId,
-                        MarcaNombre = p.Marca.Str_nombre
-                    }).ToList()
-                })
-                .ToListAsync();
+            .Where(d => d.Bool_borrado != true)
+            .Include(d => d.Movimientos)
+            .Include(d => d.Productos).ThenInclude(d => d.Proveedor)
+            .Include(d => d.Productos).ThenInclude(d => d.Marca)
+            .Include(d => d.Ferreteria)
+            .Include(d => d.Encargado)
+            .ToListAsync();
         }
 
-        public async Task<DepositoDto?> GetByIdAsync(int? id)
+        public async Task<Deposito?> GetByIdAsync(int? id)
         {
             return await _context.depositos
-                .Where(d => !d.Bool_borrado)
-                .Include(d => d.Movimientos)
-                .Include(d => d.Productos)
-                .Include(d => d.Ferreteria)
-                .Include(d => d.Encargado)
-                .Select(d => new DepositoDto
-                {
-                    Id = d.Id,
-                    Str_nombre = d.Str_nombre,
-                    Str_direccion = d.Str_direccion,
-                    Str_telefono = d.Str_telefono,
-                    Bool_borrado = d.Bool_borrado,
-                    FerreteriaId = d.FerreteriaId,
-                    Str_ferreteriaNombre = d.Ferreteria.Str_nombre,
-                    Str_ferreteriaTelefono = d.Ferreteria.Str_telefono,
-                    EncargadoUsername = d.Encargado.UserName,
-                    EncargadoEmail = d.Encargado.Email,
-                    Movimientos = d.Movimientos.Select(m => new MovimientoDto
-                    {
-                        Id = m.Id,
-                        Date_fecha = m.Date_fecha,
-                        TipoDeMovimientoId = m.TipoDeMovimientoId,
-                        DepositoOrigenId = m.DepositoOrigenId,
-                        DepositoDestinoId = m.DepositoDestinoId
-                    }).ToList(),
-                    Productos = d.Productos.Select(p => new ProductoDto
-                    {
-                        Id = p.Id,
-                        Str_ruta_imagen = p.Str_ruta_imagen,
-                        Str_nombre = p.Str_nombre,
-                        Str_descripcion = p.Str_descripcion,
-                        Int_cantidad_actual = p.Int_cantidad_actual,
-                        Int_cantidad_minima = p.Int_cantidad_minima,
-                        Dec_costo = p.Dec_costo,
-                        Dec_costo_PPP = p.Dec_costo_PPP,
-                        Int_iva = p.Int_iva,
-                        Dec_precio_mayorista = p.Dec_precio_mayorista,
-                        Dec_precio_minorista = p.Dec_precio_minorista,
-                        DetallesDeMovimientos = p.DetallesDeMovimientos.Select(d => new DetalleDeMovimientoDto
-                        {
-                            Id = d.Id,
-                            Int_cantidad = d.Int_cantidad,
-                            MovimientoId = d.MovimientoId,
-                            ProductoId = d.ProductoId
-                        }).ToList(),
-                        DepositoId = p.DepositoId,
-                        DepositoNombre = p.Deposito.Str_nombre,
-                        ProveedorId = p.ProveedorId,
-                        ProveedorNombre = p.Proveedor.Str_nombre,
-                        MarcaId = p.MarcaId,
-                        MarcaNombre = p.Marca.Str_nombre
-                    }).ToList()
-                })
-                .FirstOrDefaultAsync(i => i.Id == id);
+            .Where(d => d.Bool_borrado != true)
+            .Include(d => d.Movimientos)
+            .Include(d => d.Productos).ThenInclude(d => d.Proveedor)
+            .Include(d => d.Productos).ThenInclude(d => d.Marca)
+            .Include(d => d.Ferreteria)
+            .Include(d => d.Encargado)
+            .FirstOrDefaultAsync(d => d.Id == id);
         }
 
         public async Task<Deposito?> UpdateAsync(int id, UpdateDepositoRequestDto depositoDto)

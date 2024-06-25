@@ -22,26 +22,36 @@ namespace api.Controllers
     {
         private readonly IMovimientoRepository _movimientoRepo;
         private readonly ITipoDeMovimientoRepository _tipoDeMovimientoRepo;
-        private readonly ApplicationDbContext _context;
         private readonly IProductoRepository _productoRepo;
         private readonly IDetalleDeMovimientosRepository _detalleRepo;
         private readonly INotaDeRemisionRepository _notaDeRemisionRepo;
         private readonly ITimbradoRepository _timbradoRepo;
-        public MovimientoController(
-            IMovimientoRepository movimientoRepo,
-            IDepositoRepository depositoRepo,
-            ITipoDeMovimientoRepository tipoDeMovimientoRepo,
-            ApplicationDbContext context,
-            IProductoRepository productoRepo,
-            IDetalleDeMovimientosRepository detalleRepo,
+        private readonly IMotivoPorTipoDeMovimientoRepository _motivoPorTipoMovimientoRepo;
+        private readonly IMotivoRepository _motivoRepo;
+        private readonly IDepositoRepository _depositoRepo;
+        private readonly ApplicationDbContext _context;
+        private readonly IAsientoRepository _asientoRepo;
+        public MovimientoController(IMovimientoRepository movimientoRepo
+            , IDepositoRepository depositoRepo
+            , ITipoDeMovimientoRepository tipoDeMovimientoRepo
+            , IProductoRepository productoRepo
+            , IDetalleDeMovimientosRepository detalleRepo
+            , IMotivoPorTipoDeMovimientoRepository motivoPorTipoMovimientoRepo
+            , IMotivoRepository motivoRepo
+            , ApplicationDbContext context
+            , IAsientoRepository asientoRepo,
             INotaDeRemisionRepository notaDeRemisionRepo,
             ITimbradoRepository timbradoRepo)
         {
             _movimientoRepo = movimientoRepo;
             _tipoDeMovimientoRepo = tipoDeMovimientoRepo;
-            _context = context;
             _productoRepo = productoRepo;
             _detalleRepo = detalleRepo;
+            _motivoPorTipoMovimientoRepo = motivoPorTipoMovimientoRepo;
+            _motivoRepo = motivoRepo;
+            _depositoRepo = depositoRepo;
+            _context = context;
+            _asientoRepo = asientoRepo;
             _notaDeRemisionRepo = notaDeRemisionRepo;
             _timbradoRepo = timbradoRepo;
         }
@@ -49,73 +59,10 @@ namespace api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-#pragma warning disable CS8601 // Possible null reference assignment.
-            var movimientos = await _context.movimientos
-                .Include(m => m.DepositoOrigen)
-                .Include(m => m.DepositoDestino)
-                .Include(m => m.DetallesDeMovimientos)
-                    .ThenInclude(d => d.Producto)
-                .Select(static m => new MovimientoDto
-                {
-                    Id = m.Id,
-                    Date_fecha = m.Date_fecha,
-                    TipoDeMovimientoId = m.TipoDeMovimientoId,
-                    DepositoOrigenId = m.DepositoOrigenId,
-                    DepositoDestinoId = m.DepositoDestinoId,
-                    Bool_borrado = m.Bool_borrado,
-                    DepositoOrigen = m.DepositoOrigen != null ? new DepositoDto
-                    {
-                        Id = m.DepositoOrigen.Id,
-                        Str_nombre = m.DepositoOrigen.Str_nombre,
-                        Str_direccion = m.DepositoOrigen.Str_direccion,
-                        Str_telefono = m.DepositoOrigen.Str_telefono,
-                        EncargadoUsername = m.DepositoOrigen.Encargado.UserName,
-                        EncargadoEmail = m.DepositoOrigen.Encargado.Email,
-                        Bool_borrado = m.DepositoOrigen.Bool_borrado
-                    } : null,
-                    DepositoDestino = m.DepositoDestino != null ? new DepositoDto
-                    {
-                        Id = m.DepositoDestino.Id,
-                        Str_nombre = m.DepositoDestino.Str_nombre,
-                        Str_direccion = m.DepositoDestino.Str_direccion,
-                        Str_telefono = m.DepositoDestino.Str_telefono,
-                        EncargadoUsername = m.DepositoOrigen.Encargado.UserName,
-                        EncargadoEmail = m.DepositoOrigen.Encargado.Email,
-                        Bool_borrado = m.DepositoDestino.Bool_borrado
-                    } : null,
-                    DetallesDeMovimientos = m.DetallesDeMovimientos
-                        .Where(d => d.Bool_borrado != true)
-                        .Select(static d => new DetalleDeMovimientoDto
-                        {
-                            Id = d.Id,
-                            ProductoId = d.ProductoId,
-                            MovimientoId = d.MovimientoId,
-                            Int_cantidad = d.Int_cantidad,
-                            Bool_borrado = d.Bool_borrado,
-                            Producto = d.Producto != null ? new ProductoDto
-                            {
-                                Id = d.Producto.Id,
-                                Str_ruta_imagen = d.Producto.Str_ruta_imagen,
-                                Str_nombre = d.Producto.Str_nombre,
-                                Str_descripcion = d.Producto.Str_descripcion,
-                                DepositoId = d.Producto.DepositoId,
-                                ProveedorId = d.Producto.ProveedorId,
-                                MarcaId = d.Producto.MarcaId,
-                                Int_cantidad_actual = d.Producto.Int_cantidad_actual,
-                                Int_cantidad_minima = d.Producto.Int_cantidad_minima,
-                                Dec_costo = d.Producto.Dec_costo,
-                                Dec_costo_PPP = d.Producto.Dec_costo_PPP,
-                                Int_iva = d.Producto.Int_iva,
-                                Dec_precio_mayorista = d.Producto.Dec_precio_mayorista,
-                                Dec_precio_minorista = d.Producto.Dec_precio_minorista,
-                                Bool_borrado = d.Producto.Bool_borrado
-                            } : null
-                        }).ToList()
-                })
-                .ToListAsync();
-            #pragma warning restore CS8601 // Possible null reference assignment.
+            var movimientos = await _movimientoRepo.GetAllAsync();
+            var movimientosDto = movimientos.Select(m => m.ToMovimientoDto());
 
-            return Ok(movimientos);
+            return Ok(movimientosDto);
         }
 
 
@@ -134,123 +81,245 @@ namespace api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] MovimientoDto movimiento)
+        [Route("{motivoPorTipoMovimientoId:int}/{depositoOrigenId:int}/{depositoDestinoId:int}")]
+        public async Task<IActionResult> Create([FromBody] CreateMovimientoRequestDto movimientoDto, [FromRoute] int motivoPorTipoMovimientoId, [FromRoute] int depositoOrigenId, [FromRoute] int depositoDestinoId)
         {
-            if (movimiento == null || movimiento.DetallesDeMovimientos == null || !movimiento.DetallesDeMovimientos.Any())
+            if (movimientoDto == null || movimientoDto.DetallesDeMovimientos == null)
             {
-                return BadRequest("Movimiento o detalles del movimiento no válidos.");
+                return BadRequest("Movimiento o detalles no válidos!!");
+            }
+
+            if (!await _motivoPorTipoMovimientoRepo.MotivoPorTipoMovimientoExists(motivoPorTipoMovimientoId))
+            {
+                return BadRequest("El motivo por tipo de movimiento no existe!!");
+            }
+
+            var motivoPorTipoMovimiento = await _motivoPorTipoMovimientoRepo.GetByIdAsync(motivoPorTipoMovimientoId);
+            var tipoDeMovimiento = await _tipoDeMovimientoRepo.GetByIdAsync(motivoPorTipoMovimiento.TipodemovimientoId);
+            var motivo = await _motivoRepo.GetByIdAsync(motivoPorTipoMovimiento.MotivoId);
+            if (tipoDeMovimiento == null || motivo == null)
+            {
+                return BadRequest("motivo y tipo de movimiento nulo");
+            }
+
+            if (!await _depositoRepo.DepositoExists(depositoOrigenId))
+            {
+                return BadRequest("El deposito origen no existe!!");
+            }
+
+            if (!await _depositoRepo.DepositoExists(depositoDestinoId))
+            {
+                return BadRequest("El deposito destino no existe!!");
             }
 
             using (var transaction = await _context.Database.BeginTransactionAsync())
             {
-                var tipoDeMovimiento = await _tipoDeMovimientoRepo.GetByIdAsync(movimiento.TipoDeMovimientoId);
-                if (tipoDeMovimiento == null)
-                {
-                    BadRequest();
-                }
                 try
                 {
-                    var nuevoMovimiento = new CreateMovimientoRequestDto
-                    {
-                        Date_fecha = movimiento.Date_fecha
-                    };
-                    var movimientoModel = nuevoMovimiento.ToMovimientoFromCreate(movimiento.TipoDeMovimientoId, movimiento.DepositoOrigenId, movimiento.DepositoDestinoId);
+                    var movimientoModel = movimientoDto.ToMovimientoFromCreate(motivoPorTipoMovimientoId, depositoOrigenId, depositoDestinoId);
                     await _movimientoRepo.CreateAsync(movimientoModel);
 
-                    foreach (var detalle in movimiento.DetallesDeMovimientos)
+                    foreach (var detalleDto in movimientoDto.DetallesDeMovimientos)
                     {
-                        var producto = await _context.productos
-                            .Where(p => p.Bool_borrado != true)
-                            .FirstOrDefaultAsync(p => p.Id == detalle.ProductoId && p.DepositoId == movimientoModel.DepositoOrigenId);
+                        var detalle = detalleDto.ToDetalleFromCreate(movimientoModel.Id, detalleDto.ProductoId);
 
+                        var producto = await _productoRepo.GetByIdAsync(detalle.ProductoId);
                         if (producto == null)
                         {
-                            return BadRequest("Producto no encontrado en el depósito origen.");
+                            return BadRequest();
                         }
+                        /*
+                            BOOL OPERACION TRUE = ENTRADA
+                            BOOL OPERACION FALSE = SALIDA
 
-                        if (tipoDeMovimiento.Str_descripcion.ToLower() == "ingreso")
+                            INGRESO DEPOSITO DESTINO
+                            EGRESO DEPOSITO ORIGEN
+                        */
+                        if (tipoDeMovimiento.Str_tipo.ToLower() == "ingreso")
                         {
-                            var nuevoDetalle = new CreateDetalleRequestDto
+                            decimal total = detalle.Int_cantidad * detalle.Dec_costo;
+                            decimal iva = (total * producto.Int_iva) / 100;
+
+                            await _detalleRepo.CreateAsync(detalle);
+
+                            var asiento1 = new Asiento
                             {
-                                Int_cantidad = detalle.Int_cantidad,
+                                movimientoId = movimientoModel.Id,
+                                Str_cuenta = "1.1.1.1",
+                                Str_concepto = "Compra",
+                                Dec_debe = total,
+                                Dec_haber = 0,
+                                Bool_borrado = false
                             };
 
-                            var detalleModel = nuevoDetalle.ToDetalleFromCreate(movimientoModel.Id, detalle.ProductoId);
-                            await _detalleRepo.CreateAsync(detalleModel);
+                            var asiento2 = new Asiento
+                            {
+                                movimientoId = movimientoModel.Id,
+                                Str_cuenta = "1.1.1.1.1",
+                                Str_concepto = $" I.V.A {producto.Int_iva}%",
+                                Dec_debe = iva,
+                                Dec_haber = 0,
+                                Bool_borrado = false
+                            };
+
+                            var asiento3 = new Asiento
+                            {
+                                movimientoId = movimientoModel.Id,
+                                Str_cuenta = "1.1.1.1.2",
+                                Str_concepto = "Cuenta por pagar",
+                                Dec_debe = 0,
+                                Dec_haber = total + iva,
+                                Bool_borrado = false
+                            };
+
+                            await _asientoRepo.CreateAsync(asiento1);
+                            await _asientoRepo.CreateAsync(asiento2);
+                            await _asientoRepo.CreateAsync(asiento3);
                         }
-                        else if (tipoDeMovimiento.Str_descripcion.ToLower() == "egreso")
+
+                        else if (tipoDeMovimiento.Str_tipo.ToLower() == "egreso")
+                        {
+                            var detalleCreado = await _detalleRepo.CreateAsync(detalle);
+                            decimal total = detalleCreado.Int_cantidad * detalleCreado.Dec_costo;
+                            decimal iva = (total * producto.Int_iva) / 100;
+
+                            var asiento1 = new Asiento
+                            {
+                                movimientoId = movimientoModel.Id,
+                                Str_cuenta = "1.1.1.1.3",
+                                Str_concepto = "Cuentas por cobrar",
+                                Dec_debe = total + iva,
+                                Dec_haber = 0,
+                                Bool_borrado = false
+                            };
+
+                            var asiento2 = new Asiento
+                            {
+                                movimientoId = movimientoModel.Id,
+                                Str_cuenta = "1.1.1.1.4",
+                                Str_concepto = "Ventas",
+                                Dec_debe = 0,
+                                Dec_haber = total,
+                                Bool_borrado = false
+                            };
+
+                            var asiento3 = new Asiento
+                            {
+                                movimientoId = movimientoModel.Id,
+                                Str_cuenta = "1.1.1.1.5",
+                                Str_concepto = $" I.V.A {producto.Int_iva}%",
+                                Dec_debe = 0,
+                                Dec_haber = iva,
+                                Bool_borrado = false
+                            };
+
+                            await _asientoRepo.CreateAsync(asiento1);
+                            await _asientoRepo.CreateAsync(asiento2);
+                            await _asientoRepo.CreateAsync(asiento3);
+                        }
+
+                        else if (tipoDeMovimiento.Str_tipo.ToLower() == "transferencia")
                         {
                             if (producto.Int_cantidad_actual < detalle.Int_cantidad)
                             {
                                 return BadRequest("Cantidad insuficiente en el depósito origen.");
                             }
 
-                            var nuevoDetalle = new CreateDetalleRequestDto
-                            {
-                                Int_cantidad = detalle.Int_cantidad,
-                            };
+                            var productoEnOrigen = await _productoRepo.ObtenerProductoEnDeposito(producto.Str_nombre, movimientoModel.DepositoOrigenId);
+                            var productoEnDestino = await _productoRepo.ObtenerProductoEnDeposito(producto.Str_nombre, movimientoModel.DepositoDestinoId);
 
-                            var detalleModel = nuevoDetalle.ToDetalleFromCreate(movimientoModel.Id, detalle.ProductoId);
-                            await _detalleRepo.CreateAsync(detalleModel);
-                        }
-                        else if (tipoDeMovimiento.Str_descripcion.ToLower() == "transferencia")
-                        {
-                            if (producto.Int_cantidad_actual < detalle.Int_cantidad)
+                            if (tipoDeMovimiento.Bool_operacion == true)
                             {
-                                return BadRequest("Cantidad insuficiente en el depósito origen.");
-                            }
-                            producto.Int_cantidad_actual -= detalle.Int_cantidad;
-
-                            var productoDestino = await _context.productos
-                                .Where(p => p.Bool_borrado != true)
-                                .FirstOrDefaultAsync(p => p.Str_nombre == producto.Str_nombre && p.DepositoId == movimiento.DepositoDestinoId);
-
-                            if (productoDestino == null)
-                            {
-                                var nuevoProductoDestino = new CreateProductoCantidadDto
+                                if (productoEnDestino == null)
                                 {
-                                    Str_ruta_imagen = producto.Str_ruta_imagen,
-                                    Str_nombre = producto.Str_nombre,
-                                    Str_descripcion = producto.Str_descripcion,
-                                    Int_cantidad_actual = detalle.Int_cantidad,
-                                    Int_cantidad_minima = producto.Int_cantidad_minima,
-                                    Dec_costo = producto.Dec_costo,
-                                    Dec_costo_PPP = producto.Dec_costo_PPP,
-                                    Int_iva = producto.Int_iva,
-                                    Dec_precio_mayorista = producto.Dec_precio_mayorista,
-                                    Dec_precio_minorista = producto.Dec_precio_minorista,
-                                    Bool_borrado = false
-                                };
-                                var productoModel = nuevoProductoDestino.ToProductoCantidadFromCreate(movimiento.DepositoDestinoId, producto.ProveedorId, producto.MarcaId);
-                                await _productoRepo.CreateAsync(productoModel);
+                                    return BadRequest("El producto que desea transferir no existe en el deposito destino!!");
+                                }
 
-                                var nuevoDetalle = new CreateDetalleRequestDto
+                                if (productoEnOrigen == null)
                                 {
-                                    Int_cantidad = detalle.Int_cantidad,
-                                };
-                                var detalleModel = nuevoDetalle.ToDetalleFromCreate(movimientoModel.Id, detalle.ProductoId);
-                                await _detalleRepo.CreateAsync(detalleModel);
+                                    var nuevoProducto = new CreateProductoCantidadDto
+                                    {
+                                        Str_ruta_imagen = producto.Str_ruta_imagen,
+                                        Str_nombre = producto.Str_nombre,
+                                        Str_descripcion = producto.Str_descripcion,
+                                        Int_cantidad_actual = detalle.Int_cantidad,
+                                        Int_cantidad_minima = producto.Int_cantidad_minima,
+                                        //PUEDE CAMBIAR POR EL COSTO PPP
+                                        Dec_costo = 0,
+                                        Dec_costo_PPP = producto.Dec_costo_PPP,
+                                        Int_iva = producto.Int_iva,
+                                        Dec_precio_mayorista = producto.Dec_precio_mayorista,
+                                        Dec_precio_minorista = producto.Dec_precio_minorista,
+                                    };
+
+                                    detalle.Dec_costo = producto.Dec_costo_PPP;
+                                    producto.Int_cantidad_actual -= detalle.Int_cantidad;
+
+                                    var productoModel = nuevoProducto.ToProductoCantidadFromCreate(movimientoModel.DepositoOrigenId, producto.ProveedorId, producto.MarcaId);
+                                    await _productoRepo.CreateAsync(productoModel);
+                                    await _detalleRepo.CreateAsync(detalle);
+                                }
+                                else
+                                {
+                                    detalle.Dec_costo = producto.Dec_costo_PPP;
+                                    producto.Int_cantidad_actual -= detalle.Int_cantidad;
+
+                                    productoEnOrigen.Int_cantidad_actual += detalle.Int_cantidad;
+                                    productoEnOrigen.Dec_costo = ((productoEnOrigen.Int_cantidad_actual*productoEnOrigen.Dec_costo_PPP)+(detalle.Int_cantidad*detalle.Dec_costo))/(productoEnOrigen.Int_cantidad_actual+detalle.Int_cantidad);
+                                    await _detalleRepo.CreateAsync(detalle);
+                                }
                             }
+
                             else
                             {
-                                productoDestino.Int_cantidad_actual += detalle.Int_cantidad;
-                                var nuevoDetalle = new CreateDetalleRequestDto
+                                if (productoEnOrigen == null)
                                 {
-                                    Int_cantidad = detalle.Int_cantidad,
-                                };
-                                var detalleModel = nuevoDetalle.ToDetalleFromCreate(movimientoModel.Id, detalle.ProductoId);
-                                await _detalleRepo.CreateAsync(detalleModel);
+                                    return BadRequest("El producto que desea transferir no existe en el deposito origen!!");
+                                }
+
+                                if (productoEnDestino == null)
+                                {
+                                    var nuevoProducto = new CreateProductoCantidadDto
+                                    {
+                                        Str_ruta_imagen = producto.Str_ruta_imagen,
+                                        Str_nombre = producto.Str_nombre,
+                                        Str_descripcion = producto.Str_descripcion,
+                                        Int_cantidad_actual = detalle.Int_cantidad,
+                                        Int_cantidad_minima = producto.Int_cantidad_minima,
+                                        //PUEDE CAMBIAR POR EL COSTO PPP
+                                        Dec_costo = 0,
+                                        Dec_costo_PPP = producto.Dec_costo_PPP,
+                                        Int_iva = producto.Int_iva,
+                                        Dec_precio_mayorista = producto.Dec_precio_mayorista,
+                                        Dec_precio_minorista = producto.Dec_precio_minorista,
+                                    };
+
+                                    producto.Int_cantidad_actual -= detalle.Int_cantidad;
+
+                                    var productoModel = nuevoProducto.ToProductoCantidadFromCreate(movimientoModel.DepositoDestinoId, producto.ProveedorId, producto.MarcaId);
+                                    await _productoRepo.CreateAsync(productoModel);
+
+                                    await _detalleRepo.CreateAsync(detalle);
+                                }
+                                else
+                                {
+                                    detalle.Dec_costo = producto.Dec_costo_PPP;
+                                    producto.Int_cantidad_actual -= detalle.Int_cantidad;
+                                    productoEnDestino.Dec_costo_PPP = ((productoEnDestino.Int_cantidad_actual*productoEnDestino.Dec_costo_PPP)+(detalle.Int_cantidad*detalle.Dec_costo))/(productoEnDestino.Int_cantidad_actual+detalle.Int_cantidad);
+                                    productoEnDestino.Int_cantidad_actual += detalle.Int_cantidad;
+
+                                    await _detalleRepo.CreateAsync(detalle);
+                                }
                             }
                         }
+
                         else
                         {
-
+                            return BadRequest();
                         }
                     }
-
                     await _context.SaveChangesAsync();
                     await transaction.CommitAsync();
-
                     return Ok(movimientoModel.ToMovimientoDto());
                 }
                 catch (Exception ex)
@@ -263,9 +332,9 @@ namespace api.Controllers
                         Console.WriteLine($"\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nInner Exception: {ex.InnerException.Message}\n\n\n\n\n\n\n\n\n\n\n\n\n");
                     }
                     return StatusCode(500, $"Error interno del servidor: {ex.Message}");
-
-
                 }
+
+
             }
         }
 

@@ -14,13 +14,34 @@ namespace api.Mapper
             return new TipoDeMovimientoDto
             {
                 Id = tipoDeMovimientoModel.Id,
-                Str_descripcion = tipoDeMovimientoModel.Str_descripcion,
-                MotivoId = tipoDeMovimientoModel.MotivoId,
+                Str_tipo = tipoDeMovimientoModel.Str_tipo,
+                Bool_operacion = tipoDeMovimientoModel.Bool_operacion,
                 Bool_borrado = tipoDeMovimientoModel.Bool_borrado,
-                Movimientos = tipoDeMovimientoModel.Movimientos
+                MotivosPorTipoDeMovimiento = tipoDeMovimientoModel.MotivosPorTipoDeMovimiento
                     .Where(m => m.Bool_borrado != true)
-                    .Select(m => m.ToMovimientoDto()).ToList()
+                    .Select(m => m.ToMotivoPorTipoDeMovimientoDto()).ToList()
             };
         }
+
+        public static TipoDeMovimiento ToTipoDeMovimientoFromCreate(this CreateTipoDeMovimientoRequestDto tipoDeMovimientoDto)
+        {
+            return new TipoDeMovimiento
+            {
+                Str_tipo = tipoDeMovimientoDto.Str_tipo,
+                Bool_operacion = tipoDeMovimientoDto.Bool_operacion,
+                Bool_borrado = false
+            };
+        }
+
+        public static TipoDeMovimiento ToTipoDeMovimientoFromUpdate(this UpdateTipoDeMovimientoRequestDto tipoDeMovimientoDto)
+        {
+            return new TipoDeMovimiento
+            {
+                Str_tipo = tipoDeMovimientoDto.Str_tipo,
+                Bool_operacion = tipoDeMovimientoDto.Bool_operacion,
+                Bool_borrado = false
+            };
+        }
+
     }
 }

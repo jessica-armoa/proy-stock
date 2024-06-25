@@ -38,7 +38,8 @@ namespace api.Controllers
         public async Task<IActionResult> GetAll()
         {
             var depositos = await _depositoRepo.GetAllAsync();
-            return Ok(depositos);
+            var depositosDto = depositos.Select(d => d.ToDepositoDto());
+            return Ok(depositosDto);
         }
 
         [HttpGet("{id:int}")]
@@ -50,7 +51,7 @@ namespace api.Controllers
             var deposito = await _depositoRepo.GetByIdAsync(id);
             if (deposito == null) return NotFound();
 
-            return Ok(deposito);
+            return Ok(deposito.ToDepositoDto());
         }
 
         [HttpPost("{ferreteriaId:int}")]
