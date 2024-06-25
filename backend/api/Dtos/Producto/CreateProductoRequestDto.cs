@@ -5,7 +5,7 @@ namespace api.Dtos.Producto
     public class CreateProductoRequestDto
     {
         [Required]
-        [MaxLength(200, ErrorMessage = "La ruta de imagen no puede ser mayor de 200 caracteres")]
+        [MaxLength(200000, ErrorMessage = "La ruta de imagen no puede ser mayor de 200 caracteres")]
         public string Str_ruta_imagen { get; set; } = String.Empty;
 
         [Required]

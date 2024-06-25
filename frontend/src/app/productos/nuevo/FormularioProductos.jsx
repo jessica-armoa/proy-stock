@@ -17,6 +17,7 @@ import { useRouter } from "next/navigation";
 import FormularioProveedores from "@/app/proveedores/nuevo/FormularioProveedores";
 import FormularioMarcas from "@/app/marcas/nuevo/FormularioMarcas";
 import { RiCloseLine } from "@remixicon/react";
+import Swal from "sweetalert2";
 
 export default function FormularioProductos() {
   //crear marca y proveedores modales
@@ -154,16 +155,16 @@ export default function FormularioProductos() {
         "bool_borrado": true
       }*/
       const producto = {
-        str_ruta_imagen: str_imagen,
-        str_nombre: str_nombre,
-        str_descripcion: str_descripcion,
-        int_cantidad_minima: int_cantidad_minima,
-        dec_costo: dc_costo_PPP,
-        dec_costo_PPP: dc_costo_PPP,
-        int_iva: int_iva,
-        dec_precio_mayorista: dc_precio_mayorista,
-        dec_precio_minorista: dc_precio_minorista,
-        bool_borrado: false,
+        "str_ruta_imagen": str_imagen,
+        "str_nombre": str_nombre,
+        "str_descripcion": str_descripcion,
+        "int_cantidad_minima": int_cantidad_minima,
+        "dec_costo": dc_costo_PPP,
+        //dec_costo_PPP: dc_costo_PPP,
+        "int_iva": int_iva,
+        "dec_precio_mayorista": dc_precio_mayorista,
+        "dec_precio_minorista": dc_precio_minorista,
+        "bool_borrado": false,
       };
 
       const productoAgregado = await ProductosConfig.postProducto(
@@ -228,6 +229,13 @@ export default function FormularioProductos() {
                 onChange={(e) => setStr_imagen(e.target.value)}
                 required
               />
+              {/*<input type='file' onChange={handleImageChange} className='mt-2' />
+              {str_imagen ?
+                <div>
+                  <div>
+                    <img src={str_imagen} alt='Imagen seleccionada' />
+                  </div>
+                </div> : null}*/}
             </div>
 
             <div className="w-2/4 pl-4 space-y-4">

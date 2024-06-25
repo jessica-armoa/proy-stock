@@ -6,6 +6,9 @@ import { useRouter } from 'next/navigation';
 import DepositosConfig from "../../../controladores/DepositosConfig";
 import ProductosConfig from "../../../controladores/ProductosConfig";
 import MovimientosConfig from "../../../controladores/MovimientosConfig";
+import TiposDeMovimientosConfig from "@/controladores/TiposDeMovimientosConfig";
+import MotivosConfig from "@/controladores/MotivosConfig";
+import MotivosPorTipoDeMovimientoConfig from "@/controladores/MotivosPorTipoDeMovimientoConfig";
 
 let detalleIdCounter = 0;
 
@@ -21,13 +24,17 @@ export default function FormularioMovimientos() {
     const [fecha, setFecha] = useState('');
     const [fk_motivoId, setFk_MotivoId] = useState(0);
     const [motivos, setMotivos] = useState([]);
-    const tiposDeMovimientos = [
+    const [tiposDeMovimientos, setTiposDeMovimientos] = useState([]);
+    const [motivosPorTipoDeMovimiento, setMotivosPorTipoDeMovimiento] = useState([]);
+    {/*const tiposDeMovimientos = [
         { id: 1, str_descripcion: 'Ingreso' },
         { id: 2, str_descripcion: 'Egreso' },
         { id: 3, str_descripcion: 'Transferencia' }
-    ];
+    ];*/}
     const [fk_tipo_de_movimiento, setFk_tipo_de_movimiento] = useState(0);
-    const motivosIngreso = [
+
+
+    {/*const motivosIngreso = [
         { id: 2, str_motivo: 'Compra' },
         { id: 3, str_motivo: 'Devolución de cliente' }
     ];
@@ -38,7 +45,7 @@ export default function FormularioMovimientos() {
         { id: 7, str_motivo: 'Pérdida por deterioro' }
     ];
 
-    const motivosTransferencia = [{ id: 8, str_motivo: 'Transferencia' }];
+    const motivosTransferencia = [{ id: 8, str_motivo: 'Transferencia' }];*/}
 
     useEffect(() => {
         // Función para obtener los motivos según el tipo de movimiento seleccionado
@@ -82,11 +89,21 @@ export default function FormularioMovimientos() {
     useEffect(() => {
         const extraccionDepositos = async () => {
             try {
-                const respuestaDepositos = await DepositosConfig.getDepositos();
+                const [respuestaDepositos, respuestaProductos] = await Promise.all([
+                    DepositosConfig.getDepositos(),
+                    ProductosConfig.getProductos()
+                ]);
+                {/*const respuestaDepositos = await DepositosConfig.getDepositos();
                 const respuestaProductos = await ProductosConfig.getProductos();
+                const respuestaTiposDeMovimientos = await TiposDeMovimientosConfig.getTiposDeMovimiento();*/}
+                {/*const respuestaMotivos = await MotivosConfig.getMotivos();
+                const respuestaMotivosPorTipoDeMovimiento = await MotivosPorTipoDeMovimientoConfig.getMotivosPorTipoDeMovimiento();*/}
                 setDepositos(respuestaDepositos.data);
                 setDepositosDestinos(respuestaDepositos.data);
                 setArreglo_productos(respuestaProductos.data);
+
+
+                //console.log(respuestaTiposDeMovimientos);
             } catch (error) {
                 console.error('Error al obtener lista de depositos: ', error);
             }
@@ -94,6 +111,24 @@ export default function FormularioMovimientos() {
         extraccionDepositos();
     }, []);
 
+    useEffect(() => {
+        const extraccionDeMotivosPorTipoDeMovimiento = async () => {
+            try {
+                {/*const [respuestaTiposDeMovimientos, respuestaMotivos, respuestaMotivosPorTipoDeMovimiento] = await Promise.all([
+                    TiposDeMovimientosConfig.getTiposDeMovimiento(),
+                    MotivosConfig.getMotivos(),
+                    MotivosPorTipoDeMovimientoConfig.getMotivosPorTipoDeMovimiento()
+                ]);*/}
+                //setTiposDeMovimientos(respuestaTiposDeMovimientos.data);
+                //setMotivos(respuestaMotivos.data);
+                const respuestaMotivosPorTipoDeMovimiento = await MotivosPorTipoDeMovimientoConfig.getMotivosPorTipoDeMovimiento();
+                setMotivosPorTipoDeMovimiento(respuestaMotivosPorTipoDeMovimiento.data);
+            }catch(error){
+                console.log('Error al obtener Motivos por tipo de Movimiento', error);
+            }
+        }
+        extraccionDeMotivosPorTipoDeMovimiento();
+    });
 
 
 
@@ -174,16 +209,16 @@ export default function FormularioMovimientos() {
     const calcularTotal = (subTotal) => {
         return subTotal;
     };
-let count = 100
+    let count = 100
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
             const movimientoActual = {
-                
+
                 "date_fecha": fecha,
                 "tipoDeMovimientoId": fk_tipo_de_movimiento,
                 "depositoOrigenId": fk_deposito_origen,
-                "depositoDestinoId": (fk_deposito_destino === 0 ? null: fk_deposito_destino),
+                "depositoDestinoId": (fk_deposito_destino === 0 ? null : fk_deposito_destino),
                 "bool_borrado": false,
                 "detallesDeMovimientos": detallesMovimientos.map(detalle => ({
 
@@ -192,7 +227,7 @@ let count = 100
                 }))
             }
             console.log('Movimiento enviado', movimientoActual);
-        
+
             const movimientoCreado = await MovimientosConfig.postMovimiento(movimientoActual);
 
 
@@ -282,7 +317,7 @@ let count = 100
                                     setMotivo('');
                                 }}>
                                     {tiposDeMovimientos.map(tiposMovimientos => (
-                                        <SearchSelectItem key={tiposMovimientos.id} value={tiposMovimientos.id}>{tiposMovimientos.str_descripcion}</SearchSelectItem>
+                                        <SearchSelectItem key={tiposMovimientos.id} value={tiposMovimientos.id}>{tiposMovimientos.str_tipo}</SearchSelectItem>
                                     ))}
                                 </SearchSelect>
                             </div>
