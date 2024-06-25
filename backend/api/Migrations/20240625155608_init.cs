@@ -407,6 +407,30 @@ namespace api.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "asientos",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    movimientoId = table.Column<int>(type: "int", nullable: true),
+                    Str_cuenta = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Str_concepto = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Str_descripcion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Dec_debe = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Dec_haber = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Bool_borrado = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_asientos", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_asientos_movimientos_movimientoId",
+                        column: x => x.movimientoId,
+                        principalTable: "movimientos",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "detalles_de_movimientos",
                 columns: table => new
                 {
@@ -485,10 +509,15 @@ namespace api.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "0678b4e4-d246-40cc-93cb-a24dca258746", null, "User", "USER" },
-                    { "972f53dc-a379-4ab1-9f38-a571c0397cd8", null, "Admin", "ADMIN" },
-                    { "a3880c7d-474a-4e3f-9f8f-70b662a66ab2", null, "Encargado", "ENCARGADO" }
+                    { "232efd4a-1d57-47ed-8607-181f7429e3a3", null, "User", "USER" },
+                    { "8bc6752d-2c03-428e-89a1-dd2a5baf85a4", null, "Admin", "ADMIN" },
+                    { "ea67d697-1b23-4ced-a95f-644a366d7f18", null, "Encargado", "ENCARGADO" }
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_asientos_movimientoId",
+                table: "asientos",
+                column: "movimientoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -608,6 +637,9 @@ namespace api.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "asientos");
+
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 

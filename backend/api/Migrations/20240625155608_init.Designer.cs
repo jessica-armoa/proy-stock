@@ -12,7 +12,7 @@ using api.Data;
 namespace api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240625031721_init")]
+    [Migration("20240625155608_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -54,19 +54,19 @@ namespace api.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "972f53dc-a379-4ab1-9f38-a571c0397cd8",
+                            Id = "8bc6752d-2c03-428e-89a1-dd2a5baf85a4",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "0678b4e4-d246-40cc-93cb-a24dca258746",
+                            Id = "232efd4a-1d57-47ed-8607-181f7429e3a3",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "a3880c7d-474a-4e3f-9f8f-70b662a66ab2",
+                            Id = "ea67d697-1b23-4ced-a95f-644a366d7f18",
                             Name = "Encargado",
                             NormalizedName = "ENCARGADO"
                         });
@@ -176,6 +176,45 @@ namespace api.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("api.Models.Asiento", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Bool_borrado")
+                        .HasColumnType("bit");
+
+                    b.Property<decimal>("Dec_debe")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("Dec_haber")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Str_concepto")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Str_cuenta")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Str_descripcion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("movimientoId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("movimientoId");
+
+                    b.ToTable("asientos");
                 });
 
             modelBuilder.Entity("api.Models.Categoria", b =>
@@ -806,6 +845,15 @@ namespace api.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("api.Models.Asiento", b =>
+                {
+                    b.HasOne("api.Models.Movimiento", "Movimiento")
+                        .WithMany()
+                        .HasForeignKey("movimientoId");
+
+                    b.Navigation("Movimiento");
                 });
 
             modelBuilder.Entity("api.Models.Categoria", b =>
