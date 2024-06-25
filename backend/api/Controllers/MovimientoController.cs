@@ -26,6 +26,7 @@ namespace api.Controllers
         private readonly IMotivoRepository _motivoRepo;
         private readonly IDepositoRepository _depositoRepo;
         private readonly ApplicationDbContext _context;
+        private readonly IAsientoRepository _asientoRepo;
         public MovimientoController(IMovimientoRepository movimientoRepo
             , IDepositoRepository depositoRepo
             , ITipoDeMovimientoRepository tipoDeMovimientoRepo
@@ -33,7 +34,8 @@ namespace api.Controllers
             , IDetalleDeMovimientosRepository detalleRepo
             , IMotivoPorTipoDeMovimientoRepository motivoPorTipoMovimientoRepo
             , IMotivoRepository motivoRepo
-            , ApplicationDbContext context)
+            , ApplicationDbContext context
+            , IAsientoRepository asientoRepo)
         {
             _movimientoRepo = movimientoRepo;
             _tipoDeMovimientoRepo = tipoDeMovimientoRepo;
@@ -43,6 +45,7 @@ namespace api.Controllers
             _motivoRepo = motivoRepo;
             _depositoRepo = depositoRepo;
             _context = context;
+            _asientoRepo = asientoRepo;
         }
 
         [HttpGet]
@@ -113,7 +116,7 @@ namespace api.Controllers
                         var producto = await _productoRepo.GetByIdAsync(detalle.ProductoId);
                         if (producto == null)
                         {
-                            return BadRequest("pRODUCOT NO EXISTE");
+                            return BadRequest();
                         }
                         /*
                             BOOL OPERACION TRUE = ENTRADA
@@ -122,9 +125,87 @@ namespace api.Controllers
                             INGRESO DEPOSITO DESTINO
                             EGRESO DEPOSITO ORIGEN
                         */
-                        if (tipoDeMovimiento.Str_tipo.ToLower() == "ingreso" || tipoDeMovimiento.Str_tipo.ToLower() == "egreso")
+                        if (tipoDeMovimiento.Str_tipo.ToLower() == "ingreso")
                         {
+                            decimal total = detalle.Int_cantidad * detalle.Dec_costo;
+                            decimal iva = (total * producto.Int_iva) / 100;
+
                             await _detalleRepo.CreateAsync(detalle);
+                            
+                            var asiento1 = new Asiento
+                            {
+                                movimientoId = movimientoModel.Id,
+                                Str_cuenta = "1.1.1.1",
+                                Str_concepto = "Compra",
+                                Dec_debe = total,
+                                Dec_haber = 0,
+                                Bool_borrado = false
+                            };
+
+                            var asiento2 = new Asiento
+                            {
+                                movimientoId = movimientoModel.Id,
+                                Str_cuenta = "1.1.1.1.1",
+                                Str_concepto = $" I.V.A {producto.Int_iva}%",
+                                Dec_debe = iva,
+                                Dec_haber = 0,
+                                Bool_borrado = false
+                            };
+
+                            var asiento3 = new Asiento
+                            {
+                                movimientoId = movimientoModel.Id,
+                                Str_cuenta = "1.1.1.1.2",
+                                Str_concepto = "Cuenta por pagar",
+                                Dec_debe = 0,
+                                Dec_haber = total + iva,
+                                Bool_borrado = false
+                            };
+
+                            await _asientoRepo.CreateAsync(asiento1);
+                            await _asientoRepo.CreateAsync(asiento2);
+                            await _asientoRepo.CreateAsync(asiento3);
+                        }
+
+                        else if (tipoDeMovimiento.Str_tipo.ToLower() == "egreso")
+                        {
+                            var detalleCreado = await _detalleRepo.CreateAsync(detalle);
+                            decimal total = detalleCreado.Int_cantidad * detalleCreado.Dec_costo;
+                            decimal iva = (total * producto.Int_iva) / 100;
+
+                            var asiento1 = new Asiento
+                            {
+                                movimientoId = movimientoModel.Id,
+                                Str_cuenta = "1.1.1.1.3",
+                                Str_concepto = "Cuentas por cobrar",
+                                Dec_debe = total + iva,
+                                Dec_haber = 0,
+                                Bool_borrado = false
+                            };
+
+                            var asiento2 = new Asiento
+                            {
+                                movimientoId = movimientoModel.Id,
+                                Str_cuenta = "1.1.1.1.4",
+                                Str_concepto = "Ventas",
+                                Dec_debe = 0,
+                                Dec_haber = total,
+                                Bool_borrado = false
+                            };
+
+                            var asiento3 = new Asiento
+                            {
+                                movimientoId = movimientoModel.Id,
+                                Str_cuenta = "1.1.1.1.5",
+                                Str_concepto = $" I.V.A {producto.Int_iva}%",
+                                Dec_debe = 0,
+                                Dec_haber = iva,
+                                Bool_borrado = false
+                            };
+
+                            await _asientoRepo.CreateAsync(asiento1);
+                            await _asientoRepo.CreateAsync(asiento2);
+                            await _asientoRepo.CreateAsync(asiento3);
                         }
 
                         else if (tipoDeMovimiento.Str_tipo.ToLower() == "transferencia")
@@ -154,12 +235,13 @@ namespace api.Controllers
                                         Int_cantidad_actual = detalle.Int_cantidad,
                                         Int_cantidad_minima = producto.Int_cantidad_minima,
                                         //PUEDE CAMBIAR POR EL COSTO PPP
-                                        Dec_costo = detalle.Dec_costo,
+                                        Dec_costo = 0,
                                         Dec_costo_PPP = producto.Dec_costo_PPP,
                                         Int_iva = producto.Int_iva,
                                         Dec_precio_mayorista = producto.Dec_precio_mayorista,
                                         Dec_precio_minorista = producto.Dec_precio_minorista,
                                     };
+
                                     detalle.Dec_costo = producto.Dec_costo_PPP;
                                     producto.Int_cantidad_actual -= detalle.Int_cantidad;
 
@@ -171,8 +253,9 @@ namespace api.Controllers
                                 {
                                     detalle.Dec_costo = producto.Dec_costo_PPP;
                                     producto.Int_cantidad_actual -= detalle.Int_cantidad;
+
                                     productoEnOrigen.Int_cantidad_actual += detalle.Int_cantidad;
-                                    productoEnOrigen.Dec_costo = producto.Dec_costo_PPP;
+                                    productoEnOrigen.Dec_costo = ((productoEnOrigen.Int_cantidad_actual*productoEnOrigen.Dec_costo_PPP)+(detalle.Int_cantidad*detalle.Dec_costo))/(productoEnOrigen.Int_cantidad_actual+detalle.Int_cantidad);
                                     await _detalleRepo.CreateAsync(detalle);
                                 }
                             }
@@ -194,7 +277,7 @@ namespace api.Controllers
                                         Int_cantidad_actual = detalle.Int_cantidad,
                                         Int_cantidad_minima = producto.Int_cantidad_minima,
                                         //PUEDE CAMBIAR POR EL COSTO PPP
-                                        Dec_costo = detalle.Dec_costo,
+                                        Dec_costo = 0,
                                         Dec_costo_PPP = producto.Dec_costo_PPP,
                                         Int_iva = producto.Int_iva,
                                         Dec_precio_mayorista = producto.Dec_precio_mayorista,
@@ -202,15 +285,19 @@ namespace api.Controllers
                                     };
 
                                     producto.Int_cantidad_actual -= detalle.Int_cantidad;
+
                                     var productoModel = nuevoProducto.ToProductoCantidadFromCreate(movimientoModel.DepositoDestinoId, producto.ProveedorId, producto.MarcaId);
                                     await _productoRepo.CreateAsync(productoModel);
+                                    
                                     await _detalleRepo.CreateAsync(detalle);
                                 }
                                 else
                                 {
+                                    detalle.Dec_costo = producto.Dec_costo_PPP;
                                     producto.Int_cantidad_actual -= detalle.Int_cantidad;
+                                    productoEnDestino.Dec_costo_PPP = ((productoEnDestino.Int_cantidad_actual*productoEnDestino.Dec_costo_PPP)+(detalle.Int_cantidad*detalle.Dec_costo))/(productoEnDestino.Int_cantidad_actual+detalle.Int_cantidad);
                                     productoEnDestino.Int_cantidad_actual += detalle.Int_cantidad;
-                                    productoEnDestino.Dec_costo = producto.Dec_costo_PPP;
+                                    
                                     await _detalleRepo.CreateAsync(detalle);
                                 }
                             }

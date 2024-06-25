@@ -124,6 +124,7 @@ builder.Services.AddScoped<IDetalleDeMovimientosRepository, DetalleDeMovimientos
 builder.Services.AddScoped<ITipoDeMovimientoRepository, TipoDeMovimientoRepository>();
 builder.Services.AddScoped<IMotivoRepository, MotivoRepository>();
 builder.Services.AddScoped<IMotivoPorTipoDeMovimientoRepository, MotivoPorTipoDeMovimientoRepository>();
+builder.Services.AddScoped<IAsientoRepository, AsientoRepository>();
 
 var app = builder.Build();
 

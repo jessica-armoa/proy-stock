@@ -46,7 +46,7 @@ namespace api.Mapper
                 Str_nombre = productoDto.Str_nombre,
                 Str_descripcion = productoDto.Str_descripcion,
                 Int_cantidad_minima = productoDto.Int_cantidad_minima,
-                Dec_costo = productoDto.Dec_costo,
+                Dec_costo = 0,
                 Dec_costo_PPP = 0,
                 Int_iva = productoDto.Int_iva,
                 Dec_precio_mayorista = productoDto.Dec_precio_mayorista,
