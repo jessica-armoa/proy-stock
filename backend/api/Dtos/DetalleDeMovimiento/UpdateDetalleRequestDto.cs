@@ -8,7 +8,6 @@ namespace api.Dtos.DetalleDeMovimiento
     public class UpdateDetalleRequestDto
     {
         public int Int_cantidad { get; set; }
-        public decimal Dec_costo { get; set; }
         // public string Str_encargado { get; set; } = String.Empty;
         public bool Bool_borrado { get; set; } = false;
     }

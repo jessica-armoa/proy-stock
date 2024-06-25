@@ -16,7 +16,10 @@ namespace api.Mapper
       {
         Id = notaDeRemision.Id,
         Str_numero = notaDeRemision.Str_numero,
-        TimbradoId = notaDeRemision.TimbradoId,
+        Str_timbrado = notaDeRemision.Str_timbrado,
+        Str_numero_de_comprobante_inicial = notaDeRemision.Str_numero_de_comprobante_inicial,
+        Str_numero_de_comprobante_final = notaDeRemision.Str_numero_de_comprobante_final,
+        Str_numero_de_comprobante_actual = notaDeRemision.Str_numero_de_comprobante_actual,
         Date_fecha_de_expedicion = notaDeRemision.Date_fecha_de_expedicion,
         Date_fecha_de_vencimiento = notaDeRemision.Date_fecha_de_vencimiento,
         MovimientoId = notaDeRemision.MovimientoId,
@@ -44,7 +47,10 @@ namespace api.Mapper
       {
         Id = notaDeRemisionDto.Id,
         Str_numero = notaDeRemisionDto.Str_numero,
-        TimbradoId = notaDeRemisionDto.TimbradoId,
+        Str_timbrado = notaDeRemisionDto.Str_timbrado,
+        Str_numero_de_comprobante_inicial = notaDeRemisionDto.Str_numero_de_comprobante_inicial,
+        Str_numero_de_comprobante_final = notaDeRemisionDto.Str_numero_de_comprobante_final,
+        Str_numero_de_comprobante_actual = notaDeRemisionDto.Str_numero_de_comprobante_actual,
         Date_fecha_de_expedicion = notaDeRemisionDto.Date_fecha_de_expedicion,
         Date_fecha_de_vencimiento = notaDeRemisionDto.Date_fecha_de_vencimiento,
         MovimientoId = notaDeRemisionDto.MovimientoId,
@@ -72,7 +78,10 @@ namespace api.Mapper
       return new NotaDeRemision
       {
         Str_numero = createDto.Str_numero,
-        TimbradoId = createDto.TimbradoId,
+        Str_timbrado = createDto.Str_timbrado,
+        Str_numero_de_comprobante_inicial = createDto.Str_numero_de_comprobante_inicial,
+        Str_numero_de_comprobante_final = createDto.Str_numero_de_comprobante_final,
+        Str_numero_de_comprobante_actual = createDto.Str_numero_de_comprobante_actual,
         Date_fecha_de_expedicion = createDto.Date_fecha_de_expedicion,
         Date_fecha_de_vencimiento = createDto.Date_fecha_de_vencimiento,
         EmpresaNombre = createDto.EmpresaNombre,

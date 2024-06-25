@@ -10,10 +10,7 @@ namespace api.Dtos.DetalleDeMovimiento
     {
         [Required]
         public int Int_cantidad { get; set; }
-        [Required]
-        public decimal Dec_costo { get; set; }
-        [Required]
-        public int? ProductoId { get; set; }
         public bool Bool_borrado { get; set; } = false;
+        // public string Str_encargado { get; set; } = String.Empty;
     }
 }
