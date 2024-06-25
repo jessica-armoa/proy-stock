@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
 {
-    [Route("motivo-por-tipo-de-movimiento")]
+    [Route("api/motivo-por-tipo-de-movimiento")]
     [ApiController]
     public class MotivoPorTipoMovimientoController : ControllerBase
     {
