@@ -90,13 +90,6 @@ const EditProductModal = ({ isOpen, onClose, product, onSave }) => {
         </div>
         <form onSubmit={handleSubmit}>
           <div>
-            <label
-              htmlFor="file-upload"
-              className="button"
-              style={{ cursor: "pointer" }}
-            >
-              Elegir imagen
-            </label>
             <input
               id="file-upload"
               type="file"
@@ -110,6 +103,13 @@ const EditProductModal = ({ isOpen, onClose, product, onSave }) => {
                 style={{ width: "30%", marginTop: "10px" }}
               />
             )}
+            <label
+              htmlFor="file-upload"
+              className="button text-blue-500 mx-4"
+              style={{ cursor: "pointer" }}
+            >
+              Elegir imagen
+            </label>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
             <div>
@@ -172,26 +172,28 @@ const EditProductModal = ({ isOpen, onClose, product, onSave }) => {
             </div>
             <div>
               <label htmlFor="int_cantidad_actual">Cantidad actual</label>
-              <NumberInput
+              <TextInput
                 id="int_cantidad_actual"
                 name="int_cantidad_actual"
                 value={formData.int_cantidad_actual}
                 min={0}
                 onChange={handleChange}
                 required
+                readOnly
               />
             </div>
             <div>
               <label htmlFor="dec_costo_PPP">
                 Costo PPP<span className="text-red-500">*</span>
               </label>
-              <NumberInput
+              <TextInput
                 id="dec_costo_PPP"
                 name="dec_costo_PPP"
                 value={formData.dec_costo_PPP}
                 min={0}
                 onChange={handleChange}
-                required
+                required 
+                readOnly
               />
             </div>
             <div>
@@ -218,19 +220,6 @@ const EditProductModal = ({ isOpen, onClose, product, onSave }) => {
                 min={0}
                 onChange={handleChange}
                 required
-              />
-            </div>
-            <div>
-              <label htmlFor="str_reposito">
-                Depósito<span className="text-red-500">*</span>
-              </label>
-              <TextInput
-                id="str_deposito"
-                name="str_deposito"
-                value={formData.depositoNombre}
-                onChange={handleChange}
-                required
-                readOnly
               />
             </div>
           </div>
