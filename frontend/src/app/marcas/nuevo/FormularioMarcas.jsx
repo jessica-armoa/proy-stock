@@ -1,17 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import {
-  Button,
-  NumberInput,
-  Dialog,
-  DialogPanel,
-  TextInput,
-  SearchSelect,
-  SearchSelectItem,
-  Divider,
-} from "@tremor/react";
-import { RiCloseLine } from "@remixicon/react";
+import { Button, TextInput, SearchSelect, SearchSelectItem } from "@tremor/react";
 import MarcasConfig from "../../../controladores/MarcasConfig";
 import ProveedoresConfig from "../../../controladores/ProveedoresConfig";
 
@@ -20,13 +10,12 @@ export default function FormularioMarcas({
   closeDialog = false,
   saveAction = false,
 }) {
+  const router = useRouter();
+
   const [str_nombre, setStr_nombre] = useState("");
   const [proveedorId, setProveedorId] = useState(0);
   const [proveedores, setProveedores] = useState([]);
 
-  const [isOpen, setIsOpen] = useState(true);
-
-  const router = useRouter();
 
   useEffect(() => {
     const extraccionProveedores = async () => {
@@ -43,15 +32,8 @@ export default function FormularioMarcas({
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      // Aquí podrías realizar alguna acción con los datos del formulario, como enviarlos a un servidor
-
-      const marca = {
-        str_nombre: str_nombre,
-      };
-
+      const marca = { str_nombre };
       const response = await MarcasConfig.postMarca(proveedorId, marca);
-      //console.log({str_nombre,proveedorId});
-      // También puedes reiniciar los valores de los campos del formulario
       setStr_nombre("");
       setProveedorId(0);
       if (type === "form") {
@@ -71,6 +53,7 @@ export default function FormularioMarcas({
       closeDialog();
     } else {
       setStr_nombre("");
+      setProveedorId(0);
     }
   };
 
@@ -135,7 +118,7 @@ export default function FormularioMarcas({
           >
             Cancelar
           </Button>
-          <Button className="mt-8" variant="primary" type="form">
+          <Button className="mt-8" variant="primary" type="submit">
             Guardar
           </Button>
         </div>

@@ -26,7 +26,7 @@ namespace api.Data
         public DbSet<Categoria> categorias { get; set; }
         public DbSet<DetalleDeMovimiento> detalles_de_movimientos { get; set; }
         public DbSet<Asiento> asientos { get; set; }
-        
+
         public DbSet<NotaDeRemision> notas_de_remision { get; set; }
         public DbSet<Timbrado> timbrados { get; set; }
 
@@ -51,6 +51,12 @@ namespace api.Data
                 .HasForeignKey(m => m.DepositoOrigenId)
                 .OnDelete(DeleteBehavior.Restrict); // Esto asegura que no se elimine en cascada si eliminas un depósito
 
+
+            modelBuilder.Entity<Deposito>()
+            .HasOne(d => d.Encargado)
+            .WithMany()
+            .HasForeignKey(d => d.EncargadoId)
+            .OnDelete(DeleteBehavior.Restrict);
 
             // Otros ajustes de modelo aquí si es necesario
             List<IdentityRole> roles = new List<IdentityRole>{

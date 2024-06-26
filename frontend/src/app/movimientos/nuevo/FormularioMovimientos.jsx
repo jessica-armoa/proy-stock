@@ -26,11 +26,11 @@ export default function FormularioMovimientos() {
     const [tiposDeMovimientos, setTiposDeMovimientos] = useState([]);
     const [motivosPorTipoDeMovimiento, setMotivosPorTipoDeMovimiento] = useState([]);
     const [fk_motivo_por_tipo_de_movimiento, setFk_motivo_por_tipo_de_movimiento] = useState(null);
-   
+
     const [fk_tipo_de_movimiento, setFk_tipo_de_movimiento] = useState(0);
 
 
-   
+
 
     //Este es el arreglo de detalles que se le va a pasar a detalles de movimientos
     const [detallesMovimientos, setDetallesMovimientos] = useState([]);
@@ -54,7 +54,7 @@ export default function FormularioMovimientos() {
                     DepositosConfig.getDepositos(),
                     ProductosConfig.getProductos()
                 ]);
-               
+
                 setDepositos(respuestaDepositos.data);
                 setDepositosDestinos(respuestaDepositos.data);
                 setArreglo_productos(respuestaProductos.data);
@@ -99,16 +99,16 @@ export default function FormularioMovimientos() {
     useEffect(() => {
         const extraccionDeMotivosPorTipoDeMovimiento = async () => {
             try {
-    
+
                 const respuestaTiposDeMovimientos = await TiposDeMovimientosConfig.getTiposDeMovimiento();
                 const respuestaMotivos = await MotivosConfig.getMotivos();
                 const respuestaMotivosPorTipoDeMovimiento = await MotivosPorTipoDeMovimientoConfig.getMotivosPorTipoDeMovimiento();
                 setTiposDeMovimientos(respuestaTiposDeMovimientos.data);
                 setMotivos(respuestaMotivos.data);
                 setMotivosPorTipoDeMovimiento(respuestaMotivosPorTipoDeMovimiento.data);
-                console.log(respuestaMotivosPorTipoDeMovimiento.data);    
+                console.log(respuestaMotivosPorTipoDeMovimiento.data);
                 console.log(respuestaMotivos.data);
-                console.log(respuestaTiposDeMovimientos.data);            
+                console.log(respuestaTiposDeMovimientos.data);
             } catch (error) {
                 console.log('Error al obtener Motivos por tipo de Movimiento', error);
             }
@@ -162,7 +162,7 @@ export default function FormularioMovimientos() {
     const [datosVehiculo, setDatosVehiculo] = useState('');
     const [conductor, setConductor] = useState('');
 
-   
+
 
 
 
@@ -203,6 +203,11 @@ export default function FormularioMovimientos() {
 
         } catch (error) {
             console.error('Error al enviar los datos del formulario: ', error);
+            Swal.fire(
+                'Error',
+                'Oops! ocurrió un error al intentar guardar el movimiento.',
+                'error'
+            );
             Swal.fire(
                 'Error',
                 'Oops! ocurrió un error al intentar guardar el movimiento.',
@@ -280,7 +285,7 @@ export default function FormularioMovimientos() {
                                 >
                                     Motivo por Tipo de Movimiento
                                 </label>
-                                
+
                                 <SearchSelect id="fk_motivo_por_tipo_de_movimiento" className='mt-2' placeholder='Motivo por Tipo de Movimiento' value={fk_motivo_por_tipo_de_movimiento} onValueChange={(value) => {
                                     setFk_motivo_por_tipo_de_movimiento(parseInt(value));
                                     console.log(fk_motivo_por_tipo_de_movimiento);
@@ -292,7 +297,7 @@ export default function FormularioMovimientos() {
                                 </SearchSelect>
                             </div>
 
-                          
+
 
                             <div className={`mb-4 ${isDepositoOrigenVisible ? 'visible' : 'invisible'}`}>
                                 <label
