@@ -1,4 +1,0 @@
-{
-  "appService.defaultWebAppToDeploy": "/subscriptions/4f0e3234-dc05-47c4-a40b-e3361d284153/resourceGroups/grupo1/providers/Microsoft.Web/sites/proyecto-stock",
-  "appService.deploySubpath": "backend\\api"
-}
