@@ -12,13 +12,8 @@ using api.Data;
 namespace api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-<<<<<<<< HEAD:backend/api/Migrations/20240625155608_init.Designer.cs
-    [Migration("20240625155608_init")]
-    partial class init
-========
-    [Migration("20240622041418_Initial")]
+    [Migration("20240626023017_Initial")]
     partial class Initial
->>>>>>>> 2e647417c6ceb5bb9cbf78c4af2ba5b3eb41307a:backend/api/Migrations/20240622041418_Initial.Designer.cs
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -59,31 +54,19 @@ namespace api.Migrations
                     b.HasData(
                         new
                         {
-<<<<<<<< HEAD:backend/api/Migrations/20240625155608_init.Designer.cs
-                            Id = "8bc6752d-2c03-428e-89a1-dd2a5baf85a4",
-========
-                            Id = "e59c3450-5d85-4dff-bfae-7e0379c921a7",
->>>>>>>> 2e647417c6ceb5bb9cbf78c4af2ba5b3eb41307a:backend/api/Migrations/20240622041418_Initial.Designer.cs
+                            Id = "7f8e703a-cdb5-43c0-91b2-b6e23082c41e",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-<<<<<<<< HEAD:backend/api/Migrations/20240625155608_init.Designer.cs
-                            Id = "232efd4a-1d57-47ed-8607-181f7429e3a3",
-========
-                            Id = "32ad10d4-d5de-4792-8335-72ef64d9775f",
->>>>>>>> 2e647417c6ceb5bb9cbf78c4af2ba5b3eb41307a:backend/api/Migrations/20240622041418_Initial.Designer.cs
+                            Id = "65a1df3d-b69b-4d0c-9e84-4b7f79d943a6",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-<<<<<<<< HEAD:backend/api/Migrations/20240625155608_init.Designer.cs
-                            Id = "ea67d697-1b23-4ced-a95f-644a366d7f18",
-========
-                            Id = "dd3eed36-3702-4c01-9043-7d679bcf85c9",
->>>>>>>> 2e647417c6ceb5bb9cbf78c4af2ba5b3eb41307a:backend/api/Migrations/20240622041418_Initial.Designer.cs
+                            Id = "0000c59e-f27c-444a-95b1-0276733b640a",
                             Name = "Encargado",
                             NormalizedName = "ENCARGADO"
                         });
@@ -267,14 +250,14 @@ namespace api.Migrations
                     b.Property<bool>("Bool_borrado")
                         .HasColumnType("bit");
 
+                    b.Property<string>("EncargadoId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<int?>("FerreteriaId")
                         .HasColumnType("int");
 
                     b.Property<string>("Str_direccion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Str_encargado")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -286,11 +269,9 @@ namespace api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Str_telefonoEncargado")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
+
+                    b.HasIndex("EncargadoId");
 
                     b.HasIndex("FerreteriaId");
 
@@ -547,21 +528,8 @@ namespace api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Str_numero_de_comprobante_actual")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Str_numero_de_comprobante_final")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Str_numero_de_comprobante_inicial")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Str_timbrado")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("TimbradoId")
+                        .HasColumnType("int");
 
                     b.Property<string>("TrasladoFechaFin")
                         .IsRequired()
@@ -571,20 +539,11 @@ namespace api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-<<<<<<<< HEAD:backend/api/Migrations/20240625155608_init.Designer.cs
-                    b.Property<string>("TrasladoRuta")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TrasladoVehiculo")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-========
->>>>>>>> 2e647417c6ceb5bb9cbf78c4af2ba5b3eb41307a:backend/api/Migrations/20240622041418_Initial.Designer.cs
                     b.HasKey("Id");
 
                     b.HasIndex("MovimientoId");
+
+                    b.HasIndex("TimbradoId");
 
                     b.ToTable("notas_de_remision");
                 });
@@ -693,11 +652,25 @@ namespace api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("Cantidad")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Codigo_establecimiento")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("Date_fin_vigencia")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("Date_inicio_vigencia")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Punto_de_expedicion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Secuencia_actual")
+                        .HasColumnType("int");
 
                     b.Property<string>("Str_timbrado")
                         .IsRequired()
@@ -867,9 +840,17 @@ namespace api.Migrations
 
             modelBuilder.Entity("api.Models.Deposito", b =>
                 {
+                    b.HasOne("api.Models.Usuarios", "Encargado")
+                        .WithMany()
+                        .HasForeignKey("EncargadoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("api.Models.Ferreteria", "Ferreteria")
                         .WithMany("Depositos")
                         .HasForeignKey("FerreteriaId");
+
+                    b.Navigation("Encargado");
 
                     b.Navigation("Ferreteria");
                 });
@@ -946,7 +927,15 @@ namespace api.Migrations
                         .WithMany()
                         .HasForeignKey("MovimientoId");
 
+                    b.HasOne("api.Models.Timbrado", "Timbrado")
+                        .WithMany()
+                        .HasForeignKey("TimbradoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Movimiento");
+
+                    b.Navigation("Timbrado");
                 });
 
             modelBuilder.Entity("api.Models.Producto", b =>
