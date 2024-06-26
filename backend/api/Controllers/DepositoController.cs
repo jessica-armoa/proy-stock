@@ -38,7 +38,8 @@ namespace api.Controllers
         public async Task<IActionResult> GetAll()
         {
             var depositos = await _depositoRepo.GetAllAsync();
-            return Ok(depositos);
+            var depositosDto = depositos.Select(d => d.ToDepositoDto());
+            return Ok(depositosDto);
         }
 
         [HttpGet("{id:int}")]
@@ -50,7 +51,7 @@ namespace api.Controllers
             var deposito = await _depositoRepo.GetByIdAsync(id);
             if (deposito == null) return NotFound();
 
-            return Ok(deposito);
+            return Ok(deposito.ToDepositoDto());
         }
 
         [HttpPost("{ferreteriaId:int}")]
@@ -67,24 +68,24 @@ namespace api.Controllers
             using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
-                var encargado = new Usuarios
-                {
-                    UserName = depositoDto.EncargadoUsername,
-                    Email = depositoDto.EncargadoEmail
-                };
+                Usuarios encargado = null;
 
-                var result = await _userManager.CreateAsync(encargado, depositoDto.EncargadoPassword);
-                if (!result.Succeeded)
+                if (!string.IsNullOrEmpty(depositoDto.EncargadoUsername))
                 {
-                    return BadRequest(result.Errors);
+                    encargado = await _userManager.Users.FirstOrDefaultAsync(u => u.UserName == depositoDto.EncargadoUsername);
+                    if (encargado == null)
+                        if (encargado == null)
+                    {
+                        return BadRequest("El usuario encargado no existe.");
+                    }
                 }
 
-                await _userManager.AddToRoleAsync(encargado, "Encargado");
-
-                var depositoModel = depositoDto.ToDepositoFromCreate(ferreteriaId, encargado.Id);
+                var depositoModel = depositoDto.ToDepositoFromCreate(ferreteriaId, encargado?.Id);
                 await _depositoRepo.CreateAsync(depositoModel);
                 await transaction.CommitAsync();
-                return CreatedAtAction(nameof(GetById), new { id = depositoModel.Id }, depositoModel);
+
+                var depositoDtoResult = depositoModel.ToDepositoDto();
+                return CreatedAtAction(nameof(GetById), new { id = depositoModel.Id }, depositoDtoResult);
             }
             catch (Exception ex)
             {

@@ -51,19 +51,19 @@ namespace api.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "053ce821-6f00-4b56-b212-c5d3c1d70ac1",
+                            Id = "7f8e703a-cdb5-43c0-91b2-b6e23082c41e",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "14909982-f042-4f92-88f8-fde3554aca2c",
+                            Id = "65a1df3d-b69b-4d0c-9e84-4b7f79d943a6",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "a2949bda-19e7-402d-9cf2-8ac0d1872dc9",
+                            Id = "0000c59e-f27c-444a-95b1-0276733b640a",
                             Name = "Encargado",
                             NormalizedName = "ENCARGADO"
                         });
@@ -175,6 +175,45 @@ namespace api.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("api.Models.Asiento", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Bool_borrado")
+                        .HasColumnType("bit");
+
+                    b.Property<decimal>("Dec_debe")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("Dec_haber")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Str_concepto")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Str_cuenta")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Str_descripcion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("movimientoId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("movimientoId");
+
+                    b.ToTable("asientos");
+                });
+
             modelBuilder.Entity("api.Models.Categoria", b =>
                 {
                     b.Property<int>("Id")
@@ -247,6 +286,9 @@ namespace api.Migrations
                     b.Property<bool>("Bool_borrado")
                         .HasColumnType("bit");
 
+                    b.Property<decimal>("Dec_costo")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<int>("Int_cantidad")
                         .HasColumnType("int");
 
@@ -318,7 +360,7 @@ namespace api.Migrations
                     b.ToTable("marcas");
                 });
 
-            modelBuilder.Entity("api.Models.Motivos", b =>
+            modelBuilder.Entity("api.Models.Motivo", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -339,6 +381,36 @@ namespace api.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("motivos");
+                });
+
+            modelBuilder.Entity("api.Models.MotivoPorTipoDeMovimiento", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Bool_borrado")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("MotivoId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Str_descripcion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("TipodemovimientoId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MotivoId");
+
+                    b.HasIndex("TipodemovimientoId");
+
+                    b.ToTable("motivos_por_tipo_de_movimiento");
                 });
 
             modelBuilder.Entity("api.Models.Movimiento", b =>
@@ -364,7 +436,7 @@ namespace api.Migrations
                     b.Property<int?>("DepositoOrigenId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("TipoDeMovimientoId")
+                    b.Property<int?>("MotivoPorTipodeMovimientoId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -375,7 +447,7 @@ namespace api.Migrations
 
                     b.HasIndex("DepositoOrigenId");
 
-                    b.HasIndex("TipoDeMovimientoId");
+                    b.HasIndex("MotivoPorTipodeMovimientoId");
 
                     b.ToTable("movimientos");
                 });
@@ -453,21 +525,8 @@ namespace api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Str_numero_de_comprobante_actual")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Str_numero_de_comprobante_final")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Str_numero_de_comprobante_inicial")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Str_timbrado")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("TimbradoId")
+                        .HasColumnType("int");
 
                     b.Property<string>("TrasladoFechaFin")
                         .IsRequired()
@@ -480,6 +539,8 @@ namespace api.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("MovimientoId");
+
+                    b.HasIndex("TimbradoId");
 
                     b.ToTable("notas_de_remision");
                 });
@@ -588,11 +649,25 @@ namespace api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("Cantidad")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Codigo_establecimiento")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("Date_fin_vigencia")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("Date_inicio_vigencia")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Punto_de_expedicion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Secuencia_actual")
+                        .HasColumnType("int");
 
                     b.Property<string>("Str_timbrado")
                         .IsRequired()
@@ -614,16 +689,14 @@ namespace api.Migrations
                     b.Property<bool>("Bool_borrado")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("MotivoId")
-                        .HasColumnType("int");
+                    b.Property<bool>("Bool_operacion")
+                        .HasColumnType("bit");
 
-                    b.Property<string>("Str_descripcion")
+                    b.Property<string>("Str_tipo")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("MotivoId");
 
                     b.ToTable("tipos_de_movimientos");
                 });
@@ -744,6 +817,15 @@ namespace api.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("api.Models.Asiento", b =>
+                {
+                    b.HasOne("api.Models.Movimiento", "Movimiento")
+                        .WithMany()
+                        .HasForeignKey("movimientoId");
+
+                    b.Navigation("Movimiento");
+                });
+
             modelBuilder.Entity("api.Models.Categoria", b =>
                 {
                     b.HasOne("api.Models.Proveedor", "Proveedor")
@@ -794,6 +876,21 @@ namespace api.Migrations
                     b.Navigation("Proveedor");
                 });
 
+            modelBuilder.Entity("api.Models.MotivoPorTipoDeMovimiento", b =>
+                {
+                    b.HasOne("api.Models.Motivo", "Motivo")
+                        .WithMany("MotivosPorTipoDeMovimiento")
+                        .HasForeignKey("MotivoId");
+
+                    b.HasOne("api.Models.TipoDeMovimiento", "TipoDeMovimiento")
+                        .WithMany("MotivosPorTipoDeMovimiento")
+                        .HasForeignKey("TipodemovimientoId");
+
+                    b.Navigation("Motivo");
+
+                    b.Navigation("TipoDeMovimiento");
+                });
+
             modelBuilder.Entity("api.Models.Movimiento", b =>
                 {
                     b.HasOne("api.Models.Deposito", "DepositoOrigen")
@@ -810,15 +907,15 @@ namespace api.Migrations
                         .HasForeignKey("DepositoOrigenId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("api.Models.TipoDeMovimiento", "TipoDeMovimiento")
+                    b.HasOne("api.Models.MotivoPorTipoDeMovimiento", "MotivoPorTipoDeMovimiento")
                         .WithMany("Movimientos")
-                        .HasForeignKey("TipoDeMovimientoId");
+                        .HasForeignKey("MotivoPorTipodeMovimientoId");
 
                     b.Navigation("DepositoDestino");
 
                     b.Navigation("DepositoOrigen");
 
-                    b.Navigation("TipoDeMovimiento");
+                    b.Navigation("MotivoPorTipoDeMovimiento");
                 });
 
             modelBuilder.Entity("api.Models.NotaDeRemision", b =>
@@ -827,7 +924,15 @@ namespace api.Migrations
                         .WithMany()
                         .HasForeignKey("MovimientoId");
 
+                    b.HasOne("api.Models.Timbrado", "Timbrado")
+                        .WithMany()
+                        .HasForeignKey("TimbradoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Movimiento");
+
+                    b.Navigation("Timbrado");
                 });
 
             modelBuilder.Entity("api.Models.Producto", b =>
@@ -851,15 +956,6 @@ namespace api.Migrations
                     b.Navigation("Proveedor");
                 });
 
-            modelBuilder.Entity("api.Models.TipoDeMovimiento", b =>
-                {
-                    b.HasOne("api.Models.Motivos", "Motivo")
-                        .WithMany("Tipo_de_movimientos")
-                        .HasForeignKey("MotivoId");
-
-                    b.Navigation("Motivo");
-                });
-
             modelBuilder.Entity("api.Models.Deposito", b =>
                 {
                     b.Navigation("Movimientos");
@@ -877,9 +973,14 @@ namespace api.Migrations
                     b.Navigation("Productos");
                 });
 
-            modelBuilder.Entity("api.Models.Motivos", b =>
+            modelBuilder.Entity("api.Models.Motivo", b =>
                 {
-                    b.Navigation("Tipo_de_movimientos");
+                    b.Navigation("MotivosPorTipoDeMovimiento");
+                });
+
+            modelBuilder.Entity("api.Models.MotivoPorTipoDeMovimiento", b =>
+                {
+                    b.Navigation("Movimientos");
                 });
 
             modelBuilder.Entity("api.Models.Movimiento", b =>
@@ -903,7 +1004,7 @@ namespace api.Migrations
 
             modelBuilder.Entity("api.Models.TipoDeMovimiento", b =>
                 {
-                    b.Navigation("Movimientos");
+                    b.Navigation("MotivosPorTipoDeMovimiento");
                 });
 #pragma warning restore 612, 618
         }

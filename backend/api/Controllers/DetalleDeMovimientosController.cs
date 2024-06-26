@@ -27,7 +27,7 @@ namespace api.Controllers
         {
             var detalles = await _detalleRepo.GetAllAsync();
             var detallesDto = detalles.Select(d => d.ToDetalleDeMovimientoDto());
-            return Ok(detalles);
+            return Ok(detallesDto);
         }
 
         [HttpGet]

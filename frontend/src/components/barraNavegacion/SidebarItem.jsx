@@ -1,7 +1,7 @@
 import { usePathname, useRouter } from 'next/navigation';
 import React, { useMemo, useState, useEffect } from 'react';
 
-const SidebarItem = ({ item, selectedItem, setSelectedItem }) => {
+const SidebarItem = ({ item }) => {
     const { name, icon, subItems, path, isSubItem } = item;
     const [expanded, setExpanded] = useState(false);
     const router = useRouter();
@@ -17,8 +17,6 @@ const SidebarItem = ({ item, selectedItem, setSelectedItem }) => {
     const onClick = () => {
         if (path !== '#') {
             router.push(item.path);
-            setSelectedItem(name);
-            localStorage.setItem('selectedItem', name);
         }
         if (subItems && subItems.length > 0) {
             setExpanded((prev) => {
@@ -30,12 +28,12 @@ const SidebarItem = ({ item, selectedItem, setSelectedItem }) => {
     };
 
     const isActive = useMemo(() => {
-        return selectedItem === name;
-    }, [selectedItem, name]);
+        return path === pathname;
+    }, [path, pathname]);
 
     return (
         <>
-            <div className={`flex items-center p-3 m-1 rounded-lg hover:bg-blue-100 cursor-pointer hover:text-ui-active justify-between ${isSubItem && "ml-3"} ${isActive && "text-ui-active bg-blue-100"}`}
+            <div className={`flex item-center p-3 m-1 rounded-lg hover:bg-blue-100 cursor-pointer hover:text-ui-active justify-between ${isSubItem && "ml-3"} ${isActive && "text-ui-active bg-blue-100"}`}
                 onClick={onClick}
             >
                 <div className='flex space-x-2'>
@@ -48,7 +46,7 @@ const SidebarItem = ({ item, selectedItem, setSelectedItem }) => {
             </div>
             {expanded && subItems && subItems.length > 0 && (
                 subItems.map((subItem) => {
-                    return <SidebarItem key={subItem.path} item={subItem} selectedItem={selectedItem} setSelectedItem={setSelectedItem} />
+                    return <SidebarItem key={subItem.path} item={subItem} />
                 })
             )}
         </>

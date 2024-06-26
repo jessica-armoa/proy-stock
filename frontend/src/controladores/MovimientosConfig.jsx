@@ -11,8 +11,8 @@ class MovimientosConfig{
         return axios.get(`${api}/${id}`);
     }
 
-    postMovimiento(movimiento){
-        return axios.post(api, movimiento);
+    postMovimiento(motivoPorTipoDeMovimientoId, depositoOrigenId, depositoDestinoId, movimiento){
+        return axios.post(`${api}/${motivoPorTipoDeMovimientoId}/${depositoOrigenId}/${depositoDestinoId}`, movimiento);
     }
 
     putMovimiento(id){

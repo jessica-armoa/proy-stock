@@ -124,9 +124,13 @@ builder.Services.AddScoped<IMarcaRepository, MarcaRepository>();
 builder.Services.AddScoped<IMovimientoRepository, MovimientoRepository>();
 builder.Services.AddScoped<IDetalleDeMovimientosRepository, DetalleDeMovimientosRepository>();
 builder.Services.AddScoped<ITipoDeMovimientoRepository, TipoDeMovimientoRepository>();
+
 builder.Services.AddScoped<INotaDeRemisionRepository, NotaDeRemisionRepository>();
 builder.Services.AddScoped<ITimbradoRepository, TimbradoRepository>();
 builder.Services.AddScoped<IReporteRepository, ReporteRepository>();
+builder.Services.AddScoped<IMotivoRepository, MotivoRepository>();
+builder.Services.AddScoped<IMotivoPorTipoDeMovimientoRepository, MotivoPorTipoDeMovimientoRepository>();
+builder.Services.AddScoped<IAsientoRepository, AsientoRepository>();
 
 
 var app = builder.Build();
