@@ -15,12 +15,9 @@ namespace api.Mapper
             {
                 Id = movimientoModel.Id,
                 Date_fecha = movimientoModel.Date_fecha,
-                MotivoportipodemovimientoId = movimientoModel.MotivoPorTipodeMovimientoId,
-                Str_motivoPorTipoDeMovimiento = movimientoModel.MotivoPorTipoDeMovimiento.Str_descripcion,
+                TipoDeMovimientoId = movimientoModel.TipoDeMovimientoId,
                 DepositoOrigenId = movimientoModel.DepositoOrigenId,
-                Str_depositoOrigen = movimientoModel.DepositoDestino.Str_nombre,
                 DepositoDestinoId= movimientoModel.DepositoDestinoId,
-                Str_depositoDestino = movimientoModel.DepositoOrigen.Str_nombre,
                 Bool_borrado = movimientoModel.Bool_borrado,
                 DetallesDeMovimientos = movimientoModel.DetallesDeMovimientos
                     .Where(d => d.Bool_borrado != true)
@@ -28,12 +25,12 @@ namespace api.Mapper
             };
         }
 
-        public static Movimiento ToMovimientoFromCreate(this CreateMovimientoRequestDto movimientoDto, int? motivoPorTipoMovimientoId, int? depositoOrigen, int? depositoDestino)
+        public static Movimiento ToMovimientoFromCreate(this CreateMovimientoRequestDto movimientoDto, int? tipodemovimientoId, int? depositoOrigen, int? depositoDestino)
         {
             return new Movimiento
             {
                 Date_fecha = movimientoDto.Date_fecha,
-                MotivoPorTipodeMovimientoId = motivoPorTipoMovimientoId,
+                TipoDeMovimientoId = tipodemovimientoId,
                 DepositoOrigenId = depositoOrigen,
                 DepositoDestinoId = depositoDestino,
                 Bool_borrado = false

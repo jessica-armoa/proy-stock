@@ -1,4 +1,5 @@
 using api.Dtos.Deposito;
+using api.Dtos.Deposito.api.Dtos.Deposito;
 using api.Models;
 
 namespace api.Mapper

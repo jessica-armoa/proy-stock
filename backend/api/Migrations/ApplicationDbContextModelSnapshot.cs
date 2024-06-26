@@ -525,8 +525,21 @@ namespace api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("TimbradoId")
-                        .HasColumnType("int");
+                    b.Property<string>("Str_numero_de_comprobante_actual")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Str_numero_de_comprobante_final")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Str_numero_de_comprobante_inicial")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Str_timbrado")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TrasladoFechaFin")
                         .IsRequired()
@@ -539,8 +552,6 @@ namespace api.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("MovimientoId");
-
-                    b.HasIndex("TimbradoId");
 
                     b.ToTable("notas_de_remision");
                 });
@@ -649,25 +660,11 @@ namespace api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("Cantidad")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Codigo_establecimiento")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("Date_fin_vigencia")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("Date_inicio_vigencia")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("Punto_de_expedicion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Secuencia_actual")
-                        .HasColumnType("int");
 
                     b.Property<string>("Str_timbrado")
                         .IsRequired()
@@ -924,15 +921,7 @@ namespace api.Migrations
                         .WithMany()
                         .HasForeignKey("MovimientoId");
 
-                    b.HasOne("api.Models.Timbrado", "Timbrado")
-                        .WithMany()
-                        .HasForeignKey("TimbradoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Movimiento");
-
-                    b.Navigation("Timbrado");
                 });
 
             modelBuilder.Entity("api.Models.Producto", b =>

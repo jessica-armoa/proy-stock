@@ -6,7 +6,6 @@ using api.Data;
 using api.Dtos.DetalleDeMovimiento;
 using api.Dtos.Movimiento;
 using api.Dtos.Producto;
-using api.Dtos.Deposito;
 using api.Interfaces;
 using api.Mapper;
 using api.Models;
@@ -20,7 +19,9 @@ namespace api.Controllers
     public class MovimientoController : ControllerBase
     {
         private readonly IMovimientoRepository _movimientoRepo;
+        //private readonly IDepositoRepository _depositoRepo;
         private readonly ITipoDeMovimientoRepository _tipoDeMovimientoRepo;
+        private readonly ApplicationDbContext _context;
         private readonly IProductoRepository _productoRepo;
         private readonly IDetalleDeMovimientosRepository _detalleRepo;
         private readonly INotaDeRemisionRepository _notaDeRemisionRepo;
@@ -43,14 +44,11 @@ namespace api.Controllers
             , ITimbradoRepository timbradoRepo)
         {
             _movimientoRepo = movimientoRepo;
+            //_depositoRepo = depositoRepo;
             _tipoDeMovimientoRepo = tipoDeMovimientoRepo;
+            _context = context;
             _productoRepo = productoRepo;
             _detalleRepo = detalleRepo;
-            _motivoPorTipoMovimientoRepo = motivoPorTipoMovimientoRepo;
-            _motivoRepo = motivoRepo;
-            _depositoRepo = depositoRepo;
-            _context = context;
-            _asientoRepo = asientoRepo;
             _notaDeRemisionRepo = notaDeRemisionRepo;
             _timbradoRepo = timbradoRepo;
         }
@@ -58,7 +56,7 @@ namespace api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var movimientos = await _movimientoRepo.GetAllAsync();
+            /*var movimientos = await _movimientoRepo.GetAllAsync();
             var movimientosDto = movimientos.Select(m => m.ToMovimientoDto());
 
             return Ok(movimientosDto);
@@ -78,45 +76,30 @@ namespace api.Controllers
         }
 
         [HttpPost]
-        [Route("{motivoPorTipoMovimientoId:int}/{depositoOrigenId:int}/{depositoDestinoId:int}")]
-        public async Task<IActionResult> Create([FromBody] CreateMovimientoRequestDto movimientoDto, [FromRoute] int motivoPorTipoMovimientoId, [FromRoute] int depositoOrigenId, [FromRoute] int depositoDestinoId)
+        public async Task<IActionResult> Create([FromBody] MovimientoDto movimiento)
         {
-            if (movimientoDto == null || movimientoDto.DetallesDeMovimientos == null)
+            if (movimiento == null || movimiento.DetallesDeMovimientos == null || !movimiento.DetallesDeMovimientos.Any())
             {
-                return BadRequest("Movimiento o detalles no válidos!!");
-            }
-
-            if (!await _motivoPorTipoMovimientoRepo.MotivoPorTipoMovimientoExists(motivoPorTipoMovimientoId))
-            {
-                return BadRequest("El motivo por tipo de movimiento no existe!!");
-            }
-
-            var motivoPorTipoMovimiento = await _motivoPorTipoMovimientoRepo.GetByIdAsync(motivoPorTipoMovimientoId);
-            var tipoDeMovimiento = await _tipoDeMovimientoRepo.GetByIdAsync(motivoPorTipoMovimiento.TipodemovimientoId);
-            var motivo = await _motivoRepo.GetByIdAsync(motivoPorTipoMovimiento.MotivoId);
-            if (tipoDeMovimiento == null || motivo == null)
-            {
-                return BadRequest("motivo y tipo de movimiento nulo");
-            }
-
-            if (!await _depositoRepo.DepositoExists(depositoOrigenId))
-            {
-                return BadRequest("El deposito origen no existe!!");
-            }
-
-            if (!await _depositoRepo.DepositoExists(depositoDestinoId))
-            {
-                return BadRequest("El deposito destino no existe!!");
+                return BadRequest("Movimiento o detalles del movimiento no válidos.");
             }
 
             using (var transaction = await _context.Database.BeginTransactionAsync())
             {
+                var tipoDeMovimiento = await _tipoDeMovimientoRepo.GetByIdAsync(movimiento.TipoDeMovimientoId);
+                if (tipoDeMovimiento == null)
+                {
+                    BadRequest();
+                }
                 try
                 {
-                    var movimientoModel = movimientoDto.ToMovimientoFromCreate(motivoPorTipoMovimientoId, depositoOrigenId, depositoDestinoId);
+                    var nuevoMovimiento = new CreateMovimientoRequestDto
+                    {
+                        Date_fecha = movimiento.Date_fecha
+                    };
+                    var movimientoModel = nuevoMovimiento.ToMovimientoFromCreate(movimiento.TipoDeMovimientoId, movimiento.DepositoOrigenId, movimiento.DepositoDestinoId);
                     await _movimientoRepo.CreateAsync(movimientoModel);
 
-                    foreach (var detalleDto in movimientoDto.DetallesDeMovimientos)
+                    foreach (var detalle in movimiento.DetallesDeMovimientos)
                     {
                         var detalle = detalleDto.ToDetalleFromCreate(movimientoModel.Id, detalleDto.ProductoId);
 
@@ -222,43 +205,20 @@ namespace api.Controllers
                                 return BadRequest("Cantidad insuficiente en el depósito origen.");
                             }
 
-                            var productoEnOrigen = await _productoRepo.ObtenerProductoEnDeposito(producto.Str_nombre, movimientoModel.DepositoOrigenId);
-                            var productoEnDestino = await _productoRepo.ObtenerProductoEnDeposito(producto.Str_nombre, movimientoModel.DepositoDestinoId);
-
-                            if (tipoDeMovimiento.Bool_operacion == true)
-                            {
-                                if (productoEnDestino == null)
-                                {
-                                    return BadRequest("El producto que desea transferir no existe en el deposito destino!!");
-                                }
-
-                                if (productoEnOrigen == null)
-                                {
-                                    var nuevoProducto = new CreateProductoCantidadDto
+                                    var nuevoDetalle = new CreateDetalleRequestDto
                                     {
-                                        Str_ruta_imagen = producto.Str_ruta_imagen,
-                                        Str_nombre = producto.Str_nombre,
-                                        Str_descripcion = producto.Str_descripcion,
-                                        Int_cantidad_actual = detalle.Int_cantidad,
-                                        Int_cantidad_minima = producto.Int_cantidad_minima,
-                                        //PUEDE CAMBIAR POR EL COSTO PPP
-                                        Dec_costo = 0,
-                                        Dec_costo_PPP = producto.Dec_costo_PPP,
-                                        Int_iva = producto.Int_iva,
-                                        Dec_precio_mayorista = producto.Dec_precio_mayorista,
-                                        Dec_precio_minorista = producto.Dec_precio_minorista,
+                                        Int_cantidad = detalle.Int_cantidad,
                                     };
 
-                                    detalle.Dec_costo = producto.Dec_costo_PPP;
-                                    producto.Int_cantidad_actual -= detalle.Int_cantidad;
-
-                                    var productoModel = nuevoProducto.ToProductoCantidadFromCreate(movimientoModel.DepositoOrigenId, producto.ProveedorId, producto.MarcaId);
-                                    await _productoRepo.CreateAsync(productoModel);
-                                    await _detalleRepo.CreateAsync(detalle);
+                                    var detalleModel = nuevoDetalle.ToDetalleFromCreate(movimientoModel.Id, detalle.ProductoId);
+                                    await _detalleRepo.CreateAsync(detalleModel);
                                 }
-                                else
+                                else if (tipoDeMovimiento.Str_descripcion.ToLower() == "transferencia")
                                 {
-                                    detalle.Dec_costo = producto.Dec_costo_PPP;
+                                    if (producto.Int_cantidad_actual < detalle.Int_cantidad)
+                                    {
+                                        return BadRequest("Cantidad insuficiente en el depósito origen.");
+                                    }
                                     producto.Int_cantidad_actual -= detalle.Int_cantidad;
 
                                     productoEnOrigen.Int_cantidad_actual += detalle.Int_cantidad;
@@ -315,8 +275,10 @@ namespace api.Controllers
                             return BadRequest();
                         }
                     }
+
                     await _context.SaveChangesAsync();
                     await transaction.CommitAsync();
+
                     return Ok(movimientoModel.ToMovimientoDto());
                 }
                 catch (Exception ex)
@@ -329,9 +291,9 @@ namespace api.Controllers
                         Console.WriteLine($"\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nInner Exception: {ex.InnerException.Message}\n\n\n\n\n\n\n\n\n\n\n\n\n");
                     }
                     return StatusCode(500, $"Error interno del servidor: {ex.Message}");
+
+
                 }
-
-
             }
         }
 

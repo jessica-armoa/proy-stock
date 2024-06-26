@@ -5,134 +5,117 @@ import { useRouter, usePathname } from "next/navigation";
 import dynamic from "next/dynamic";
 import ProductosConfig from "../../../../controladores/ProductosConfig";
 import withAuth from "@/components/auth/withAuth";
-//import ProductosConfig from "../../ProductosConfig";
-//import Photo from "../../../../components/productimg";
+import MovimientosConfig from "../../../../controladores/MovimientosConfig";
+import ProveedoresConfig from "@/controladores/ProveedoresConfig";
 
 // Dynamic imports/
-const Sidebar = dynamic(() => import("@/components/barraNavegacion/Sidebar"), { ssr: false });
+const Sidebar = dynamic(() => import("@/components/barraNavegacion/Sidebar"), {
+  ssr: false,
+});
 const DataTable = dynamic(() => import("@/components/tabla"), { ssr: false });
 const Photo = dynamic(() => import("@/components/productos"), { ssr: false });
 
-
-const Detalle = ({params}) => { //params lee los parametros de la url, en este caso de los subdirectorios, en este tenemos el dir [id]
-  
+const Detalle = ({ params, cantElementos = 8 }) => {
+  //params lee los parametros de la url, en este caso de los subdirectorios, en este tenemos el dir [id]
+  const [movimientosDetalle, setMovimientosDetalle] = useState([]);
+  const [movimientos, setMovimientos] = useState([]);
   const router = useRouter();
 
-  const {id} = params;
+  const { id } = params;
 
   //console.log("ID:", id);
-  const [product, setProduct] = useState({});
+  const [producto, setProducto] = useState([]);
 
   useEffect(() => {
-    if (product) {
-      ProductosConfig.getProductos().then((response) => {
-        setProduct(response.data);
+    if (producto.length <= 0) {
+      ProductosConfig.getProductoId(id).then((response) => {
+        setProducto(response.data);
+        if (response.data.detallesDeMovimientos != null) {
+          setMovimientosDetalle(response.data.detallesDeMovimientos);
+          //console.log(response.data.detallesDeMovimientos)
+        }
       });
     }
   }, [id]);
 
-  const data = [
-    {
-      date: "21/03/2024",
-      movement: "Compra",
-      quantity: 50,
-      document: "001-001-000003",
-      unitCost: 7500,
-      origin: "Proveedor",
-      destination: "Suc-Enc",
-    },
-    {
-      date: "20/02/2024",
-      movement: "Venta",
-      quantity: 20,
-      document: "001-001-000003",
-      unitCost: 10000,
-      origin: "Suc-Enc",
-      destination: "Cliente",
-    },
-    {
-      date: "11/02/2024",
-      movement: "Transferencia",
-      quantity: 5,
-      document: "001-001-000003",
-      unitCost: 7500,
-      origin: "Suc-Enc",
-      destination: "Suc-Asu",
-    },
-    {
-      date: "15/01/2024",
-      movement: "Salida",
-      quantity: 5,
-      document: "001-001-000003",
-      unitCost: 7500,
-      origin: "Suc-Enc",
-      destination: "Reciclaje",
-    },
-    {
-      date: "01/01/2024",
-      movement: "Entrada",
-      quantity: 5,
-      document: "001-001-000009",
-      unitCost: 7500,
-      origin: "Suc-Asu",
-      destination: "Suc-Enc",
-    },
-    {
-      date: "07/12/2023",
-      movement: "Entrada",
-      quantity: 5,
-      document: "001-001-000005",
-      unitCost: 7500,
-      origin: "Suc-Asu",
-      destination: "Suc-Enc",
-    },
-    {
-      date: "30/11/2023",
-      movement: "Entrada",
-      quantity: 5,
-      document: "001-001-000003",
-      unitCost: 7500,
-      origin: "Suc-Asu",
-      destination: "Suc-Enc",
-    },
-    {
-      date: "15/11/2023",
-      movement: "Entrada",
-      quantity: 5,
-      document: "001-001-000003",
-      unitCost: 7500,
-      origin: "Suc-Asu",
-      destination: "Suc-Enc",
-    },
-  ];
+  const [proveedor, setProveedor] = useState([]);
+
+  useEffect(() => {
+    if (producto.id != undefined) {
+      console.log(producto,producto.proveedorId)
+      ProveedoresConfig.getProveedorById(producto.proveedorId).then((response) => {
+      setProveedor(response.data)
+    })
+    }
+  }, [producto])
+
+  useEffect(() => {
+    if (movimientosDetalle.length > 0) {
+      // Paso 1: Agrupar los movimientos por movimientoId
+      const movimientosPorId = movimientosDetalle.reduce((acc, movimiento) => {
+        const { movimientoId } = movimiento;
+        if (!acc[movimientoId]) {
+          acc[movimientoId] = [];
+        }
+        acc[movimientoId].push(movimiento);
+        return acc;
+      }, {});
+
+      // Paso 2: Obtener los detalles de cada grupo de movimientoId
+      const promesas = Object.keys(movimientosPorId).map((movimientoId) => 
+        MovimientosConfig.getMovimientoById(movimientoId).then((response) => ({
+          movimientoId,
+          detalles: response.data,
+          movimientos: movimientosPorId[movimientoId],
+        }))
+      );
+
+      // Paso 3: Esperar a que todas las promesas se resuelvan y actualizar el estado
+      Promise.all(promesas).then((resultados) => {
+        const movimientosFiltrados = resultados.flatMap(({ movimientos, detalles }) =>
+          movimientos.map(movimiento => ({
+            date_fecha: detalles.date_fecha,
+            tipoDeMovimientoId: detalles.tipoDeMovimientoId,
+            int_cantidad: movimiento.int_cantidad,
+            depositoOrigenId: detalles.depositoOrigenId,
+            depositoDestinoId: detalles.depositoDestinoId,
+          }))
+        );
+        setMovimientos(movimientosFiltrados);
+      });
+    }
+  }, [movimientosDetalle]);
+
+  const formatCurrency = (value) => {
+    const formattedValue = Intl.NumberFormat('es-ES', {
+      style: 'currency',
+      currency: 'PYG',
+      minimumFractionDigits: 0,
+      useGrouping: true
+    }).format(value);
+    return formattedValue.replace('PYG', '');
+  };
+  
   const columns = [
     {
-      accessorKey: "date",
+      accessorKey: "date_fecha",
       header: "Fecha",
     },
     {
-      accessorKey: "movement",
+      accessorKey: "tipoDeMovimientoId",
       header: "Movimiento",
     },
     {
-      accessorKey: "quantity",
+      accessorKey: "int_cantidad",
       header: "Cantidad",
     },
     {
-      accessorKey: "document",
-      header: "Documento",
+      accessorKey: "depositoOrigenId",
+      header: "Depósito Origen",
     },
     {
-      accessorKey: "unitCost",
-      header: "Costo",
-    },
-    {
-      accessorKey: "origin",
-      header: "Origen",
-    },
-    {
-      accessorKey: "destination",
-      header: "Destino",
+      accessorKey: "depositoDestinoId",
+      header: "Depósito Destino",
     },
   ];
 
@@ -140,13 +123,19 @@ const Detalle = ({params}) => { //params lee los parametros de la url, en este c
     <div>
       <div className="flex h-screen bg-ui-background p-2 text-ui-text">
         <Sidebar />
-        <div className="flex flex-col w-content h-full p-5 rounded-lg bg-ui-cardbg">
+        <div className="flex flex-col w-full h-full p-5 rounded-lg bg-ui-cardbg overflow-y">
           <div className="container mx-auto">
             <nav className="text-sm" aria-label="Breadcrumb">
               <ol className="list-none p-0 inline-flex space-x-1">
                 <li className="flex items-center">
-                  <div className="clickable text-gray-500 flex items-center" onClick={() => router.push("/productos")}>
-                    <span className="material-symbols-outlined">chevron_left</span>{" "} Stock &gt;{" "}
+                  <div
+                    className="clickable text-gray-500 flex items-center"
+                    onClick={() => router.push("/productos")}
+                  >
+                    <span className="material-symbols-outlined">
+                      chevron_left
+                    </span>{" "}
+                    Stock &gt;{" "}
                   </div>
                 </li>
                 <li className="flex items-center">
@@ -156,35 +145,40 @@ const Detalle = ({params}) => { //params lee los parametros de la url, en este c
             </nav>
             <div className=" grid grid-cols-3 mb-10">
               <div>
-                <Photo src={product.str_ruta_imagen}></Photo>
+                <Photo src={producto.str_ruta_imagen}></Photo>
               </div>
               <div>
-                <p>Codigo: {product.id}</p>
-                <p>Nombre:{product.str_nombre} </p>
-                <p>Descripcion: {product.str_descripcion} </p>
-                <p>Marca: {product.marcaId} </p>
-                <p>Proveedor: {product.proveedorId}</p>
-                <p>Contacto: 0984 235701</p>
+                <p>Codigo: {producto.id}</p>
+                <p>Nombre:{producto.str_nombre} </p>
+                <p>Descripcion: {producto.str_descripcion} </p>
+                <p>Marca: {producto.marcaNombre} </p>
+                <p>Proveedor: {producto.proveedorNombre}</p>
+                <p>Contacto: {proveedor.str_telefono}</p>
               </div>
               <div>
-                <p>Cantidad: {product.int_cantidad_actual}</p>
-                <p>Cant.Mínima: {product.int_cantidad_minima}</p>
-                <p>Costo: {product.dec_costo_PPP}</p>
-                <p>IVA: {product.int_iva}</p>
-                <p>Precio Mayorista: {product.dec_precio_mayorista}</p>
-                <p>Precio Minorista: {product.dec_precio_minorista}</p>
+                <p>Cantidad: {formatCurrency(producto.int_cantidad_actual)}</p>
+                <p>Cant.Mínima: {producto.int_cantidad_minima}</p>
+                <p>Costo: {formatCurrency(producto.dec_costo_PPP)}</p>
+                <p>IVA: {producto.int_iva}</p>
+                <p>Precio Mayorista: {formatCurrency(producto.dec_precio_mayorista)}</p>
+                <p>Precio Minorista: {formatCurrency(producto.dec_precio_minorista)}</p>
               </div>
             </div>
-            <div className="flex justify-between items-center">
-              <span className="text-2xl mx-4 tracking-tight text-black">
-                Historial de producto
+            <div>
+              <span className="text-l tracking-tight">
+                Historial de movimientos del producto
               </span>
+              {movimientosDetalle.length <= 0 ? (
+                <p>No hay Movimientos</p>
+              ) : (
+                <DataTable
+                data={movimientos}
+                columns={columns}
+                cantElementos={cantElementos}
+                pageurl={`/movimientos/detalle/`}
+                />
+              )}
             </div>
-            {data.length <= 0 ? (
-              <p>No hay movimientos</p>
-            ) : (
-              <DataTable data={data} columns={columns} />
-            )}
           </div>
         </div>
       </div>

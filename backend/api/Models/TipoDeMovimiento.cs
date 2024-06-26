@@ -8,9 +8,10 @@ namespace api.Models
     public class TipoDeMovimiento
     {
         public int Id { get; set; }
-        public string Str_tipo { get; set; } = String.Empty;
-        public bool Bool_operacion { get; set; }
+        public string Str_descripcion { get; set; } = String.Empty;
+        public int? MotivoId { get; set; }
+        public Motivos? Motivo { get; set; }
         public bool Bool_borrado { get; set; } = false;
-        public List<MotivoPorTipoDeMovimiento> MotivosPorTipoDeMovimiento { get; set; } = [];
+        public List<Movimiento> Movimientos { get; set; } = [];
     }
 }
