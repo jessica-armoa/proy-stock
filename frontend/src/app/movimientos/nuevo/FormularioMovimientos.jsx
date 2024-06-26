@@ -194,8 +194,9 @@ export default function FormularioMovimientos() {
                 }))
             }
             console.log('Movimiento enviado', movimientoActual);
-
-            const movimientoCreado = await MovimientosConfig.postMovimiento(fk_motivo_por_tipo_de_movimiento, fk_deposito_origen, fk_deposito_destino, movimientoActual).then(() => {
+            const fk_deposito_origen_API = fk_deposito_origen ? fk_deposito_origen : fk_deposito_destino;
+            const fk_deposito_destino_API = fk_deposito_destino ? fk_deposito_destino : fk_deposito_origen;
+            const movimientoCreado = await MovimientosConfig.postMovimiento(fk_motivo_por_tipo_de_movimiento, fk_deposito_origen_API, fk_deposito_destino_API, movimientoActual).then(() => {
                 Swal.fire('Guardado', 'El movimiento fue creado exitosamente.', 'success');
             });
 
