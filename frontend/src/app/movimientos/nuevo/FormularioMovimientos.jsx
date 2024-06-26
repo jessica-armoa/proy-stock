@@ -26,6 +26,12 @@ export default function FormularioMovimientos() {
     const [tiposDeMovimientos, setTiposDeMovimientos] = useState([]);
     const [motivosPorTipoDeMovimiento, setMotivosPorTipoDeMovimiento] = useState([]);
     const [fk_motivo_por_tipo_de_movimiento, setFk_motivo_por_tipo_de_movimiento] = useState(null);
+<<<<<<< HEAD
+=======
+    const [esCompra, setEsCompra] = useState(false);
+    const [esEgreso, setEsEgreso] = useState(false);
+    const [alertaCantidad, setAlertaCantidad] = useState('');
+>>>>>>> estable_angel
 
     const [fk_tipo_de_movimiento, setFk_tipo_de_movimiento] = useState(0);
 
@@ -40,6 +46,7 @@ export default function FormularioMovimientos() {
     //Manejo de listas de productos y Depósitos de Origen y Destino para los movimientos
     const [fk_producto, setFk_producto] = useState(0);
     const [arregloProductos, setArreglo_productos] = useState([]);
+    const [productosFiltrados, setProductosFiltrados] = useState([]);
     const [fk_deposito_origen, setFk_deposito_origen] = useState(0);
     const [fk_deposito_destino, setFk_deposito_destino] = useState(0);
     const [depositos, setDepositos] = useState([]);
@@ -67,6 +74,16 @@ export default function FormularioMovimientos() {
         }
         extraccionDepositos();
     }, []);
+
+    useEffect(() => {
+        // Filtra los productos en base al depósito de origen seleccionado
+        if (fk_deposito_origen !== null) {
+            const productosEnDeposito = arregloProductos.filter(producto => producto.depositoId === fk_deposito_origen);
+            setProductosFiltrados(productosEnDeposito);
+        } else {
+            setProductosFiltrados([]);
+        }
+    }, [fk_deposito_origen, arregloProductos]);
 
     const [userDepositoId, setUserDepositoId] = useState(null);
     const [rol, setRol] = useState(null);
@@ -125,6 +142,22 @@ export default function FormularioMovimientos() {
     //Estado para detalle temporal
     const [detalleTemp, setDetalleTemp] = useState({ idProducto: 0, descripcion: '', cantidad: 1, precio: 0, total: 0 });
 
+    useEffect(() => {
+        // Actualiza el precio en detalleTemp cuando se selecciona un producto
+        if (fk_producto !== 0) {
+            const productoSeleccionado = arregloProductos.find(producto => producto.id === +fk_producto);
+            if (productoSeleccionado) {
+                setDetalleTemp(prevDetalle => ({
+                    ...prevDetalle,
+                    idProducto: productoSeleccionado.id,
+                    descripcion: productoSeleccionado.str_nombre,
+                    precio: productoSeleccionado.dec_costo,
+                    total: prevDetalle.cantidad * productoSeleccionado.dec_costo
+                }));
+            }
+        }
+    }, [fk_producto, arregloProductos]);
+
     const manejarCambioDetalleTemp = (nombre, valor) => {
         setDetalleTemp(prevDetalle => ({
             ...prevDetalle,
@@ -133,17 +166,27 @@ export default function FormularioMovimientos() {
         }));
     };
 
+
+
     const manejarAgregarDetalle = () => {
         const productoSeleccionado = arregloProductos.find(producto => {
             if (producto.id === +fk_producto) {
                 return producto;
             }
         });
+
+        if ((esEgreso || isTransferencia) && productoSeleccionado.int_cantidad_actual < detalleTemp.cantidad) {
+            setAlertaCantidad('La cantidad que se intenta mover es mayor a la disponible en el depósito de origen.');
+            return;
+        }
+
         //console.log(detallesMovimientos);
         const nuevoId = detallesMovimientos.length;
-        setDetallesMovimientos([...detallesMovimientos, { ...detalleTemp, idDetalle: nuevoId, idProducto: productoSeleccionado.id, descripcion: productoSeleccionado.str_nombre, cantidad: detalleTemp.cantidad, precio: detalleTemp.precio, total: detalleTemp.total }]);
+        const precioProducto = esCompra ? detalleTemp.precio : productoSeleccionado.dec_costo;
+        setDetallesMovimientos([...detallesMovimientos, { ...detalleTemp, idDetalle: nuevoId, idProducto: productoSeleccionado.id, descripcion: productoSeleccionado.str_nombre, cantidad: detalleTemp.cantidad, precio: precioProducto, total: detalleTemp.total }]);
         setDetalleTemp({ idProducto: 0, descripcion: '', cantidad: 1, precio: 0, total: 0 });
         setFk_producto(0); // Reset product selection after adding
+        setAlertaCantidad('');
     };
 
     useEffect(() => {
@@ -179,7 +222,7 @@ export default function FormularioMovimientos() {
     };
     let count = 100
 
-
+    {/*Aqui es donde guardo el formulario para enviar al backend y se guarde todo.*/ }
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
@@ -244,6 +287,8 @@ export default function FormularioMovimientos() {
         setIsDepositoOrigenVisible(tipoMovimientoId === 2 || tipoMovimientoId === 3);
         setIsDepositoDestinoVisible(tipoMovimientoId === 1 || tipoMovimientoId === 3);
         setIsTransferencia(tipoMovimientoId === 3);
+        setEsCompra(tipoMovimientoId === 1);
+        setEsEgreso(tipoMovimientoId === 2);
     }, [fk_motivo_por_tipo_de_movimiento, motivosPorTipoDeMovimiento]);
 
     return (
@@ -399,14 +444,8 @@ export default function FormularioMovimientos() {
                     <div className="grid grid-cols-1 md:grid-cols-6 gap-4 items-end mb-4">
                         <div className="md:col-span-2">
                             <label htmlFor="descripcion" className="block text-sm font-medium text-gray-700">Descripción/Producto</label>
-
-                            {/*<SearchSelect id="descripcion" value={detalleTemp.descripcion} placeholder="Seleccionar Producto" onValueChange={(value) => manejarCambioDetalleTemp('descripcion', value)} className='mt-2'>
-                                {arregloProductos.map(producto => (
-                                    <SearchSelectItem key={producto.id} value={producto.nombre}>{producto.nombre}</SearchSelectItem>
-                                ))}
-                            </SearchSelect>*/}
                             <SearchSelect id="fk_producto" className='mt-2' placeholder='Producto' value={fk_producto} onValueChange={(value) => setFk_producto(parseInt(value))}>
-                                {arregloProductos.map(producto => (
+                                {productosFiltrados.map(producto => (
                                     <SearchSelectItem key={producto.id} value={producto.id}>{producto.str_nombre}</SearchSelectItem>
                                 ))}
                             </SearchSelect>
@@ -433,8 +472,10 @@ export default function FormularioMovimientos() {
                                 value={detalleTemp.precio}
                                 onChange={(e) => manejarCambioDetalleTemp('precio', parseFloat(e.target.value))}
                                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm"
+                                disabled={!esCompra}
                                 min="0"
                                 required
+
                             />
                         </div>
 
@@ -458,6 +499,11 @@ export default function FormularioMovimientos() {
                             >
                                 Agregar
                             </button>
+                            {alertaCantidad && (
+                                <div className="mt-2 p-2 bg-red-500 text-white text-sm rounded-md">
+                                    {alertaCantidad}
+                                </div>
+                            )}
                         </div>
                     </div>
                 </form>
