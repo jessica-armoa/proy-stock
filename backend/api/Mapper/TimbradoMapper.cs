@@ -12,11 +12,7 @@ namespace api.Mapper
         Id = timbrado.Id,
         Str_timbrado = timbrado.Str_timbrado,
         Date_inicio_vigencia = timbrado.Date_inicio_vigencia,
-        Date_fin_vigencia = timbrado.Date_fin_vigencia,
-        Codigo_establecimiento = timbrado.Codigo_establecimiento,
-        Punto_de_expedicion = timbrado.Punto_de_expedicion,
-        Cantidad = timbrado.Cantidad,
-        Secuencia_actual = timbrado.Secuencia_actual
+        Date_fin_vigencia = timbrado.Date_fin_vigencia
       };
     }
 
@@ -27,11 +23,7 @@ namespace api.Mapper
         Id = timbradoDto.Id,
         Str_timbrado = timbradoDto.Str_timbrado,
         Date_inicio_vigencia = timbradoDto.Date_inicio_vigencia,
-        Date_fin_vigencia = timbradoDto.Date_fin_vigencia,
-        Codigo_establecimiento = timbradoDto.Codigo_establecimiento,
-        Punto_de_expedicion = timbradoDto.Punto_de_expedicion,
-        Cantidad = timbradoDto.Cantidad,
-        Secuencia_actual = timbradoDto.Secuencia_actual
+        Date_fin_vigencia = timbradoDto.Date_fin_vigencia
       };
     }
 
@@ -41,11 +33,7 @@ namespace api.Mapper
       {
         Str_timbrado = createTimbradoDto.Str_timbrado,
         Date_inicio_vigencia = createTimbradoDto.Date_fecha_de_inicio,
-        Date_fin_vigencia = createTimbradoDto.Date_fecha_de_fin,
-        Codigo_establecimiento = createTimbradoDto.Codigo_establecimiento,
-        Punto_de_expedicion = createTimbradoDto.Punto_de_expedicion,
-        Cantidad = createTimbradoDto.Cantidad,
-        Secuencia_actual = createTimbradoDto.Secuencia_actual
+        Date_fin_vigencia = createTimbradoDto.Date_fecha_de_fin
       };
     }
   }

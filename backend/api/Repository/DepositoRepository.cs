@@ -1,9 +1,15 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using api.Data;
 using api.Dtos.Deposito;
+using api.Dtos.DetalleDeMovimiento;
+using api.Dtos.Movimiento;
+using api.Dtos.Producto;
 using api.Interfaces;
 using api.Models;
 using Microsoft.EntityFrameworkCore;
-
 
 namespace api.Repository
 {
@@ -14,7 +20,6 @@ namespace api.Repository
         {
             _context = context;
         }
-
         public async Task<Deposito> CreateAsync(Deposito depositoModel)
         {
             await _context.depositos.AddAsync(depositoModel);
@@ -25,12 +30,13 @@ namespace api.Repository
         public async Task<Deposito?> DeleteAsync(int id)
         {
             var depositoExistente = await _context.depositos
-                .Where(d => !d.Bool_borrado)
+                .Where(d => d.Bool_borrado != true)
                 .FirstOrDefaultAsync(d => d.Id == id);
 
             if (depositoExistente == null) return null;
 
             depositoExistente.Bool_borrado = true;
+
             await _context.SaveChangesAsync();
             return depositoExistente;
         }
@@ -38,8 +44,8 @@ namespace api.Repository
         public async Task<bool> DepositoExists(int id)
         {
             return await _context.depositos
-                .Where(d => !d.Bool_borrado)
-                .AnyAsync(d => d.Id == id);
+            .Where(d => d.Bool_borrado != true)
+            .AnyAsync(d => d.Id == id);
         }
 
         public async Task<List<Deposito>> GetAllAsync()
@@ -50,7 +56,6 @@ namespace api.Repository
             .Include(d => d.Productos).ThenInclude(d => d.Proveedor)
             .Include(d => d.Productos).ThenInclude(d => d.Marca)
             .Include(d => d.Ferreteria)
-            .Include(d => d.Encargado)
             .ToListAsync();
         }
 
@@ -62,33 +67,30 @@ namespace api.Repository
             .Include(d => d.Productos).ThenInclude(d => d.Proveedor)
             .Include(d => d.Productos).ThenInclude(d => d.Marca)
             .Include(d => d.Ferreteria)
-            .Include(d => d.Encargado)
             .FirstOrDefaultAsync(d => d.Id == id);
         }
 
         public async Task<Deposito?> UpdateAsync(int id, UpdateDepositoRequestDto depositoDto)
         {
             var depositoExistente = await _context.depositos
-                .Where(d => !d.Bool_borrado)
+                .Where(d => d.Bool_borrado != true)
                 .FirstOrDefaultAsync(d => d.Id == id);
 
             if (depositoExistente == null) return null;
 
             depositoExistente.Str_nombre = depositoDto.Str_nombre;
             depositoExistente.Str_direccion = depositoDto.Str_direccion;
-            depositoExistente.Str_telefono = depositoDto.Str_telefono;
-            depositoExistente.EncargadoId = depositoDto.EncargadoId;
-            depositoExistente.Bool_borrado = depositoDto.Bool_borrado;
+            depositoExistente.Bool_borrado = false;
 
             await _context.SaveChangesAsync();
             return depositoExistente;
         }
 
-        public async Task<Producto?> GetProductoEnDepositoAsync(int? depositoId, string producto_nombre)
+        public async Task<Producto> GetProductoEnDepositoAsync(int? depositoId, string producto_nombre)
         {
             return await _context.productos
-                .Where(d => !d.Bool_borrado)
-                .FirstOrDefaultAsync(p => p.DepositoId == depositoId && p.Str_nombre == producto_nombre);
+            .Where(d => d.Bool_borrado != true)
+            .FirstOrDefaultAsync(p => p.DepositoId == depositoId && p.Str_nombre == producto_nombre);
         }
     }
 }

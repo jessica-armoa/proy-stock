@@ -11,6 +11,5 @@ namespace api.Interfaces
     Task<NotaDeRemision?> GetByIdAsync(int? id);
     Task<NotaDeRemision?> GetUltimaNotaDeRemisionAsync();// Método para obtener la última nota de remisión creada
     Task UpdateAsync(NotaDeRemision notaDeRemision);
-    Task<string> GetSiguienteNumeroAsync();
   }
 }

@@ -9,10 +9,12 @@ namespace api.Dtos.NotaDeRemision
   public class CreateNotaDeRemisionDto
   {
     public string Str_numero { get; set; } = string.Empty;
-    public int TimbradoId { get; set; }
+    public string Str_timbrado { get; set; } = string.Empty;
+    public string Str_numero_de_comprobante_inicial { get; set; } = string.Empty;
+    public string Str_numero_de_comprobante_final { get; set; } = string.Empty;
+    public string Str_numero_de_comprobante_actual { get; set; } = string.Empty;
     public DateTime Date_fecha_de_expedicion { get; set; }
     public DateTime Date_fecha_de_vencimiento { get; set; }
-    public int MovimientoId { get; set; }
 
     // Datos de Empresa
     public string EmpresaNombre { get; set; } = string.Empty;
@@ -52,4 +54,6 @@ namespace api.Dtos.NotaDeRemision
     public string MotivoDescripcion { get; set; } = string.Empty;
     public string ComprobanteVenta { get; set; } = string.Empty;
   }
+
+
 }

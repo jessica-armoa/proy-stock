@@ -45,7 +45,6 @@ namespace api.Mapper
                 Str_ruta_imagen = productoDto.Str_ruta_imagen,
                 Str_nombre = productoDto.Str_nombre,
                 Str_descripcion = productoDto.Str_descripcion,
-                Int_cantidad_actual = 0,
                 Int_cantidad_minima = productoDto.Int_cantidad_minima,
                 Dec_costo = 0,
                 Dec_costo_PPP = 0,

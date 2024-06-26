@@ -10,16 +10,16 @@ namespace api.Dtos.Deposito
     public class DepositoDto
     {
         public int Id { get; set; }
-        public string Str_nombre { get; set; } = string.Empty;
-        public string Str_direccion { get; set; } = string.Empty;
-        public string Str_telefono { get; set; } = string.Empty;
-        public bool Bool_borrado { get; set; } = false;
+        public string Str_nombre { get; set; } = String.Empty;
+        public string Str_direccion { get; set; } = String.Empty;
+        public string Str_telefono { get; set; } = String.Empty;
+        public string Str_encargado { get; set; } = String.Empty;
+        public string Str_telefonoEncargado { get; set; } = String.Empty;
         public int? FerreteriaId { get; set; }
-        public string? Str_ferreteriaNombre { get; set; }
-        public string? Str_ferreteriaTelefono { get; set; }
-        public string EncargadoUsername { get; set; } = string.Empty;
-        public string EncargadoEmail { get; set; } = string.Empty;
-        public List<MovimientoDto> Movimientos { get; set; } = new();
-        public List<ProductoDto> Productos { get; set; } = new();
+        public string Str_ferreteriaNombre { get; set; } = String.Empty;
+        public string Str_ferreteriaTelefono { get; set; } = String.Empty;
+        public bool Bool_borrado { get; set; } = false;
+        public List<MovimientoDto> Movimientos { get; set; }
+        public List<ProductoDto> Productos { get; set; }
     }
 }

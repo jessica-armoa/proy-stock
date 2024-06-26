@@ -20,9 +20,9 @@ namespace api.Controllers
         private readonly IDetalleDeMovimientosRepository _detalleRepo;
         private readonly IMarcaRepository _marcaRepo;
         public ProductoController(
-            IProductoRepository productoRepo,
-            IDepositoRepository depositoRepo,
-            IProveedorRepository proveedorRepo,
+            IProductoRepository productoRepo, 
+            IDepositoRepository depositoRepo, 
+            IProveedorRepository proveedorRepo, 
             IDetalleDeMovimientosRepository detalleRepo,
             IMarcaRepository marcaRepo)
         {
@@ -45,10 +45,6 @@ namespace api.Controllers
         [Route("deposito/{depositoId:int}")]
         public async Task<IActionResult> ObtenerProductosPorDeposito(int depositoId)
         {
-            if (!await _depositoRepo.DepositoExists(depositoId))
-            {
-                return NotFound("Deposito ingresado no existe!!");
-            }
             var productos = await _productoRepo.ObtenerProductosPorDepositoAsync(depositoId);
             var productosDto = productos.Select(p => p.ToProductoDto());
             return Ok(productosDto);
@@ -101,6 +97,7 @@ namespace api.Controllers
             {
                 return BadRequest("El producto que desea ingresar ya existe!!");
             }
+
             var productoModel = productoDto.ToProductoFromCreate(depositoId, proveedorId, marcaId);
             await _productoRepo.CreateAsync(productoModel);
 
@@ -111,17 +108,13 @@ namespace api.Controllers
                 {
                     if (deposito.Id != depositoId)
                     {
-                        if (!deposito.Productos.Any(d => d.Str_nombre != productoDto.Str_nombre))
+                        if (deposito.Productos.Any(d => d.Str_nombre != productoDto.Str_nombre))
                         {
                             var productoEnDepositos = productoDto.ToProductoFromCreate(deposito.Id, proveedorId, marcaId);
                             await _productoRepo.CreateAsync(productoEnDepositos);
                         }
                     }
                 }
-            }
-            else
-            {
-                return BadRequest("No existen depositos creados");
             }
 
             return CreatedAtAction(nameof(GetById), new { id = productoModel.Id }, productoModel.ToProductoDto());
