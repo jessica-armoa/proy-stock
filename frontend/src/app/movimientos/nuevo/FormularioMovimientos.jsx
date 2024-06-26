@@ -248,11 +248,6 @@ export default function FormularioMovimientos() {
                 'Oops! ocurrió un error al intentar guardar el movimiento.',
                 'error'
             );
-            Swal.fire(
-                'Error',
-                'Oops! ocurrió un error al intentar guardar el movimiento.',
-                'error'
-            );
         }
 
     };
