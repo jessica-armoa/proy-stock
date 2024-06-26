@@ -7,6 +7,9 @@ import withAuth from "@/components/auth/withAuth";
 import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
 import dynamic from "next/dynamic"; // Dynamic imports
+import { formatearPrecio } from "@/utils/format";
+import EditProductModal from "@/components/productos/EditProductModal";
+
 
 const Sidebar = dynamic(() => import("@/components/barraNavegacion/Sidebar"), { ssr: false });
 const DataTable = dynamic(() => import("@/components/tabla"), { ssr: false });
@@ -61,37 +64,6 @@ const Productos = ({cantElementos = 15}) => {
     setModalIsOpen(true);
   };
 
-  const handleSave = () => {
-    console.log(currentProduct)
-    ProductosConfig.putProducto(currentProduct.id, currentProduct)
-      .then(() => {
-        setProducts(
-          products.map((product) =>
-            product.id === currentProduct.id ? currentProduct : product
-          )
-        );
-        setModalIsOpen(false);
-        Swal.fire(
-          "Actualizado!",
-          "El producto ha sido actualizado.",
-          "success"
-        );
-      })
-      .catch((error) => {
-        console.error("Error updating product:", error);
-        console.log(error.response.data);
-        Swal.fire(
-          "Error!",
-          "Hubo un problema al actualizar el producto.",
-          "error"
-        );
-      });
-  };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setCurrentProduct({ ...currentProduct, [name]: value });
-  };
 
   const columns = [
     {
@@ -219,159 +191,22 @@ const Productos = ({cantElementos = 15}) => {
       </div>
 
       {modalIsOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-auto bg-gray-800 bg-opacity-50">
-          <div className="bg-white rounded-lg shadow-lg w-3/4 max-w-lg">
-            <div className="p-4 border-b">
-              <h2 className="text-xl font-semibold">Editar Producto</h2>
-            </div>
-            <div className="p-4">
-              {currentProduct && (
-                <form className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700">
-                      Nombre: 
-                      <span className="text-red-700">*
-                      </span>
-                      <input
-                        type="text"
-                        name="str_nombre"
-                        value={currentProduct.str_nombre}
-                        onChange={handleChange}
-                        className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
-                      />
-                    </label>
-                  </div>
-                  <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700">
-                      Descripción:
-                      <span className="text-red-700">*
-                      </span>
-                      <input
-                        type="text"
-                        name="str_descripcion"
-                        value={currentProduct.str_descripcion}
-                        onChange={handleChange}
-                        className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
-                      />
-                    </label>
-                  </div>
-                  <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700">
-                      Marca:
-                      <span className="text-red-700">*
-                      </span>
-                      <input
-                        type="text"
-                        name="marcaNombre"
-                        value={currentProduct.marcaNombre}
-                        onChange={handleChange}
-                        className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
-                      />
-                    </label>
-                  </div>
-                  <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700">
-                      Proveedor:
-                      <span className="text-red-700">*
-                      </span>
-                      <input
-                        type="text"
-                        name="proveedorNombre"
-                        value={currentProduct.proveedorNombre}
-                        onChange={handleChange}
-                        className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
-                      />
-                    </label>
-                  </div>
-                  <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700">
-                      Cantidad:
-                      <span className="text-red-700">*
-                      </span>
-                      <input
-                        type="number"
-                        name="int_cantidad_actual"
-                        value={currentProduct.int_cantidad_actual}
-                        onChange={handleChange}
-                        className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
-                      />
-                    </label>
-                  </div>
-                  <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700">
-                      Depósito:
-                      <span className="text-red-700">*
-                      </span>
-                      <input
-                        type="text"
-                        name="depositoNombre"
-                        value={currentProduct.depositoNombre}
-                        onChange={handleChange}
-                        className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
-                      />
-                    </label>
-                  </div>
-                  <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700">
-                      Costo:
-                      <span className="text-red-700">*
-                      </span>
-                      <input
-                        type="number"
-                        name="dec_costo_PPP"
-                        value={currentProduct.dec_costo_PPP }
-                        onChange={handleChange}
-                        className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
-                      />
-                    </label>
-                  </div>
-                  <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700">
-                      Precio Mayorista:
-                      <span className="text-red-700">*
-                      </span>
-                      <input
-                        type="number"
-                        name="dec_precio_mayorista"
-                        value={currentProduct.dec_precio_mayorista}
-                        onChange={handleChange}
-                        className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
-                      />
-                    </label>
-                  </div>
-                  <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700">
-                      Precio Minorista:
-                      <span className="text-red-700">*
-                      </span>
-                      <input
-                        type="number"
-                        name="dec_precio_minorista"
-                        value={currentProduct.dec_precio_minorista}
-                        onChange={handleChange}
-                        className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
-                      />
-                    </label>
-                  </div>
-                </form>
-              )}
-            </div>
-            <div className="flex justify-end p-4 border-t">
-              <button
-                className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-700"
-                onClick={() => setModalIsOpen(false)}
-              >
-                Cancelar
-              </button>
-              <button
-                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 ml-2"
-                onClick={handleSave}
-              >
-                Guardar
-              </button>
-            </div>
-          </div>
-        </div>
+        <EditProductModal
+          isOpen={modalIsOpen}
+          onClose={() => setModalIsOpen(false)}
+          product={currentProduct}
+          onSave={() => {
+            // Refrescar los productos después de guardar los cambios
+            ProductosConfig.getProductos().then((response) => {
+              setProducts(response.data);
+            });
+            Swal.fire(
+              "Actualizado!",
+              "El producto ha sido actualizado con éxito.",
+              "success"
+            );
+          }}
+        />
       )}
     </div>
   );

@@ -148,6 +148,7 @@ const Detalle = ({ params, cantElementos = 8 }) => {
                 <Photo src={producto.str_ruta_imagen}></Photo>
               </div>
               <div>
+
                 <p>Codigo: {producto.id}</p>
                 <p>Nombre:{producto.str_nombre} </p>
                 <p>Descripcion: {producto.str_descripcion} </p>
