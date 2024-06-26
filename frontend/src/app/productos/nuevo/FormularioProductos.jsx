@@ -38,25 +38,16 @@ export default function FormularioProductos() {
     setShowCrearProveedor(false);
   };
 
-  const handleMarcaCreada = async (marcaId) => {
+  const handleMarcaCreada = async(marcaId) => {
+
     //console.log("yes",marcaId);
     await extraccionMarcas();
     setFk_marca(marcaId);
   };
 
-  const handleProveedorCreado = (proveedorId) => {
+  const handleProveedorCreado = async(proveedorId) => {
+    await extraccionProveedores();
     setFk_proveedor(proveedorId);
-    handleCloseModal();
-  };
-
-  const handleCancelarCreacionMarca = () => {
-    setFk_marca(null);
-    handleCloseModal();
-  };
-
-  const handleCancelarCreacionProveedor = () => {
-    setFk_proveedor(null);
-    handleCloseModal();
   };
 
   // Definimos el estado para cada campo del formulario
@@ -77,15 +68,17 @@ export default function FormularioProductos() {
 
   const [fk_proveedor, setFk_proveedor] = useState(0);
   const [proveedores, setProveedores] = useState([]);
+  
+  const extraccionProveedores = async () => {
+    try {
+      const respuestaProveedores = await ProveedoresConfig.getProveedor();
+      setProveedores(respuestaProveedores.data);
+    } catch (error) {
+      console.error("Error al obtener lista de proveedores: ", error);
+    }
+  };
+  
   useEffect(() => {
-    const extraccionProveedores = async () => {
-      try {
-        const respuestaProveedores = await ProveedoresConfig.getProveedor();
-        setProveedores(respuestaProveedores.data);
-      } catch (error) {
-        console.error("Error al obtener lista de proveedores: ", error);
-      }
-    };
     extraccionProveedores();
   }, []);
 
@@ -100,6 +93,7 @@ export default function FormularioProductos() {
       console.error("Error al obtener lista de marcas: ", error);
     }
   };
+  
 
   useEffect(() => {
     extraccionMarcas();
@@ -315,18 +309,45 @@ export default function FormularioProductos() {
                     value === "crear" ? false : setFk_marca(parseInt(value));
                   }}
                 >
+                  <SearchSelectItem value="crear" onClick={handleCrearMarca}>
+                  <Button type='button' variant="light" color="blue">Crear Nueva Marca</Button>
+                  </SearchSelectItem>
                   {marcas.map((marca) => (
                     <SearchSelectItem key={marca.id} value={marca.id}>
                       {marca.str_nombre}
                     </SearchSelectItem>
                   ))}
-                  <SearchSelectItem value="crear" onClick={handleCrearMarca}>
-                    Crear Nueva Marca
-                  </SearchSelectItem>
                 </SearchSelect>
               </div>
 
-             
+              <div className="mx-auto max-w-xs">
+                <label
+                  htmlFor="fk_proveedor"
+                  className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                >
+                  Proveedor
+                  <span className="text-red-500">*</span>
+                </label>
+                <SearchSelect
+                  id="fk_proveedor"
+                  value={fk_proveedor}
+                  placeholder="Seleccionar Proveedor"
+                  className="mt-2"
+                  onValueChange={
+                    (value) => { value==='crear' ? false : setFk_proveedor(parseInt(value))}
+                  }
+                >
+                  <SearchSelectItem value="crear" onClick={handleCrearProveedor}>
+                    <Button type='button' variant="light" color="blue">Crear Nuevo Proveedor</Button>
+                  </SearchSelectItem>
+                  {proveedores.map((proveedor) => (
+                    <SearchSelectItem key={proveedor.id} value={proveedor.id}>
+                      {proveedor.str_nombre}
+                    </SearchSelectItem>
+                  ))}
+                </SearchSelect>
+              </div>
+
             </div>
             <div className="w-3/4 pl-4 space-y-4">
               <div className="mx-auto max-w-xs">
@@ -495,13 +516,9 @@ export default function FormularioProductos() {
               onClick={handleCloseModal}
             />
           </button>
-          <FormularioMarcas
-            type={"modal"}
-            closeDialog={handleCloseModal}
-            saveAction={handleMarcaCreada}
-            isOpen={showCrearMarca}
-            onClose={handleCancelarCreacionMarca}
-          />
+
+          <FormularioMarcas type={'modal'} closeDialog={handleCloseModal} saveAction={handleMarcaCreada}/>
+
         </DialogPanel>
       </Dialog>
       <Dialog
@@ -520,12 +537,11 @@ export default function FormularioProductos() {
               />
             </button>
           </div>
-          <FormularioProveedores
-            type={"modal"}
-            closeDialog={handleCloseModal}
-            isOpen={showCrearProveedor}
+
+          <FormularioProveedores type={'modal'} closeDialog={handleCloseModal} saveAction={handleProveedorCreado}
+            /*isOpen={showCrearProveedor}
             onClose={handleCancelarCreacionProveedor}
-            onProveedorCreado={handleProveedorCreado}
+            onProveedorCreado={handleProveedorCreado}*/
           />
         </DialogPanel>
       </Dialog>

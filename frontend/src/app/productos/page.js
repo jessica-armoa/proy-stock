@@ -4,17 +4,17 @@ import React, { useState, useEffect } from "react";
 import { Button } from "@tremor/react";
 import ProductosConfig from "@/controladores/ProductosConfig";
 import withAuth from "@/components/auth/withAuth";
-import ExportPDF from "@/components/exportpdf";
 import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
 import dynamic from "next/dynamic"; // Dynamic imports
 import { formatearPrecio } from "@/utils/format";
 import EditProductModal from "@/components/productos/EditProductModal";
 
+
 const Sidebar = dynamic(() => import("@/components/barraNavegacion/Sidebar"), { ssr: false });
 const DataTable = dynamic(() => import("@/components/tabla"), { ssr: false });
 
-const Productos = () => {
+const Productos = ({cantElementos = 15}) => {
   const router = useRouter();
   const [products, setProducts] = useState([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -160,7 +160,7 @@ const Productos = () => {
     <div>
       <div className="flex h-screen w-full bg-ui-background p-2 text-ui-text">
         <Sidebar />
-        <div className="flex flex-col w-content h-full p-5 rounded-lg bg-ui-cardbg">
+        <div className="flex flex-col w-full h-full p-5 rounded-lg bg-ui-cardbg overflow-y">
           <h1 className="text-l font-semibold normal-case tracking-tight">
             Productos
           </h1>
@@ -182,6 +182,7 @@ const Productos = () => {
               <DataTable
                 data={products}
                 columns={columns}
+                cantElementos={cantElementos}
                 pageurl={`/productos/detalle/`}
               />
             )}

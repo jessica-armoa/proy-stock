@@ -12,8 +12,8 @@ using api.Data;
 namespace api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240607131331_tabla_Notas_remision_modificada")]
-    partial class tabla_Notas_remision_modificada
+    [Migration("20240622041418_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -54,19 +54,19 @@ namespace api.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "940b3c0b-7e60-474c-95fc-ae493a31ff95",
+                            Id = "e59c3450-5d85-4dff-bfae-7e0379c921a7",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "3e5a7970-f206-47eb-acf8-a0e1f84782c7",
+                            Id = "32ad10d4-d5de-4792-8335-72ef64d9775f",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "e40df266-077e-4ada-9679-8a9faed5802d",
+                            Id = "dd3eed36-3702-4c01-9043-7d679bcf85c9",
                             Name = "Encargado",
                             NormalizedName = "ENCARGADO"
                         });
@@ -397,18 +397,6 @@ namespace api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ConductorDireccion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ConductorDocumento")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ConductorNombre")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("Date_fecha_de_expedicion")
                         .HasColumnType("datetime2");
 
@@ -486,27 +474,11 @@ namespace api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("TransportistaNombre")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TransportistaRuc")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("TrasladoFechaFin")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TrasladoFechaInicio")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TrasladoRua")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TrasladoVehiculo")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

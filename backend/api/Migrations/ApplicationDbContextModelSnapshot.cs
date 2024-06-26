@@ -51,19 +51,19 @@ namespace api.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "940b3c0b-7e60-474c-95fc-ae493a31ff95",
+                            Id = "053ce821-6f00-4b56-b212-c5d3c1d70ac1",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "3e5a7970-f206-47eb-acf8-a0e1f84782c7",
+                            Id = "14909982-f042-4f92-88f8-fde3554aca2c",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "e40df266-077e-4ada-9679-8a9faed5802d",
+                            Id = "a2949bda-19e7-402d-9cf2-8ac0d1872dc9",
                             Name = "Encargado",
                             NormalizedName = "ENCARGADO"
                         });
@@ -208,14 +208,14 @@ namespace api.Migrations
                     b.Property<bool>("Bool_borrado")
                         .HasColumnType("bit");
 
+                    b.Property<string>("EncargadoId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<int?>("FerreteriaId")
                         .HasColumnType("int");
 
                     b.Property<string>("Str_direccion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Str_encargado")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -227,11 +227,9 @@ namespace api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Str_telefonoEncargado")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
+
+                    b.HasIndex("EncargadoId");
 
                     b.HasIndex("FerreteriaId");
 
@@ -394,18 +392,6 @@ namespace api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ConductorDireccion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ConductorDocumento")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ConductorNombre")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("Date_fecha_de_expedicion")
                         .HasColumnType("datetime2");
 
@@ -483,27 +469,11 @@ namespace api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("TransportistaNombre")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TransportistaRuc")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("TrasladoFechaFin")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TrasladoFechaInicio")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TrasladoRua")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TrasladoVehiculo")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -785,9 +755,17 @@ namespace api.Migrations
 
             modelBuilder.Entity("api.Models.Deposito", b =>
                 {
+                    b.HasOne("api.Models.Usuarios", "Encargado")
+                        .WithMany()
+                        .HasForeignKey("EncargadoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("api.Models.Ferreteria", "Ferreteria")
                         .WithMany("Depositos")
                         .HasForeignKey("FerreteriaId");
+
+                    b.Navigation("Encargado");
 
                     b.Navigation("Ferreteria");
                 });

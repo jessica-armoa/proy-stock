@@ -47,6 +47,12 @@ namespace api.Data
                 .HasForeignKey(m => m.DepositoOrigenId)
                 .OnDelete(DeleteBehavior.Restrict); // Esto asegura que no se elimine en cascada si eliminas un depósito
 
+            modelBuilder.Entity<Deposito>()
+            .HasOne(d => d.Encargado)
+            .WithMany()
+            .HasForeignKey(d => d.EncargadoId)
+            .OnDelete(DeleteBehavior.Restrict);
+
             // Otros ajustes de modelo aquí si es necesario
             List<IdentityRole> roles = new List<IdentityRole>{
                 new IdentityRole

@@ -80,5 +80,19 @@ namespace api.Controllers
 
       return NoContent();
     }
+
+    [HttpGet("getSiguienteNumero")]
+    public async Task<ActionResult<int>> GetSiguienteNumeroAsync()
+    {
+      try
+      {
+        var nextNumber = await _notaDeRemisionRepository.GetSiguienteNumeroAsync();
+        return Ok(nextNumber);
+      }
+      catch (Exception ex)
+      {
+        return StatusCode(500, $"Error interno del servidor: {ex.Message}");
+      }
+    }
   }
 }

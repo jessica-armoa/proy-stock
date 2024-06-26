@@ -12,8 +12,8 @@ using api.Data;
 namespace api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240607040609_Initial")]
-    partial class Initial
+    [Migration("20240622133802_EncargadoDeposito")]
+    partial class EncargadoDeposito
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -54,19 +54,19 @@ namespace api.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "aa0b1b6e-b535-4fc2-98c5-611f2f919550",
+                            Id = "053ce821-6f00-4b56-b212-c5d3c1d70ac1",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "4406daa5-d78e-4b63-87ae-05f6ced3d839",
+                            Id = "14909982-f042-4f92-88f8-fde3554aca2c",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "7eaf94f4-1e75-42c0-a6e1-664596d02c45",
+                            Id = "a2949bda-19e7-402d-9cf2-8ac0d1872dc9",
                             Name = "Encargado",
                             NormalizedName = "ENCARGADO"
                         });
@@ -211,14 +211,14 @@ namespace api.Migrations
                     b.Property<bool>("Bool_borrado")
                         .HasColumnType("bit");
 
+                    b.Property<string>("EncargadoId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<int?>("FerreteriaId")
                         .HasColumnType("int");
 
                     b.Property<string>("Str_direccion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Str_encargado")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -230,11 +230,9 @@ namespace api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Str_telefonoEncargado")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
+
+                    b.HasIndex("EncargadoId");
 
                     b.HasIndex("FerreteriaId");
 
@@ -393,14 +391,66 @@ namespace api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("ComprobanteVenta")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("Date_fecha_de_expedicion")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("Date_fecha_de_vencimiento")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("DestinatarioDocumento")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DestinatarioNombre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EmpresaActividad")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EmpresaDireccion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EmpresaNombre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EmpresaSucursal")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EmpresaTelefono")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Motivo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MotivoDescripcion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int?>("MovimientoId")
                         .HasColumnType("int");
+
+                    b.Property<string>("PuntoLlegada")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PuntoPartida")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Ruc")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Str_numero")
                         .IsRequired()
@@ -419,6 +469,14 @@ namespace api.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Str_timbrado")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TrasladoFechaFin")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TrasladoFechaInicio")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -700,9 +758,17 @@ namespace api.Migrations
 
             modelBuilder.Entity("api.Models.Deposito", b =>
                 {
+                    b.HasOne("api.Models.Usuarios", "Encargado")
+                        .WithMany()
+                        .HasForeignKey("EncargadoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("api.Models.Ferreteria", "Ferreteria")
                         .WithMany("Depositos")
                         .HasForeignKey("FerreteriaId");
+
+                    b.Navigation("Encargado");
 
                     b.Navigation("Ferreteria");
                 });

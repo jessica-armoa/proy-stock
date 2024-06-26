@@ -31,7 +31,7 @@ namespace api.Repository
     {
       return await _context.timbrados
           .Where(t => t.Date_inicio_vigencia <= DateTime.Now && t.Date_fin_vigencia >= DateTime.Now)
-          .FirstOrDefaultAsync();
+        .FirstOrDefaultAsync();
     }
 
     public async Task CreateAsync(Timbrado timbrado)

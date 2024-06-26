@@ -145,5 +145,12 @@ namespace api.Repository
             .Where(p => p.Bool_borrado != true)
             .AnyAsync(p => p.Str_nombre == nombreProducto);
         }
+
+        public async Task<List<Producto>> ObtenerProductosPorDepositoAsync(int depositoId)
+        {
+            return await _context.productos
+            .Where(p => p.Bool_borrado != true && p.DepositoId == depositoId)
+            .ToListAsync();
+        }
     }
 }

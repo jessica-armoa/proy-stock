@@ -398,7 +398,22 @@ namespace api.Migrations
                     Str_numero_de_comprobante_actual = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Date_fecha_de_expedicion = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Date_fecha_de_vencimiento = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    MovimientoId = table.Column<int>(type: "int", nullable: true)
+                    MovimientoId = table.Column<int>(type: "int", nullable: true),
+                    EmpresaNombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    EmpresaDireccion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    EmpresaTelefono = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    EmpresaSucursal = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    EmpresaActividad = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Ruc = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DestinatarioNombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DestinatarioDocumento = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PuntoPartida = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PuntoLlegada = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TrasladoFechaInicio = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TrasladoFechaFin = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Motivo = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MotivoDescripcion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ComprobanteVenta = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -441,9 +456,9 @@ namespace api.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "4406daa5-d78e-4b63-87ae-05f6ced3d839", null, "User", "USER" },
-                    { "7eaf94f4-1e75-42c0-a6e1-664596d02c45", null, "Encargado", "ENCARGADO" },
-                    { "aa0b1b6e-b535-4fc2-98c5-611f2f919550", null, "Admin", "ADMIN" }
+                    { "32ad10d4-d5de-4792-8335-72ef64d9775f", null, "User", "USER" },
+                    { "dd3eed36-3702-4c01-9043-7d679bcf85c9", null, "Encargado", "ENCARGADO" },
+                    { "e59c3450-5d85-4dff-bfae-7e0379c921a7", null, "Admin", "ADMIN" }
                 });
 
             migrationBuilder.CreateIndex(
