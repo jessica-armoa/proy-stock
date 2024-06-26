@@ -164,20 +164,5 @@ namespace api.Controllers
 
             return Ok($"Se borró correctamente el producto: {productoModel.Str_nombre}"); //No es necesario traer algo, puede ser vacio
         }
-
-        [HttpPost("actualizar-costo-ppp")]
-        public async Task<IActionResult> ActualizarCostoPPP()
-        {
-            // Obtener todos los productos
-            try
-            {
-                await _productoRepo.ActualizarCostoPPPAsync();
-                return Ok("Costo PPP actualizado correctamente!!");
-            }
-            catch (InvalidOperationException ex)
-            {
-                return NotFound(ex.Message);
-            }
-        }
     }
 }

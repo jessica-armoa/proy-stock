@@ -15,5 +15,6 @@ namespace api.Interfaces
         Task<Movimiento?> UpdateAsync(int id, Movimiento movimientoDto);
         Task<Movimiento?> DeleteAsync(int id); 
         Task<bool> MovimientoExists(int id);
+        Task GuardarCambiosAsync();
     }
 }

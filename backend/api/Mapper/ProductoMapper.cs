@@ -25,16 +25,16 @@ namespace api.Mapper
                 Int_iva = productoModel.Int_iva,
                 Dec_precio_mayorista = productoModel.Dec_precio_mayorista,
                 Dec_precio_minorista = productoModel.Dec_precio_minorista,
+                DepositoId = productoModel.DepositoId,
+                DepositoNombre = productoModel.Deposito.Str_nombre,
+                ProveedorId = productoModel.ProveedorId,
+                ProveedorNombre = productoModel.Proveedor.Str_nombre,
+                MarcaId = productoModel.MarcaId,
+                MarcaNombre = productoModel.Marca.Str_nombre,
+                Bool_borrado = productoModel.Bool_borrado,
                 DetallesDeMovimientos = productoModel.DetallesDeMovimientos
                     .Where(d => d.Bool_borrado != true)
-                    .Select(d => d.ToDetalleDeMovimientoDto()).ToList(),
-                DepositoId = productoModel.DepositoId,
-                DepositoNombre = productoModel.Deposito?.Str_nombre,
-                ProveedorId = productoModel.ProveedorId,
-                ProveedorNombre = productoModel.Proveedor?.Str_nombre,
-                MarcaId = productoModel.MarcaId,
-                MarcaNombre = productoModel.Marca?.Str_nombre,
-                Bool_borrado = productoModel.Bool_borrado
+                    .Select(d => d.ToDetalleDeMovimientoDto()).ToList()    
             };
         }
 
@@ -47,7 +47,7 @@ namespace api.Mapper
                 Str_descripcion = productoDto.Str_descripcion,
                 Int_cantidad_actual = 0,
                 Int_cantidad_minima = productoDto.Int_cantidad_minima,
-                Dec_costo = productoDto.Dec_costo,
+                Dec_costo = 0,
                 Dec_costo_PPP = 0,
                 Int_iva = productoDto.Int_iva,
                 Dec_precio_mayorista = productoDto.Dec_precio_mayorista,
