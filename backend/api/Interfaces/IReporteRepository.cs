@@ -9,5 +9,6 @@ namespace api.Interfaces
     Task<List<Producto>> GetTop5ProductosMasVendidosAsync();
     Task<List<Producto>> GetTop5ProductosMenosVendidosAsync();
     Task<List<Producto>> GetPerdidasAsync();
+    Task<List<Producto>> GetProductosConCantidadMinimaAsync();
   }
 }

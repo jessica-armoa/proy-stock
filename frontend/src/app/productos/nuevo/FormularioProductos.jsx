@@ -149,16 +149,16 @@ export default function FormularioProductos() {
         "bool_borrado": true
       }*/
       const producto = {
-        str_ruta_imagen: str_imagen,
-        str_nombre: str_nombre,
-        str_descripcion: str_descripcion,
-        int_cantidad_minima: int_cantidad_minima,
-        dec_costo: dc_costo_PPP,
-        dec_costo_PPP: dc_costo_PPP,
-        int_iva: int_iva,
-        dec_precio_mayorista: dc_precio_mayorista,
-        dec_precio_minorista: dc_precio_minorista,
-        bool_borrado: false,
+        "str_ruta_imagen": str_imagen,
+        "str_nombre": str_nombre,
+        "str_descripcion": str_descripcion,
+        "int_cantidad_minima": int_cantidad_minima,
+        "dec_costo": dc_costo_PPP,
+        //dec_costo_PPP: dc_costo_PPP,
+        "int_iva": int_iva,
+        "dec_precio_mayorista": dc_precio_mayorista,
+        "dec_precio_minorista": dc_precio_minorista,
+        "bool_borrado": false,
       };
 
       const productoAgregado = await ProductosConfig.postProducto(
@@ -239,6 +239,7 @@ export default function FormularioProductos() {
                 className="mt-2"
                 style={{ display: "none" }}
               />
+
               {str_imagen ? (
                 <div>
                   <div>
@@ -246,6 +247,7 @@ export default function FormularioProductos() {
                   </div>
                 </div>
               ) : null}
+
             </div>
 
             <div className="w-2/4 pl-4 space-y-4">
