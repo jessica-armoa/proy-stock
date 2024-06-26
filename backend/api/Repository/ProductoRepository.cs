@@ -33,7 +33,7 @@ namespace api.Repository
             if (productoExistente == null) return null;
 
             productoExistente.Bool_borrado = true;
-            
+
             await _context.SaveChangesAsync();
             return productoExistente;
         }
@@ -46,17 +46,6 @@ namespace api.Repository
             .Include(p => p.Deposito)
             .Include(p => p.Proveedor)
             .Include(p => p.Marca)
-            /*.Select(p => new Producto
-            {
-                Id = p.Id,
-                DetallesDeMovimientos = p.DetallesDeMovimientos.Select(d => new DetalleDeMovimiento
-                {
-                    Id= d.Id,
-                    Int_cantidad= d.Int_cantidad,
-                    MovimientoId = d.MovimientoId,
-                    ProductoId = d.ProductoId    
-                }).ToList(),
-            })*/
             .ToListAsync();
         }
 
@@ -89,7 +78,7 @@ namespace api.Repository
         {
             var productoExistente = await _context.productos
                 .Where(p => p.Bool_borrado != true)
-                .FirstOrDefaultAsync(s => s.Id == id);
+                .FirstOrDefaultAsync(p => p.Id == id);
 
             if (productoExistente == null) return null;
 
@@ -109,41 +98,29 @@ namespace api.Repository
             return productoExistente;
         }
 
-        public async Task ActualizarCostoPPPAsync()
-        {
-            // Obtener todos los productos
-            var productos = await GetAllAsync();
-            var depositos = await _context.depositos
-                .Where(d => d.Bool_borrado != true)
-                .Include(d => d.Productos)
-                .Include(d => d.Movimientos)
-                .ToListAsync();
-
-            if (!productos.Any())
-            {
-                throw new InvalidOperationException("No se encontraron productos.");
-            }
-
-            foreach (var deposito in depositos)
-            {
-                var costoTotal = deposito.Productos
-                    .Where(p => p.Bool_borrado != true)
-                    .Sum(p => p.Dec_costo);
-                var costoPPP = costoTotal / deposito.Productos.Count;
-                foreach (var producto in deposito.Productos)
-                {
-                    producto.Dec_costo_PPP = costoPPP;
-                }
-            }
-
-            await _context.SaveChangesAsync();
-        }
-
         public async Task<bool> ProductoExistsName(string nombreProducto)
         {
             return await _context.productos
             .Where(p => p.Bool_borrado != true)
             .AnyAsync(p => p.Str_nombre == nombreProducto);
+        }
+
+        public async Task<List<Producto>> ObtenerProductosPorDepositoAsync(int depositoId)
+        {
+            return await _context.productos
+            .Where(p => p.Bool_borrado != true && p.DepositoId == depositoId)
+            .Include(p => p.DetallesDeMovimientos)
+            .Include(p => p.Deposito)
+            .Include(p => p.Proveedor)
+            .Include(p => p.Marca)
+            .ToListAsync();
+        }
+
+        public async Task<Producto?> ObtenerProductoEnDeposito(string productoNombre, int? depositoId)
+        {
+            return await _context.productos
+                .Where(p => p.Bool_borrado != true)
+                .FirstOrDefaultAsync(p => p.Str_nombre == productoNombre && p.DepositoId == depositoId);
         }
     }
 }

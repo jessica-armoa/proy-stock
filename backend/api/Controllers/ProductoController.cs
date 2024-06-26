@@ -18,22 +18,34 @@ namespace api.Controllers
         private readonly IDepositoRepository _depositoRepo;
         private readonly IProveedorRepository _proveedorRepo;
         private readonly IDetalleDeMovimientosRepository _detalleRepo;
+        private readonly IMarcaRepository _marcaRepo;
         public ProductoController(
             IProductoRepository productoRepo, 
             IDepositoRepository depositoRepo, 
             IProveedorRepository proveedorRepo, 
-            IDetalleDeMovimientosRepository detalleRepo)
+            IDetalleDeMovimientosRepository detalleRepo,
+            IMarcaRepository marcaRepo)
         {
             _productoRepo = productoRepo;
             _depositoRepo = depositoRepo;
             _proveedorRepo = proveedorRepo;
             _detalleRepo = detalleRepo;
+            _marcaRepo = marcaRepo;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
             var productos = await _productoRepo.GetAllAsync();
+            var productosDto = productos.Select(p => p.ToProductoDto());
+            return Ok(productosDto);
+        }
+
+        [HttpGet]
+        [Route("deposito/{depositoId:int}")]
+        public async Task<IActionResult> ObtenerProductosPorDeposito(int depositoId)
+        {
+            var productos = await _productoRepo.ObtenerProductosPorDepositoAsync(depositoId);
             var productosDto = productos.Select(p => p.ToProductoDto());
             return Ok(productosDto);
         }
@@ -76,10 +88,10 @@ namespace api.Controllers
                 return BadRequest("El proveedor ingresado no existe!");
             }
 
-            /*if (!await _marcaRepo.MarcaExists(marcaId))
+            if (!await _marcaRepo.MarcaExists(marcaId))
             {
                 return BadRequest("La marca ingresada no existe!");
-            }*/
+            }
 
             if (await _productoRepo.ProductoExistsName(productoDto.Str_nombre))
             {
@@ -144,21 +156,6 @@ namespace api.Controllers
             var productoModel = await _productoRepo.DeleteAsync(id);
 
             return Ok($"Se borró correctamente el producto: {productoModel.Str_nombre}"); //No es necesario traer algo, puede ser vacio
-        }
-
-        [HttpPost("actualizar-costo-ppp")]
-        public async Task<IActionResult> ActualizarCostoPPP()
-        {
-            // Obtener todos los productos
-            try
-            {
-                await _productoRepo.ActualizarCostoPPPAsync();
-                return Ok("Costo PPP actualizado correctamente!!");
-            }
-            catch (InvalidOperationException ex)
-            {
-                return NotFound(ex.Message);
-            }
         }
     }
 }

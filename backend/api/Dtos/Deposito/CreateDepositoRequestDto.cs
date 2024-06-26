@@ -18,6 +18,5 @@ namespace api.Dtos.Deposito
         public string Str_encargado { get; set; } = String.Empty;
         [Required]
         public string Str_telefonoEncargado { get; set; } = String.Empty;
-        public bool Bool_borrado { get; set; } = false;
     }
 }
