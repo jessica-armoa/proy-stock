@@ -159,12 +159,14 @@ const Detalle = ({params}) => { //params lee los parametros de la url, en este c
                 <Photo src={product.str_ruta_imagen}></Photo>
               </div>
               <div>
-                <p>Codigo: {product.id}</p>
-                <p>Nombre:{product.str_nombre} </p>
-                <p>Descripcion: {product.str_descripcion} </p>
-                <p>Marca: {product.marcaId} </p>
-                <p>Proveedor: {product.proveedorId}</p>
-                <p>Contacto: 0984 235701</p>
+
+                <p>Codigo: {producto.id}</p>
+                <p>Nombre:{producto.str_nombre} </p>
+                <p>Descripcion: {producto.str_descripcion} </p>
+                <p>Marca: {producto.marcaNombre} </p>
+                <p>Proveedor: {producto.proveedorNombre}</p>
+                <p>Contacto: {proveedor.str_telefono}</p>
+
               </div>
               <div>
                 <p>Cantidad: {product.int_cantidad_actual}</p>
