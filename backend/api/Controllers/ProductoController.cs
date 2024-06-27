@@ -156,9 +156,8 @@ namespace api.Controllers
                 return NotFound("El producto que desea eliminar no existe!!");
             }
 
-            var productoModel = await _productoRepo.DeleteAsync(id);
-
-            return Ok($"Se borró correctamente el producto: {productoModel.Str_nombre}"); //No es necesario traer algo, puede ser vacio
+            await _productoRepo.DeleteAsync(id);
+            return Ok(productoExistente.ToProductoDto());
         }
     }
 }

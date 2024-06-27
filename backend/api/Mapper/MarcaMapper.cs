@@ -20,7 +20,7 @@ namespace api.Mapper
                 Bool_borrado = marcaModel.Bool_borrado,
                 Productos = marcaModel.Productos
                     .Where(m => m.Bool_borrado != true)
-                    .Select(p => p.ToProductoDto()).ToList()
+                    .Select(p => p.ToProductoDtoFromMarca()).ToList()
             };
         }
 
