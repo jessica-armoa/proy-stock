@@ -63,7 +63,7 @@ namespace api.Repository
             .Include(m => m.MotivoPorTipoDeMovimiento)
             .Include(m => m.DepositoOrigen)
             .Include(m => m.DepositoDestino)
-            .Include(m => m.DetallesDeMovimientos)
+            .Include(m => m.DetallesDeMovimientos).ThenInclude(m => m.Producto)
             .FirstOrDefaultAsync(m => m.Id == id);
         }
 

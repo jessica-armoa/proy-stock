@@ -89,146 +89,171 @@ const EditProductModal = ({ isOpen, onClose, product, onSave }) => {
           </button>
         </div>
         <form onSubmit={handleSubmit}>
-          <div>
-            <input
-              id="file-upload"
-              type="file"
-              style={{ display: "none" }}
-              onChange={handleImageChange}
-            />
-            {image && (
-              <img
-                src={image}
-                alt="Vista previa"
-                style={{ width: "30%", marginTop: "10px" }}
-              />
-            )}
-            <label
-              htmlFor="file-upload"
-              className="button text-blue-500 mx-4"
-              style={{ cursor: "pointer" }}
-            >
-              Elegir imagen
-            </label>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
+          <div className="grid grid-cols-2 md:grid-cols-2 gap-4 p-4">
             <div>
-              <label htmlFor="str_nombre">
-                Nombre<span className="text-red-500">*</span>
-              </label>
-              <TextInput
-                id="str_nombre"
-                name="str_nombre"
-                value={formData.str_nombre}
-                onChange={handleChange}
-                required
+              <input
+                id="file-upload"
+                type="file"
+                style={{ display: "none" }}
+                onChange={handleImageChange}
               />
-            </div>
-            <div>
-              <label htmlFor="str_descripcion">
-                Descripción<span className="text-red-500">*</span>
-              </label>
-              <TextInput
-                id="str_descripcion"
-                name="str_descripcion"
-                value={formData.str_descripcion}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="fk_marca">
-                Marca<span className="text-red-500">*</span>
-              </label>
-              <TextInput
-                id="str_marca"
-                name="str_marca"
-                value={formData.marcaNombre}
-                onChange={handleChange}
-                required
-                readOnly
-                disabled
-              />
-            </div>
-            <div>
-              <label htmlFor="fk_proveedor">
-                Proveedor<span className="text-red-500">*</span>
-              </label>
-              <SearchSelect
-                id="fk_proveedor"
-                value={formData.fk_proveedor}
-                disabled
-                onValueChange={(value) =>
-                  setFormData({ ...formData, fk_proveedor: value.toString() })
-                }
+              <div
+                style={{
+                  border: "1px solid #ccc",
+                  padding: "5px",
+                  borderRadius: "4px",
+                  minWidth: "300px",
+                  maxWidth: "500px",
+                  minHeight: "300px",
+                  maxHeight: "500px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  backgroundSize: "cover",
+                }}
               >
-                {proveedores.map((proveedor) => (
-                  <SearchSelectItem
-                    key={proveedor.id}
-                    value={proveedor.id.toString()}
+                {image ? (
+                  <img src={image} alt="Vista previa" />
+                ) : (
+                  <div>Selecciona una imagen</div>
+                )}
+              </div>
+              <label
+                    htmlFor="file-upload"
+                    className="button text-blue-500 ml-2"
+                    style={{ cursor: "pointer" }}
                   >
-                    {proveedor.str_nombre}
-                  </SearchSelectItem>
-                ))}
-              </SearchSelect>
+                    Elegir imagen<span className="text-red-500 ">*</span>
+                  </label>
             </div>
-            <div>
-              <label htmlFor="int_cantidad_actual">Cantidad actual</label>
-              <TextInput
-                id="int_cantidad_actual"
-                name="int_cantidad_actual"
-                value={formData.int_cantidad_actual}
-                min={0}
-                onChange={handleChange}
-                required
-                readOnly
-                disabled
-              />
-            </div>
-            <div>
-              <label htmlFor="dec_costo_PPP">
-                Costo PPP<span className="text-red-500">*</span>
-              </label>
-              <TextInput
-                id="dec_costo_PPP"
-                name="dec_costo_PPP"
-                value={formData.dec_costo_PPP}
-                min={0}
-                onChange={handleChange}
-                required 
-                readOnly
-                disabled
-              />
-            </div>
-            <div>
-              <label htmlFor="dec_precio_mayorista">
-                Precio mayorista<span className="text-red-500">*</span>
-              </label>
-              <NumberInput
-                id="dec_precio_mayorista"
-                name="dec_precio_mayorista"
-                value={formData.dec_precio_mayorista}
-                min={0}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="dec_precio_minorista">
-                Precio minorista<span className="text-red-500">*</span>
-              </label>
-              <NumberInput
-                id="dec_precio_minorista"
-                name="dec_precio_minorista"
-                value={formData.dec_precio_minorista}
-                min={0}
-                onChange={handleChange}
-                required
-              />
+
+            <div className="ml-5">
+              <div className="m-2">
+                <label htmlFor="str_nombre">
+                  Nombre<span className="text-red-500">*</span>
+                </label>
+                <TextInput
+                  id="str_nombre"
+                  name="str_nombre"
+                  value={formData.str_nombre}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+
+              <div className="m-2">
+                <label htmlFor="str_descripcion">
+                  Descripción<span className="text-red-500">*</span>
+                </label>
+                <TextInput
+                  id="str_descripcion"
+                  name="str_descripcion"
+                  value={formData.str_descripcion}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+
+              <div className="m-2">
+                <label htmlFor="fk_marca">
+                  Marca<span className="text-red-500">*</span>
+                </label>
+                <TextInput
+                  id="str_marca"
+                  name="str_marca"
+                  value={formData.marcaNombre}
+                  onChange={handleChange}
+                  required
+                  readOnly
+                  disabled
+                />
+              </div>
+              <div className="m-2">
+                <label htmlFor="fk_proveedor">
+                  Proveedor<span className="text-red-500">*</span>
+                </label>
+                <SearchSelect
+                  id="fk_proveedor"
+                  value={formData.fk_proveedor}
+                  disabled
+                  onValueChange={(value) =>
+                    setFormData({ ...formData, fk_proveedor: value.toString() })
+                  }
+                >
+                  {proveedores.map((proveedor) => (
+                    <SearchSelectItem
+                      key={proveedor.id}
+                      value={proveedor.id.toString()}
+                    >
+                      {proveedor.str_nombre}
+                    </SearchSelectItem>
+                  ))}
+                </SearchSelect>
+              </div>
+              <div className="m-2">
+                <label htmlFor="int_cantidad_actual">Cantidad actual</label>
+                <TextInput
+                  id="int_cantidad_actual"
+                  name="int_cantidad_actual"
+                  value={formData.int_cantidad_actual}
+                  min={0}
+                  onChange={handleChange}
+                  required
+                  readOnly
+                  disabled
+                />
+              </div>
+              <div className="m-2">
+                <label htmlFor="dec_costo_PPP">
+                  Costo PPP<span className="text-red-500">*</span>
+                </label>
+                <TextInput
+                  id="dec_costo_PPP"
+                  name="dec_costo_PPP"
+                  value={formData.dec_costo_PPP}
+                  min={0}
+                  onChange={handleChange}
+                  required
+                  readOnly
+                  disabled
+                />
+              </div>
+              <div className="m-2">
+                <label htmlFor="dec_precio_mayorista">
+                  Precio mayorista<span className="text-red-500">*</span>
+                </label>
+                <NumberInput
+                  id="dec_precio_mayorista"
+                  name="dec_precio_mayorista"
+                  value={formData.dec_precio_mayorista}
+                  min={0}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="m-2">
+                <label htmlFor="dec_precio_minorista">
+                  Precio minorista<span className="text-red-500">*</span>
+                </label>
+                <NumberInput
+                  id="dec_precio_minorista"
+                  name="dec_precio_minorista"
+                  value={formData.dec_precio_minorista}
+                  min={0}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
             </div>
           </div>
+
           <div className="flex justify-end p-4 border-t">
-            <Button variant="secondary" color="blue" onClick={onClose} className="mr-2">
+            <Button
+              variant="secondary"
+              color="blue"
+              onClick={onClose}
+              className="mr-2"
+            >
               Cancelar
             </Button>
             <Button variant="primary" color="blue" type="submit">

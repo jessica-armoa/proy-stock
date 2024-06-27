@@ -50,7 +50,7 @@ namespace api.Mapper
                 Str_telefono = proveedorDto.Str_telefono,
                 Str_direccion = proveedorDto.Str_direccion,
                 Str_correo = proveedorDto.Str_correo,
-                Bool_borrado = proveedorDto.Bool_borrado
+                Bool_borrado = false
             };
         }
     }
