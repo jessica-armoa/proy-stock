@@ -131,7 +131,7 @@ const EditProductModal = ({ isOpen, onClose, product, onSave }) => {
             </div>
 
             <div className="ml-5">
-              <div>
+              <div className="m-2">
                 <label htmlFor="str_nombre">
                   Nombre<span className="text-red-500">*</span>
                 </label>
@@ -144,7 +144,7 @@ const EditProductModal = ({ isOpen, onClose, product, onSave }) => {
                 />
               </div>
 
-              <div>
+              <div className="m-2">
                 <label htmlFor="str_descripcion">
                   Descripción<span className="text-red-500">*</span>
                 </label>
@@ -156,7 +156,8 @@ const EditProductModal = ({ isOpen, onClose, product, onSave }) => {
                   required
                 />
               </div>
-              <div>
+
+              <div className="m-2">
                 <label htmlFor="fk_marca">
                   Marca<span className="text-red-500">*</span>
                 </label>
@@ -170,7 +171,7 @@ const EditProductModal = ({ isOpen, onClose, product, onSave }) => {
                   disabled
                 />
               </div>
-              <div>
+              <div className="m-2">
                 <label htmlFor="fk_proveedor">
                   Proveedor<span className="text-red-500">*</span>
                 </label>
@@ -192,7 +193,7 @@ const EditProductModal = ({ isOpen, onClose, product, onSave }) => {
                   ))}
                 </SearchSelect>
               </div>
-              <div>
+              <div className="m-2">
                 <label htmlFor="int_cantidad_actual">Cantidad actual</label>
                 <TextInput
                   id="int_cantidad_actual"
@@ -205,7 +206,7 @@ const EditProductModal = ({ isOpen, onClose, product, onSave }) => {
                   disabled
                 />
               </div>
-              <div>
+              <div className="m-2">
                 <label htmlFor="dec_costo_PPP">
                   Costo PPP<span className="text-red-500">*</span>
                 </label>
@@ -220,7 +221,7 @@ const EditProductModal = ({ isOpen, onClose, product, onSave }) => {
                   disabled
                 />
               </div>
-              <div>
+              <div className="m-2">
                 <label htmlFor="dec_precio_mayorista">
                   Precio mayorista<span className="text-red-500">*</span>
                 </label>
@@ -233,7 +234,7 @@ const EditProductModal = ({ isOpen, onClose, product, onSave }) => {
                   required
                 />
               </div>
-              <div>
+              <div className="m-2">
                 <label htmlFor="dec_precio_minorista">
                   Precio minorista<span className="text-red-500">*</span>
                 </label>
