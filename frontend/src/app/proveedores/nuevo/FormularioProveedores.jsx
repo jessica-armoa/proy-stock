@@ -32,7 +32,7 @@ export default function FormularioProveedores({
       //const proveedorTojson = JSON.stringify(proveedor);
       console.log(proveedor);
 
-      const response = await ProveedoresConfig.createProveedor(proveedor).then(() => {
+      const response = await ProveedoresConfig.postProveedor(proveedor).then(() => {
         Swal.fire('Guardado', 'El proveedor fue creado exitosamente.', 'success');
     });
 
