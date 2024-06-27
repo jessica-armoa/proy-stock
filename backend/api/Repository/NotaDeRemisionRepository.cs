@@ -47,6 +47,8 @@ namespace api.Interfaces
         throw new Exception("No se encontró el timbrado");
       }
 
+      notaDeRemision.Str_numero = await GetSiguienteNumeroAsync();
+
       // Agregar la nota de remisión al contexto y guardar los cambios
       _context.notas_de_remision.Add(notaDeRemision);
       await _context.SaveChangesAsync();
