@@ -112,5 +112,11 @@ namespace api.Repository
           .ToListAsync();
     }
 
+    public async Task<List<Producto>> GetProductosConCantidadMinimaAsync()
+    {
+      return await _context.productos
+      .Where(p => p.Int_cantidad_actual <= p.Int_cantidad_minima && !p.Bool_borrado)
+      .ToListAsync();
+    }
   }
 }
