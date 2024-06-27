@@ -42,7 +42,7 @@ namespace api.Mapper
     {
       return new NotaDeRemision
       {
-
+        TimbradoId = notaDeRemisionDto.TimbradoId,
         Str_numero = notaDeRemisionDto.Str_numero,
         Date_fecha_de_expedicion = notaDeRemisionDto.Date_fecha_de_expedicion,
         Date_fecha_de_vencimiento = notaDeRemisionDto.Date_fecha_de_vencimiento,
@@ -71,6 +71,7 @@ namespace api.Mapper
       return new NotaDeRemision
       {
         Str_numero = createDto.Str_numero,
+        TimbradoId = createDto.TimbradoId,
         Date_fecha_de_expedicion = createDto.Date_fecha_de_expedicion,
         Date_fecha_de_vencimiento = createDto.Date_fecha_de_vencimiento,
         EmpresaNombre = createDto.EmpresaNombre,
