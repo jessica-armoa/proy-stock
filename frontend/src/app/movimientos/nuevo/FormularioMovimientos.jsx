@@ -420,7 +420,7 @@ export default function FormularioMovimientos() {
                                             onChange={(e) => setDatosVehiculo(e.target.value)}
                                             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm"
                                             required={isTransferencia}
-                                            readOnly
+                                            disabled
                                         />
                                     </div>
 
@@ -433,7 +433,7 @@ export default function FormularioMovimientos() {
                                             onChange={(e) => setConductor(e.target.value)}
                                             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm"
                                             required={isTransferencia}
-                                            readOnly
+                                            disabled
                                         />
                                     </div>
                                 </>
