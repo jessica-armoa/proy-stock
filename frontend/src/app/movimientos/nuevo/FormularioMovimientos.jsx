@@ -15,8 +15,20 @@ let detalleIdCounter = 0;
 
 export default function FormularioMovimientos() {
     const navigate = useRouter();
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'bottom-end',
+        iconColor: 'white',
+        customClass: {
+            popup: 'colored-toast',
+        },
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+    })
 
     const [timbrado, setTimbrado] = useState('');
+
 
     //Encabezado de Movimientos
     const [responsable, setResponsable] = useState('');
@@ -28,6 +40,8 @@ export default function FormularioMovimientos() {
     const [fk_motivo_por_tipo_de_movimiento, setFk_motivo_por_tipo_de_movimiento] = useState(null);
     const [esCompra, setEsCompra] = useState(false);
     const [esEgreso, setEsEgreso] = useState(false);
+    const [esIngreso, setEsIngreso] = useState(false);
+
     const [alertaCantidad, setAlertaCantidad] = useState('');
 
     const [fk_tipo_de_movimiento, setFk_tipo_de_movimiento] = useState(0);
@@ -74,13 +88,14 @@ export default function FormularioMovimientos() {
 
     useEffect(() => {
         // Filtra los productos en base al depósito de origen seleccionado
-        if (fk_deposito_origen !== null) {
+        if (fk_deposito_origen !== null && !esIngreso) {
             const productosEnDeposito = arregloProductos.filter(producto => producto.depositoId === fk_deposito_origen);
             setProductosFiltrados(productosEnDeposito);
         } else {
-            setProductosFiltrados([]);
+            const productosEnDepositoDestino = arregloProductos.filter(producto => producto.depositoId === 1);
+            setProductosFiltrados(productosEnDepositoDestino);
         }
-    }, [fk_deposito_origen, arregloProductos]);
+    }, [fk_deposito_origen, arregloProductos, esIngreso]);
 
     const [userDepositoId, setUserDepositoId] = useState(null);
     const [rol, setRol] = useState(null);
@@ -131,7 +146,10 @@ export default function FormularioMovimientos() {
     }, []);
 
 
-
+    useEffect(() => {
+        setDetallesMovimientos([]);
+        setDetalleTemp({ idProducto: 0, descripcion: '', cantidad: 1, precio: 0, total: 0 });
+    }, [fk_motivo_por_tipo_de_movimiento]);
 
 
     const [motivo, setMotivo] = useState('');
@@ -173,7 +191,10 @@ export default function FormularioMovimientos() {
         });
 
         if ((esEgreso || isTransferencia) && productoSeleccionado.int_cantidad_actual < detalleTemp.cantidad) {
-            setAlertaCantidad('La cantidad que se intenta mover es mayor a la disponible en el depósito de origen.');
+            Toast.fire({
+                icon: 'warning',
+                title: `No se puede dar salida a más de ${productoSeleccionado.int_cantidad_actual} ${productoSeleccionado.str_nombre} del depósito origen.`,
+            });
             return;
         }
 
@@ -199,8 +220,8 @@ export default function FormularioMovimientos() {
     const [numeroNotaRemision, setNumeroNotaRemision] = useState('');
     const [timbradoRemision, setTimbradoRemision] = useState('');
     const [depositoDestino, setDepositoDestino] = useState('');
-    const [datosVehiculo, setDatosVehiculo] = useState('');
-    const [conductor, setConductor] = useState('');
+    const [datosVehiculo, setDatosVehiculo] = useState({ modeloVehiculo: 'Modelo: HINO 500 1925 -', chapa: ' CHAPA: ABCD123' });
+    const [conductor, setConductor] = useState({ str_nombre_conductor: 'Jose Luis Arzamendia Patiño', str_documento_conductor: ' C.I.No.: 7456123' });
 
 
 
@@ -239,7 +260,7 @@ export default function FormularioMovimientos() {
             const movimientoCreado = await MovimientosConfig.postMovimiento(fk_motivo_por_tipo_de_movimiento, fk_deposito_origen_API, fk_deposito_destino_API, movimientoActual).then(() => {
                 Swal.fire('Guardado', 'El movimiento fue creado exitosamente.', 'success');
             });
-
+            navigate.push('/movimientos');
 
         } catch (error) {
             console.error('Error al enviar los datos del formulario: ', error);
@@ -281,6 +302,7 @@ export default function FormularioMovimientos() {
         setIsTransferencia(tipoMovimientoId === 3);
         setEsCompra(tipoMovimientoId === 1);
         setEsEgreso(tipoMovimientoId === 2);
+        setEsIngreso(tipoMovimientoId === 1);
     }, [fk_motivo_por_tipo_de_movimiento, motivosPorTipoDeMovimiento]);
 
     return (
@@ -394,10 +416,11 @@ export default function FormularioMovimientos() {
                                         <input
                                             type="text"
                                             id="datosVehiculo"
-                                            value={datosVehiculo}
+                                            value={datosVehiculo.modeloVehiculo + datosVehiculo.chapa}
                                             onChange={(e) => setDatosVehiculo(e.target.value)}
                                             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm"
                                             required={isTransferencia}
+                                            readOnly
                                         />
                                     </div>
 
@@ -406,10 +429,11 @@ export default function FormularioMovimientos() {
                                         <input
                                             type="text"
                                             id="conductor"
-                                            value={conductor}
+                                            value={conductor.str_nombre_conductor + conductor.str_documento_conductor}
                                             onChange={(e) => setConductor(e.target.value)}
                                             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm"
                                             required={isTransferencia}
+                                            readOnly
                                         />
                                     </div>
                                 </>
@@ -491,11 +515,7 @@ export default function FormularioMovimientos() {
                             >
                                 Agregar
                             </button>
-                            {alertaCantidad && (
-                                <div className="mt-2 p-2 bg-red-500 text-white text-sm rounded-md">
-                                    {alertaCantidad}
-                                </div>
-                            )}
+
                         </div>
                     </div>
                 </form>
