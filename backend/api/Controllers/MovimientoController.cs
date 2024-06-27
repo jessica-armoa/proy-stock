@@ -176,6 +176,11 @@ namespace api.Controllers
 
                         else if (tipoDeMovimiento.Str_tipo.ToLower() == "egreso")
                         {
+                            if (producto.Int_cantidad_actual < detalle.Int_cantidad)
+                            {
+                                return BadRequest("Cantidad insuficiente del producto!!");
+                            }
+
                             var detalleCreado = await _detalleRepo.CreateAsync(detalle);
                             decimal total = detalleCreado.Int_cantidad * detalleCreado.Dec_costo;
                             decimal iva = (total * producto.Int_iva) / 100;
@@ -219,7 +224,7 @@ namespace api.Controllers
                         {
                             if (producto.Int_cantidad_actual < detalle.Int_cantidad)
                             {
-                                return BadRequest("Cantidad insuficiente en el depósito origen.");
+                                return BadRequest("Cantidad insuficiente del producto!!");
                             }
 
                             var productoEnOrigen = await _productoRepo.ObtenerProductoEnDeposito(producto.Str_nombre, movimientoModel.DepositoOrigenId);
