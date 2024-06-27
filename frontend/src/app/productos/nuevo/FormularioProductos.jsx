@@ -231,6 +231,7 @@ export default function FormularioProductos() {
                     style={{
                       border: "1px solid #ccc",
                       padding: "5px",
+                      marginBottom: "15px",
                       borderRadius: "4px",
                       minWidth: "300px",
                       maxWidth: "500px",
@@ -253,12 +254,12 @@ export default function FormularioProductos() {
                   </div>
                   <label
                     htmlFor="file-upload"
-                    className="button text-blue-500"
+                    className="button text-blue-500 ml-2"
                     style={{ cursor: "pointer" }}
                   >
-                    Elegir imagen
+                    Elegir imagen<span className="text-red-500 ">*</span>
                   </label>
-                  <span className="text-red-500">*</span>
+                  
                 </div>
               </div>
             </div>

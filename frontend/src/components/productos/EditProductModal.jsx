@@ -89,8 +89,6 @@ const EditProductModal = ({ isOpen, onClose, product, onSave }) => {
           </button>
         </div>
         <form onSubmit={handleSubmit}>
-
-
           <div className="grid grid-cols-2 md:grid-cols-2 gap-4 p-4">
             <div>
               <input
@@ -121,13 +119,12 @@ const EditProductModal = ({ isOpen, onClose, product, onSave }) => {
                 )}
               </div>
               <label
-                htmlFor="file-upload"
-                className="button text-blue-500"
-                style={{ cursor: "pointer" }}
-              >
-                Elegir imagen
-              </label>
-              <span className="text-red-500">*</span>
+                    htmlFor="file-upload"
+                    className="button text-blue-500 ml-2"
+                    style={{ cursor: "pointer" }}
+                  >
+                    Elegir imagen<span className="text-red-500 ">*</span>
+                  </label>
             </div>
 
             <div className="ml-5">
