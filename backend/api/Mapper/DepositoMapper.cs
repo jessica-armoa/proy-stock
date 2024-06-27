@@ -1,5 +1,4 @@
 using api.Dtos.Deposito;
-using api.Dtos.Producto;
 using api.Models;
 
 namespace api.Mapper
@@ -14,30 +13,29 @@ namespace api.Mapper
                 Str_nombre = depositoModel.Str_nombre,
                 Str_direccion = depositoModel.Str_direccion,
                 Str_telefono = depositoModel.Str_telefono,
-                Str_encargado = depositoModel.Str_encargado,
-                Str_telefonoEncargado = depositoModel.Str_telefonoEncargado,
+                EncargadoUsername = depositoModel.Encargado?.UserName,
+                EncargadoEmail = depositoModel.Encargado?.Email,
                 FerreteriaId = depositoModel.FerreteriaId,
-                Str_ferreteriaNombre = depositoModel.Ferreteria.Str_nombre,
-                Str_ferreteriaTelefono = depositoModel.Ferreteria.Str_telefono,
+                Str_ferreteriaNombre = depositoModel.Ferreteria?.Str_nombre,
+                Str_ferreteriaTelefono = depositoModel.Ferreteria?.Str_telefono,
                 Bool_borrado = depositoModel.Bool_borrado,
                 Movimientos = depositoModel.Movimientos
-                    .Where(m => m.Bool_borrado != true)
+                    .Where(m => !m.Bool_borrado)
                     .Select(m => m.ToMovimientoDto()).ToList(),
                 Productos = depositoModel.Productos
-                    .Where(p => p.Bool_borrado != true)
+                    .Where(p => !p.Bool_borrado)
                     .Select(p => p.ToProductoDto()).ToList()
             };
         }
 
-        public static Deposito ToDepositoFromCreate(this CreateDepositoRequestDto depositoDto, int ferreteriaId)
+        public static Deposito ToDepositoFromCreate(this CreateDepositoRequestDto depositoDto, int ferreteriaId, string encargadoId)
         {
             return new Deposito
             {
                 Str_nombre = depositoDto.Str_nombre,
                 Str_direccion = depositoDto.Str_direccion,
                 Str_telefono = depositoDto.Str_telefono,
-                Str_encargado = depositoDto.Str_encargado,
-                Str_telefonoEncargado = depositoDto.Str_telefonoEncargado,
+                EncargadoId = encargadoId,
                 FerreteriaId = ferreteriaId,
                 Bool_borrado = false
             };
@@ -50,10 +48,9 @@ namespace api.Mapper
                 Str_nombre = depositoDto.Str_nombre,
                 Str_direccion = depositoDto.Str_direccion,
                 Str_telefono = depositoDto.Str_telefono,
-                Str_encargado = depositoDto.Str_encargado,
-                Str_telefonoEncargado = depositoDto.Str_telefonoEncargado,
                 Bool_borrado = depositoDto.Bool_borrado
             };
         }
     }
+
 }

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace api.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -108,7 +108,11 @@ namespace api.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Str_timbrado = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Date_inicio_vigencia = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Date_fin_vigencia = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    Date_fin_vigencia = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Codigo_establecimiento = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Punto_de_expedicion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Cantidad = table.Column<int>(type: "int", nullable: false),
+                    Secuencia_actual = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -245,14 +249,19 @@ namespace api.Migrations
                     Str_nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Str_direccion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Str_telefono = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Str_encargado = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Str_telefonoEncargado = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Bool_borrado = table.Column<bool>(type: "bit", nullable: false),
-                    FerreteriaId = table.Column<int>(type: "int", nullable: true)
+                    FerreteriaId = table.Column<int>(type: "int", nullable: true),
+                    EncargadoId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_depositos", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_depositos_AspNetUsers_EncargadoId",
+                        column: x => x.EncargadoId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_depositos_ferreterias_FerreteriaId",
                         column: x => x.FerreteriaId,
@@ -464,10 +473,7 @@ namespace api.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Str_numero = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Str_timbrado = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Str_numero_de_comprobante_inicial = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Str_numero_de_comprobante_final = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Str_numero_de_comprobante_actual = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TimbradoId = table.Column<int>(type: "int", nullable: false),
                     Date_fecha_de_expedicion = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Date_fecha_de_vencimiento = table.Column<DateTime>(type: "datetime2", nullable: false),
                     MovimientoId = table.Column<int>(type: "int", nullable: true),
@@ -483,13 +489,6 @@ namespace api.Migrations
                     PuntoLlegada = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     TrasladoFechaInicio = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     TrasladoFechaFin = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TrasladoVehiculo = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TrasladoRuta = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TransportistaNombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TransportistaRuc = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ConductorNombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ConductorDocumento = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ConductorDireccion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Motivo = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     MotivoDescripcion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ComprobanteVenta = table.Column<string>(type: "nvarchar(max)", nullable: false)
@@ -502,6 +501,12 @@ namespace api.Migrations
                         column: x => x.MovimientoId,
                         principalTable: "movimientos",
                         principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_notas_de_remision_timbrados_TimbradoId",
+                        column: x => x.TimbradoId,
+                        principalTable: "timbrados",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.InsertData(
@@ -509,9 +514,9 @@ namespace api.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "232efd4a-1d57-47ed-8607-181f7429e3a3", null, "User", "USER" },
-                    { "8bc6752d-2c03-428e-89a1-dd2a5baf85a4", null, "Admin", "ADMIN" },
-                    { "ea67d697-1b23-4ced-a95f-644a366d7f18", null, "Encargado", "ENCARGADO" }
+                    { "21ebdbb8-836f-41f8-9227-5abf9bfa51be", null, "User", "USER" },
+                    { "d8a566cf-2ce9-4d61-bff4-576aa48e9861", null, "Encargado", "ENCARGADO" },
+                    { "ed29d2a3-b402-4b30-a2e0-0863f57630be", null, "Admin", "ADMIN" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -562,6 +567,11 @@ namespace api.Migrations
                 name: "IX_categorias_ProveedorId",
                 table: "categorias",
                 column: "ProveedorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_depositos_EncargadoId",
+                table: "depositos",
+                column: "EncargadoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_depositos_FerreteriaId",
@@ -619,6 +629,11 @@ namespace api.Migrations
                 column: "MovimientoId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_notas_de_remision_TimbradoId",
+                table: "notas_de_remision",
+                column: "TimbradoId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_productos_DepositoId",
                 table: "productos",
                 column: "DepositoId");
@@ -665,19 +680,16 @@ namespace api.Migrations
                 name: "notas_de_remision");
 
             migrationBuilder.DropTable(
-                name: "timbrados");
-
-            migrationBuilder.DropTable(
                 name: "AspNetRoles");
-
-            migrationBuilder.DropTable(
-                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "productos");
 
             migrationBuilder.DropTable(
                 name: "movimientos");
+
+            migrationBuilder.DropTable(
+                name: "timbrados");
 
             migrationBuilder.DropTable(
                 name: "marcas");
@@ -690,6 +702,9 @@ namespace api.Migrations
 
             migrationBuilder.DropTable(
                 name: "proveedores");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "ferreterias");

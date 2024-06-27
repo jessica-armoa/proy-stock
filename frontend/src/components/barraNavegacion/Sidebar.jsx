@@ -7,17 +7,21 @@ import { useRouter } from 'next/navigation';
 const Sidebar = () => {
   const router = useRouter();
   const [user, setUser] = useState(null);
+  const [selectedItem, setSelectedItem] = useState('');
 
   useEffect(() => {
     const userData = localStorage.getItem("user");
     if (userData) {
       setUser(JSON.parse(userData));
     }
+    const storedSelectedItem = localStorage.getItem('selectedItem');
+    if (storedSelectedItem) {
+      setSelectedItem(storedSelectedItem);
+    }
   }, []);
 
   const menuItems = [
     { name: "Dashboard", path: "/", icon: "space_dashboard", subItems: [] },
-
     {
       name: "Stock",
       path: "#",
@@ -57,7 +61,7 @@ const Sidebar = () => {
       </div>
       <div>
         {menuItems.map((item) => (
-          <SidebarItem key={item.path} item={item} />
+          <SidebarItem key={item.path} item={item} selectedItem={selectedItem} setSelectedItem={setSelectedItem} />
         ))}
       </div>
       <div className="mt-auto">

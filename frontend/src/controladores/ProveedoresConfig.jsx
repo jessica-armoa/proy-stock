@@ -11,11 +11,11 @@ class ProveedoresConfig{
         return axios.get(`${api}/${id}`);
     }
 
-    createProveedor(proveedor){
+    postProveedor(proveedor){
         return axios.post(api, proveedor);
     }
 
-    updateProveedor(id){
+    putProveedor(id){
         return axios.put(`${api}/${id}`);
     }
 

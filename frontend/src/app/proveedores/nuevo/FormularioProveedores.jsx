@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { Button, NumberInput, TextInput } from "@tremor/react";
+import { Button, TextInput } from "@tremor/react";
 import ProveedoresConfig from "../../../controladores/ProveedoresConfig";
 import Swal from "sweetalert2";
 
@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 export default function FormularioProveedores({
   type = "form",
   closeDialog = false,
+  saveAction = false,
 }) {
   const router = useRouter();
 
@@ -20,8 +21,6 @@ export default function FormularioProveedores({
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      // Aquí podrías realizar alguna acción con los datos del formulario, como enviarlos a un servidor
-
       const proveedor = {
         "str_nombre": str_nombre,
         "str_telefono": str_telefono,
@@ -30,26 +29,30 @@ export default function FormularioProveedores({
         "bool_borrado": false
       };
 
-      //const proveedorTojson = JSON.stringify(proveedor);
-      console.log(proveedor);
+      const response = await ProveedoresConfig.postProveedor(proveedor);
 
-      const response = await ProveedoresConfig.createProveedor(proveedor).then(() => {
-        Swal.fire('Guardado', 'El proveedor fue creado exitosamente.', 'success');
-    });
+      Swal.fire('Guardado', 'El proveedor fue creado exitosamente.', 'success');
 
-      // También puedes reiniciar los valores de los campos del formulario
-
+      // Reiniciar los valores de los campos del formulario
       setStr_nombre("");
       setStr_telefono("");
       setStr_direccion("");
       setStr_correo("");
+
+      if (type === 'form') {
+        router.push("/proveedores");
+      } else {
+        const newID = response.data.id ?? "crear";
+        saveAction(newID);
+        closeDialog();
+      }
     } catch (error) {
       console.error("Error al enviar los datos del formulario: ", error);
       Swal.fire(
         'Error',
         'Oops! ocurrió un error al intentar guardar el movimiento.',
         'error'
-    );
+      );
     }
   };
 
@@ -101,7 +104,7 @@ export default function FormularioProveedores({
             id="str_telefono"
             name="str_telefono"
             autoComplete="str_telefono"
-            placeholder="Telefono de Proveedor"
+            placeholder="Teléfono de Proveedor"
             className="mt-2"
             value={str_telefono}
             onChange={(e) => setStr_telefono(e.target.value)}
@@ -122,7 +125,7 @@ export default function FormularioProveedores({
             id="str_direccion"
             name="str_direccion"
             autoComplete="str_direccion"
-            placeholder="Direccion de Proveedor"
+            placeholder="Dirección de Proveedor"
             className="mt-2"
             value={str_direccion}
             onChange={(e) => setStr_direccion(e.target.value)}
