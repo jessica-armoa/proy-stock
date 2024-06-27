@@ -90,9 +90,7 @@ export default function FormularioDepositos() {
         str_nombre: str_nombre,
         str_direccion: str_direccion,
         str_telefono: str_telefono,
-        encargadoUsername: encargadoUsername,
-        encargadoEmail: encargadoEmail,
-        encargadoPassword: encargadoPassword,
+        encargadoUsername: 'CosmeFulanito',
       };
 
       console.log(deposito);

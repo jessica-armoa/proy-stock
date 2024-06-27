@@ -99,7 +99,7 @@ export default function FormularioProductos() {
     extraccionMarcas();
   }, []);
 
-  const [fk_deposito, setFk_deposito] = useState(0);
+  const [fk_deposito, setFk_deposito] = useState(1);
   const [depositos, setDepositos] = useState([]);
   useEffect(() => {
     const extraccionDepositos = async () => {
@@ -133,7 +133,6 @@ export default function FormularioProductos() {
         int_iva,
         dc_precio_mayorista,
         dc_precio_minorista,
-        fk_deposito,
       });
       /*
       {
@@ -153,19 +152,29 @@ export default function FormularioProductos() {
         "str_nombre": str_nombre,
         "str_descripcion": str_descripcion,
         "int_cantidad_minima": int_cantidad_minima,
-        "dec_costo": dc_costo_PPP,
         //dec_costo_PPP: dc_costo_PPP,
         "int_iva": int_iva,
         "dec_precio_mayorista": dc_precio_mayorista,
         "dec_precio_minorista": dc_precio_minorista,
         "bool_borrado": false,
+
       };
 
+      /*
+      "str_ruta_imagen": "string",
+  "str_nombre": "string",
+  "str_descripcion": "string",
+  "int_cantidad_minima": 100,
+  "int_iva": 0,
+  "dec_precio_mayorista": 0,
+  "dec_precio_minorista": 0
+      */
       const productoAgregado = await ProductosConfig.postProducto(
-        fk_deposito,
+        1,
         fk_proveedor,
         fk_marca,
-        producto
+        producto,
+        console.log(producto)
       ).then(() => {
         Swal.fire(
           "Guardado",
@@ -394,34 +403,7 @@ export default function FormularioProductos() {
                   required
                 />
               </div>
-              <div className="mx-auto max-w-xs">
-                <label
-                  htmlFor="fk_proveedor"
-                  className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
-                >
-                  Proveedor
-                  <span className="text-red-500">*</span>
-                </label>
-                <SearchSelect
-                  id="fk_proveedor"
-                  value={fk_proveedor}
-                  placeholder="Seleccionar Proveedor"
-                  className="mt-2"
-                  onValueChange={(value) => setFk_proveedor(parseInt(value))}
-                >
-                  {proveedores.map((proveedor) => (
-                    <SearchSelectItem key={proveedor.id} value={proveedor.id}>
-                      {proveedor.str_nombre}
-                    </SearchSelectItem>
-                  ))}
-                  <SearchSelectItem
-                    value="crear"
-                    onClick={handleCrearProveedor}
-                  >
-                    Crear Nuevo Proveedor
-                  </SearchSelectItem>
-                </SearchSelect>
-              </div>
+              
             </div>
             <div className="w-3/4 pl-4 space-y-4">
               <div className="mx-auto max-w-xs">

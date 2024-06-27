@@ -29,15 +29,11 @@ export default function FormularioProveedores({
         "bool_borrado": false
       };
 
-      //const proveedorTojson = JSON.stringify(proveedor);
-      console.log(proveedor);
+      const response = await ProveedoresConfig.postProveedor(proveedor);
 
-      const response = await ProveedoresConfig.postProveedor(proveedor).then(() => {
-        Swal.fire('Guardado', 'El proveedor fue creado exitosamente.', 'success');
-    });
+      Swal.fire('Guardado', 'El proveedor fue creado exitosamente.', 'success');
 
-      // También puedes reiniciar los valores de los campos del formulario
-
+      // Reiniciar los valores de los campos del formulario
       setStr_nombre("");
       setStr_telefono("");
       setStr_direccion("");
@@ -56,7 +52,7 @@ export default function FormularioProveedores({
         'Error',
         'Oops! ocurrió un error al intentar guardar el movimiento.',
         'error'
-    );
+      );
     }
   };
 

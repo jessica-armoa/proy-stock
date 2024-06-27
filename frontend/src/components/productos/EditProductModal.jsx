@@ -147,6 +147,7 @@ const EditProductModal = ({ isOpen, onClose, product, onSave }) => {
                 onChange={handleChange}
                 required
                 readOnly
+                disabled
               />
             </div>
             <div>
@@ -156,6 +157,7 @@ const EditProductModal = ({ isOpen, onClose, product, onSave }) => {
               <SearchSelect
                 id="fk_proveedor"
                 value={formData.fk_proveedor}
+                disabled
                 onValueChange={(value) =>
                   setFormData({ ...formData, fk_proveedor: value.toString() })
                 }
@@ -180,6 +182,7 @@ const EditProductModal = ({ isOpen, onClose, product, onSave }) => {
                 onChange={handleChange}
                 required
                 readOnly
+                disabled
               />
             </div>
             <div>
@@ -194,6 +197,7 @@ const EditProductModal = ({ isOpen, onClose, product, onSave }) => {
                 onChange={handleChange}
                 required 
                 readOnly
+                disabled
               />
             </div>
             <div>
@@ -224,10 +228,10 @@ const EditProductModal = ({ isOpen, onClose, product, onSave }) => {
             </div>
           </div>
           <div className="flex justify-end p-4 border-t">
-            <Button variant="secondary" onClick={onClose} className="mr-2">
+            <Button variant="secondary" color="blue" onClick={onClose} className="mr-2">
               Cancelar
             </Button>
-            <Button variant="primary" type="submit">
+            <Button variant="primary" color="blue" type="submit">
               Guardar
             </Button>
           </div>

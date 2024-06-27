@@ -126,7 +126,7 @@ function DataTable({ columns, data, pageurl, cantElementos=10 }) {
       <div className="flex justify-end mt-5">
         <Button onClick={clearAllFilters} variant="light" color="blue" className="mx-3">Limpiar Filtros</Button>
         <ExportPDF data={filteredData} whatToExport={columns} title={"Detalle de Stock"} fileName="reporte_stock_pdf"></ExportPDF>
-        <ExportCSV data={filteredData} whatToExport={columns} fileName="reporte_stock_pdf"></ExportCSV>
+        <ExportCSV data={filteredData} whatToExport={columns} fileName="reporte_stock_scv"></ExportCSV>
       </div>
       <Table>
         <TableHead>

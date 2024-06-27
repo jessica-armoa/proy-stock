@@ -1,14 +1,14 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import ProductosConfig from "../../../../controladores/ProductosConfig";
 import withAuth from "@/components/auth/withAuth";
 import MovimientosConfig from "../../../../controladores/MovimientosConfig";
 import ProveedoresConfig from "@/controladores/ProveedoresConfig";
 
-// Dynamic imports/
+// Dynamic imports
 const Sidebar = dynamic(() => import("@/components/barraNavegacion/Sidebar"), {
   ssr: false,
 });
@@ -16,42 +16,45 @@ const DataTable = dynamic(() => import("@/components/tabla"), { ssr: false });
 const Photo = dynamic(() => import("@/components/productos"), { ssr: false });
 
 const Detalle = ({ params, cantElementos = 8 }) => {
-  //params lee los parametros de la url, en este caso de los subdirectorios, en este tenemos el dir [id]
   const [movimientosDetalle, setMovimientosDetalle] = useState([]);
   const [movimientos, setMovimientos] = useState([]);
   const router = useRouter();
 
   const { id } = params;
 
-  //console.log("ID:", id);
-  const [producto, setProducto] = useState([]);
+  const [producto, setProducto] = useState({});
+  const [proveedor, setProveedor] = useState({});
 
   useEffect(() => {
-    if (producto.length <= 0) {
-      ProductosConfig.getProductoId(id).then((response) => {
-        setProducto(response.data);
-        if (response.data.detallesDeMovimientos != null) {
-          setMovimientosDetalle(response.data.detallesDeMovimientos);
-          //console.log(response.data.detallesDeMovimientos)
-        }
-      });
+    if (id) {
+      ProductosConfig.getProductoId(id)
+        .then((response) => {
+          setProducto(response.data);
+          if (response.data.detallesDeMovimientos) {
+            setMovimientosDetalle(response.data.detallesDeMovimientos);
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching product:", error);
+        });
     }
   }, [id]);
 
-  const [proveedor, setProveedor] = useState([]);
-
   useEffect(() => {
-    if (producto.id != undefined) {
-      console.log(producto,producto.proveedorId)
-      ProveedoresConfig.getProveedorById(producto.proveedorId).then((response) => {
-      setProveedor(response.data)
-    })
+    if (producto.proveedorId) {
+      ProveedoresConfig.getProveedor()
+        .then((response) => {
+          setProveedor(response.data.find(proveedor=>proveedor.id === producto.proveedorId));
+        })
+        
+        .catch((error) => {
+          console.error("Error fetching proveedor:", error);
+        });
     }
-  }, [producto])
+  }, [producto]);
 
   useEffect(() => {
     if (movimientosDetalle.length > 0) {
-      // Paso 1: Agrupar los movimientos por movimientoId
       const movimientosPorId = movimientosDetalle.reduce((acc, movimiento) => {
         const { movimientoId } = movimiento;
         if (!acc[movimientoId]) {
@@ -61,8 +64,7 @@ const Detalle = ({ params, cantElementos = 8 }) => {
         return acc;
       }, {});
 
-      // Paso 2: Obtener los detalles de cada grupo de movimientoId
-      const promesas = Object.keys(movimientosPorId).map((movimientoId) => 
+      const promesas = Object.keys(movimientosPorId).map((movimientoId) =>
         MovimientosConfig.getMovimientoById(movimientoId).then((response) => ({
           movimientoId,
           detalles: response.data,
@@ -70,32 +72,36 @@ const Detalle = ({ params, cantElementos = 8 }) => {
         }))
       );
 
-      // Paso 3: Esperar a que todas las promesas se resuelvan y actualizar el estado
-      Promise.all(promesas).then((resultados) => {
-        const movimientosFiltrados = resultados.flatMap(({ movimientos, detalles }) =>
-          movimientos.map(movimiento => ({
-            date_fecha: detalles.date_fecha,
-            tipoDeMovimientoId: detalles.tipoDeMovimientoId,
-            int_cantidad: movimiento.int_cantidad,
-            depositoOrigenId: detalles.depositoOrigenId,
-            depositoDestinoId: detalles.depositoDestinoId,
-          }))
-        );
-        setMovimientos(movimientosFiltrados);
-      });
+      Promise.all(promesas)
+        .then((resultados) => {
+          const movimientosFiltrados = resultados.flatMap(
+            ({ movimientos, detalles }) =>
+              movimientos.map((movimiento) => ({
+                date_fecha: detalles.date_fecha,
+                tipoDeMovimientoId: detalles.tipoDeMovimientoId,
+                int_cantidad: movimiento.int_cantidad,
+                depositoOrigenId: detalles.depositoOrigenId,
+                depositoDestinoId: detalles.depositoDestinoId,
+              }))
+          );
+          setMovimientos(movimientosFiltrados);
+        })
+        .catch((error) => {
+          console.error("Error fetching movimientos:", error);
+        });
     }
   }, [movimientosDetalle]);
 
   const formatCurrency = (value) => {
-    const formattedValue = Intl.NumberFormat('es-ES', {
-      style: 'currency',
-      currency: 'PYG',
+    const formattedValue = Intl.NumberFormat("es-ES", {
+      style: "currency",
+      currency: "PYG",
       minimumFractionDigits: 0,
-      useGrouping: true
+      useGrouping: true,
     }).format(value);
-    return formattedValue.replace('PYG', '');
+    return formattedValue.replace("PYG", "");
   };
-  
+
   const columns = [
     {
       accessorKey: "date_fecha",
@@ -132,9 +138,7 @@ const Detalle = ({ params, cantElementos = 8 }) => {
                     className="clickable text-gray-500 flex items-center"
                     onClick={() => router.push("/productos")}
                   >
-                    <span className="material-symbols-outlined">
-                      chevron_left
-                    </span>{" "}
+                    <span className="material-symbols-outlined">chevron_left</span>{" "}
                     Stock &gt;{" "}
                   </div>
                 </li>
@@ -143,21 +147,21 @@ const Detalle = ({ params, cantElementos = 8 }) => {
                 </li>
               </ol>
             </nav>
-            <div className=" grid grid-cols-3 mb-10">
+            <div className="grid grid-cols-3 mb-10">
               <div>
                 <Photo src={producto.str_ruta_imagen}></Photo>
               </div>
               <div>
                 <p>Codigo: {producto.id}</p>
-                <p>Nombre:{producto.str_nombre} </p>
-                <p>Descripcion: {producto.str_descripcion} </p>
-                <p>Marca: {producto.marcaNombre} </p>
+                <p>Nombre: {producto.str_nombre}</p>
+                <p>Descripcion: {producto.str_descripcion}</p>
+                <p>Marca: {producto.marcaNombre}</p>
                 <p>Proveedor: {producto.proveedorNombre}</p>
                 <p>Contacto: {proveedor.str_telefono}</p>
               </div>
               <div>
                 <p>Cantidad: {formatCurrency(producto.int_cantidad_actual)}</p>
-                <p>Cant.Mínima: {producto.int_cantidad_minima}</p>
+                <p>Cant. Mínima: {producto.int_cantidad_minima}</p>
                 <p>Costo: {formatCurrency(producto.dec_costo_PPP)}</p>
                 <p>IVA: {producto.int_iva}</p>
                 <p>Precio Mayorista: {formatCurrency(producto.dec_precio_mayorista)}</p>
@@ -165,17 +169,15 @@ const Detalle = ({ params, cantElementos = 8 }) => {
               </div>
             </div>
             <div>
-              <span className="text-l tracking-tight">
-                Historial de movimientos del producto
-              </span>
+              <span className="text-l tracking-tight">Historial de movimientos del producto</span>
               {movimientosDetalle.length <= 0 ? (
                 <p>No hay Movimientos</p>
               ) : (
                 <DataTable
-                data={movimientos}
-                columns={columns}
-                cantElementos={cantElementos}
-                pageurl={`/movimientos/detalle/`}
+                  data={movimientos}
+                  columns={columns}
+                  cantElementos={cantElementos}
+                  pageurl={`/movimientos/detalle/`}
                 />
               )}
             </div>
