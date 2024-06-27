@@ -132,7 +132,7 @@ namespace api.Controllers
                 return NotFound("El deposito que desea eliminar no existe!!");
             }
 
-            return Ok(depositoModel);
+            return Ok(depositoModel.ToDepositoDto());
         }
     }
 }

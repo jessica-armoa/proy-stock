@@ -140,7 +140,7 @@ namespace api.Controllers
                 return NotFound("El producto que desea actualizar no existe");
             }
 
-            return Ok(producto.ToProductoDto());
+            return Ok(producto.ToProductoDtoFromEdit());
         }
 
         [HttpDelete]
@@ -156,10 +156,6 @@ namespace api.Controllers
                 return NotFound("El producto que desea eliminar no existe!!");
             }
 
-            foreach (var detalle in productoExistente.DetallesDeMovimientos)
-            {
-                await _detalleRepo.DeleteAsync(detalle.Id);
-            };
             var productoModel = await _productoRepo.DeleteAsync(id);
 
             return Ok($"Se borró correctamente el producto: {productoModel.Str_nombre}"); //No es necesario traer algo, puede ser vacio
