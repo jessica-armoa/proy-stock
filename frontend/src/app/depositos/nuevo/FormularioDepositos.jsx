@@ -12,7 +12,7 @@ import { RiCloseLine } from "@remixicon/react";
 import DepositosConfig from "../../../controladores/DepositosConfig";
 import FerreteriasConfig from "../../../controladores/FerreteriasConfig";
 import { useRouter } from "next/navigation";
-import encargados from "../../../controladores/encargados.json";
+import EncargadosConfig from "../../../controladores/EncargadosConfig.jsx";
 
 export default function FormularioDepositos() {
   const navigate = useRouter();
@@ -28,7 +28,7 @@ export default function FormularioDepositos() {
   const [encargadoEmail, setEncargadoEmail] = useState("");
   const [encargadoPassword, setEncargadoPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
-
+  
   const [isPasswordMatch, setIsPasswordMatch] = useState(true);
   
   const [fk_ferreteria, setFk_ferreteria] = useState(0);
@@ -44,14 +44,15 @@ export default function FormularioDepositos() {
 
   const handleEncargadoCreado = async(fk_encargado) => {
     //console.log("yes",marcaId);
-    await listaEncargados();
+    await listaUsuarios();
     setFk_encargado(fk_encargado);
   };
 
-  const getListaEncargados = async () => {
+  const listaUsuarios = async () => {
     try {
-      const listaEncargados = await EncargadosConfig.getEmpleados();
-      setEncargados(listaEncargados.data);
+      const listaUsuarios = await EncargadosConfig.getUsuarios();
+      setEncargados(listaUsuarios.data.find(encargado => encargado.role === "Encargado"));
+      console.log('encargados', encargados)
     } catch (error) {
       console.error("Error al obtener lista de encargados: ", error);
     }
@@ -207,7 +208,7 @@ export default function FormularioDepositos() {
               {encargados.lenght > 0 &&
                 encargados.map((encargado) => (
                   <SearchSelectItem key={encargado.id} value={encargado.id}>
-                    {encargado.str_nombre}
+                    {encargado.userName}
                   </SearchSelectItem>
                 ))}
             </SearchSelect>
