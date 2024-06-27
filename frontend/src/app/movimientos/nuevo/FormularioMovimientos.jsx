@@ -6,64 +6,48 @@ import { useRouter } from 'next/navigation';
 import DepositosConfig from "../../../controladores/DepositosConfig";
 import ProductosConfig from "../../../controladores/ProductosConfig";
 import MovimientosConfig from "../../../controladores/MovimientosConfig";
+import TiposDeMovimientosConfig from "@/controladores/TiposDeMovimientosConfig";
+import MotivosConfig from "@/controladores/MotivosConfig";
+import MotivosPorTipoDeMovimientoConfig from "@/controladores/MotivosPorTipoDeMovimientoConfig";
 import Swal from "sweetalert2";
 
 let detalleIdCounter = 0;
 
 export default function FormularioMovimientos() {
     const navigate = useRouter();
-
-    //const [numeroDocumento, setNumeroDocumento] = useState('');
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'bottom-end',
+        iconColor: 'white',
+        customClass: {
+            popup: 'colored-toast',
+        },
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+    })
 
     const [timbrado, setTimbrado] = useState('');
+
 
     //Encabezado de Movimientos
     const [responsable, setResponsable] = useState('');
     const [fecha, setFecha] = useState('');
-    const [fk_motivoId, setFk_MotivoId] = useState(0);
+    //const [fk_motivoId, setFk_MotivoId] = useState(0);
     const [motivos, setMotivos] = useState([]);
-    const tiposDeMovimientos = [
-        { id: 1, str_descripcion: 'Ingreso' },
-        { id: 2, str_descripcion: 'Egreso' },
-        { id: 3, str_descripcion: 'Transferencia' }
-    ];
+    const [tiposDeMovimientos, setTiposDeMovimientos] = useState([]);
+    const [motivosPorTipoDeMovimiento, setMotivosPorTipoDeMovimiento] = useState([]);
+    const [fk_motivo_por_tipo_de_movimiento, setFk_motivo_por_tipo_de_movimiento] = useState(null);
+    const [esCompra, setEsCompra] = useState(false);
+    const [esEgreso, setEsEgreso] = useState(false);
+    const [esIngreso, setEsIngreso] = useState(false);
+
+    const [alertaCantidad, setAlertaCantidad] = useState('');
+
     const [fk_tipo_de_movimiento, setFk_tipo_de_movimiento] = useState(0);
-    const motivosIngreso = [
-        { id: 2, str_motivo: 'Compra' },
-        { id: 3, str_motivo: 'Devolución de cliente' }
-    ];
 
-    const motivosEgreso = [
-        { id: 1, str_motivo: 'Venta Cliente' },
-        { id: 4, str_motivo: 'Devolución a proveedor' },
-        { id: 7, str_motivo: 'Pérdida por deterioro' }
-    ];
 
-    const motivosTransferencia = [{ id: 8, str_motivo: 'Transferencia' }];
 
-    useEffect(() => {
-        // Función para obtener los motivos según el tipo de movimiento seleccionado
-        const obtenerMotivos = (tipoMovimientoId) => {
-            switch (tipoMovimientoId) {
-                case 1: // Ingreso
-                    setMotivos(motivosIngreso);
-                    break;
-                case 2: // Egreso
-                    setMotivos(motivosEgreso);
-                    break;
-                case 3: // Transferencia
-                    setMotivos(motivosTransferencia);
-                    break;
-                default:
-                    setMotivos([]); // Si el tipo de movimiento no coincide con ninguno de los anteriores, se establecen motivos vacíos
-                    break;
-            }
-        };
-
-        // Llamar a la función para establecer los motivos al principio y cada vez que cambie el tipo de movimiento seleccionado
-        obtenerMotivos(fk_tipo_de_movimiento);
-    }, [fk_tipo_de_movimiento]);
-    //const [detallesMovimientos, setDetallesMovimientos] = useState([{ idDetalle: detalleIdCounter++, descripcion: '', cantidad: 1, precio: 0, total: 0 }])
 
     //Este es el arreglo de detalles que se le va a pasar a detalles de movimientos
     const [detallesMovimientos, setDetallesMovimientos] = useState([]);
@@ -73,6 +57,7 @@ export default function FormularioMovimientos() {
     //Manejo de listas de productos y Depósitos de Origen y Destino para los movimientos
     const [fk_producto, setFk_producto] = useState(0);
     const [arregloProductos, setArreglo_productos] = useState([]);
+    const [productosFiltrados, setProductosFiltrados] = useState([]);
     const [fk_deposito_origen, setFk_deposito_origen] = useState(0);
     const [fk_deposito_destino, setFk_deposito_destino] = useState(0);
     const [depositos, setDepositos] = useState([]);
@@ -83,11 +68,17 @@ export default function FormularioMovimientos() {
     useEffect(() => {
         const extraccionDepositos = async () => {
             try {
-                const respuestaDepositos = await DepositosConfig.getDepositos();
-                const respuestaProductos = await ProductosConfig.getProductos();
+                const [respuestaDepositos, respuestaProductos] = await Promise.all([
+                    DepositosConfig.getDepositos(),
+                    ProductosConfig.getProductos()
+                ]);
+
                 setDepositos(respuestaDepositos.data);
                 setDepositosDestinos(respuestaDepositos.data);
                 setArreglo_productos(respuestaProductos.data);
+
+
+                //console.log(respuestaTiposDeMovimientos);
             } catch (error) {
                 console.error('Error al obtener lista de depositos: ', error);
             }
@@ -95,15 +86,92 @@ export default function FormularioMovimientos() {
         extraccionDepositos();
     }, []);
 
+    useEffect(() => {
+        // Filtra los productos en base al depósito de origen seleccionado
+        if (fk_deposito_origen !== null && !esIngreso) {
+            const productosEnDeposito = arregloProductos.filter(producto => producto.depositoId === fk_deposito_origen);
+            setProductosFiltrados(productosEnDeposito);
+        } else {
+            const productosEnDepositoDestino = arregloProductos.filter(producto => producto.depositoId === 1);
+            setProductosFiltrados(productosEnDepositoDestino);
+        }
+    }, [fk_deposito_origen, arregloProductos, esIngreso]);
+
+    const [userDepositoId, setUserDepositoId] = useState(null);
+    const [rol, setRol] = useState(null);
+    const [depositoEncargado, setDepositoEncargado] = useState(null);
+    const [selectedItem, setSelectedItem] = useState('');
+    useEffect(() => {
+        const userData = localStorage.getItem("user");
+
+        if (userData) {
+            const user = JSON.parse(userData);
+            setResponsable(user.userName);
+            setRol(user.role);
+            const userDeposito = depositos.find(deposito => deposito.encargadoUsername === user.userName);
+            if (userDeposito) {
+                setUserDepositoId(userDeposito.id);
+            } else {
+                setUserDepositoId(null);
+            }
+            console.log(userDeposito ? userDeposito.id : "No se encontró el depósito");
+            //console.log(userDepositoId);
+            //console.log(user.deposito);
+        }
+
+        const storedSelectedItem = localStorage.getItem('selectedItem');
+        if (storedSelectedItem) {
+            setSelectedItem(storedSelectedItem);
+        }
+    }, [depositos]);
+
+    useEffect(() => {
+        const extraccionDeMotivosPorTipoDeMovimiento = async () => {
+            try {
+
+                const respuestaTiposDeMovimientos = await TiposDeMovimientosConfig.getTiposDeMovimiento();
+                const respuestaMotivos = await MotivosConfig.getMotivos();
+                const respuestaMotivosPorTipoDeMovimiento = await MotivosPorTipoDeMovimientoConfig.getMotivosPorTipoDeMovimiento();
+                setTiposDeMovimientos(respuestaTiposDeMovimientos.data);
+                setMotivos(respuestaMotivos.data);
+                setMotivosPorTipoDeMovimiento(respuestaMotivosPorTipoDeMovimiento.data);
+                console.log(respuestaMotivosPorTipoDeMovimiento.data);
+                console.log(respuestaMotivos.data);
+                console.log(respuestaTiposDeMovimientos.data);
+            } catch (error) {
+                console.log('Error al obtener Motivos por tipo de Movimiento', error);
+            }
+        }
+        extraccionDeMotivosPorTipoDeMovimiento();
+    }, []);
 
 
-
+    useEffect(() => {
+        setDetallesMovimientos([]);
+        setDetalleTemp({ idProducto: 0, descripcion: '', cantidad: 1, precio: 0, total: 0 });
+    }, [fk_motivo_por_tipo_de_movimiento]);
 
 
     const [motivo, setMotivo] = useState('');
 
     //Estado para detalle temporal
     const [detalleTemp, setDetalleTemp] = useState({ idProducto: 0, descripcion: '', cantidad: 1, precio: 0, total: 0 });
+
+    useEffect(() => {
+        // Actualiza el precio en detalleTemp cuando se selecciona un producto
+        if (fk_producto !== 0) {
+            const productoSeleccionado = arregloProductos.find(producto => producto.id === +fk_producto);
+            if (productoSeleccionado) {
+                setDetalleTemp(prevDetalle => ({
+                    ...prevDetalle,
+                    idProducto: productoSeleccionado.id,
+                    descripcion: productoSeleccionado.str_nombre,
+                    precio: productoSeleccionado.dec_costo,
+                    total: prevDetalle.cantidad * productoSeleccionado.dec_costo
+                }));
+            }
+        }
+    }, [fk_producto, arregloProductos]);
 
     const manejarCambioDetalleTemp = (nombre, valor) => {
         setDetalleTemp(prevDetalle => ({
@@ -113,21 +181,35 @@ export default function FormularioMovimientos() {
         }));
     };
 
+
+
     const manejarAgregarDetalle = () => {
         const productoSeleccionado = arregloProductos.find(producto => {
             if (producto.id === +fk_producto) {
                 return producto;
             }
         });
+
+        if ((esEgreso || isTransferencia) && productoSeleccionado.int_cantidad_actual < detalleTemp.cantidad) {
+            Toast.fire({
+                icon: 'warning',
+                title: `No se puede dar salida a más de ${productoSeleccionado.int_cantidad_actual} ${productoSeleccionado.str_nombre} del depósito origen.`,
+            });
+            return;
+        }
+
         //console.log(detallesMovimientos);
         const nuevoId = detallesMovimientos.length;
-        setDetallesMovimientos([...detallesMovimientos, { ...detalleTemp, idDetalle: nuevoId, idProducto: productoSeleccionado.id, descripcion: productoSeleccionado.str_nombre, cantidad: detalleTemp.cantidad, precio: detalleTemp.precio, total: detalleTemp.total }]);
+        const precioProducto = esCompra ? detalleTemp.precio : productoSeleccionado.dec_costo;
+        setDetallesMovimientos([...detallesMovimientos, { ...detalleTemp, idDetalle: nuevoId, idProducto: productoSeleccionado.id, descripcion: productoSeleccionado.str_nombre, cantidad: detalleTemp.cantidad, precio: precioProducto, total: detalleTemp.total }]);
         setDetalleTemp({ idProducto: 0, descripcion: '', cantidad: 1, precio: 0, total: 0 });
         setFk_producto(0); // Reset product selection after adding
+        setAlertaCantidad('');
     };
 
     useEffect(() => {
         console.log(detallesMovimientos);
+        console.log(fk_motivo_por_tipo_de_movimiento);
     }, [detallesMovimientos]);
 
     const manejarQuitarDetalle = (id) => {
@@ -138,28 +220,9 @@ export default function FormularioMovimientos() {
     const [numeroNotaRemision, setNumeroNotaRemision] = useState('');
     const [timbradoRemision, setTimbradoRemision] = useState('');
     const [depositoDestino, setDepositoDestino] = useState('');
-    const [datosVehiculo, setDatosVehiculo] = useState('');
-    const [conductor, setConductor] = useState('');
+    const [datosVehiculo, setDatosVehiculo] = useState({ modeloVehiculo: 'Modelo: HINO 500 1925 -', chapa: ' CHAPA: ABCD123' });
+    const [conductor, setConductor] = useState({ str_nombre_conductor: 'Jose Luis Arzamendia Patiño', str_documento_conductor: ' C.I.No.: 7456123' });
 
-    //<-- Estas funciones agregaban producto pero lo que agregamos son detalles y no productos.-->
-    //<-- Estas funciones no se están utilizando así que se van a eliminar más adelante.-->
-    {/*const manejarCambioProducto = (id, nombre, valor) => {
-        const detallesLista = detallesMovimientos.map(detalle =>
-            detalle.idDetalle === id ? { ...detalle, [nombre]: valor, total: nombre === 'precio' || nombre === 'cantidad' ? (nombre === 'precio' ? detalle.cantidad * parseFloat(valor) : parseInt(valor) * detalle.precio) : detalle.total } : detalle
-        );
-        setDetallesMovimientos(detallesLista);
-    };
-
-    const manejarAgregarProducto = () => {
-        setDetallesMovimientos([...detallesMovimientos, { idDetalle: 0, descripcion: '', cantidad: 1, precio: 0, total: 0 }]);
-    };
-
-    const manejarQuitarProducto = (id) => {
-        setDetallesMovimientos(detallesMovimientos.filter(detalle => detalle.idDetalle != id));
-    };*/}
-
-    //Estas funciones se utilizan para manejar los detalles del movimientos
-    // manejarAgregarDetalle
 
 
 
@@ -176,28 +239,28 @@ export default function FormularioMovimientos() {
         return subTotal;
     };
     let count = 100
+
+    {/*Aqui es donde guardo el formulario para enviar al backend y se guarde todo.*/ }
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
             const movimientoActual = {
-
                 "date_fecha": fecha,
-                "tipoDeMovimientoId": fk_tipo_de_movimiento,
-                "depositoOrigenId": (fk_deposito_origen === 0 ? null : fk_deposito_origen),
-                "depositoDestinoId": (fk_deposito_destino === 0 ? null : fk_deposito_destino),
                 "bool_borrado": false,
                 "detallesDeMovimientos": detallesMovimientos.map(detalle => ({
-
                     "int_cantidad": detalle.cantidad,
+                    "dec_costo": detalle.precio,
                     "productoId": detalle.idProducto,
+                    "bool_borrado": false
                 }))
             }
             console.log('Movimiento enviado', movimientoActual);
-
-            const movimientoCreado = await MovimientosConfig.postMovimiento(movimientoActual).then(() => {
+            const fk_deposito_origen_API = fk_deposito_origen ? fk_deposito_origen : fk_deposito_destino;
+            const fk_deposito_destino_API = fk_deposito_destino ? fk_deposito_destino : fk_deposito_origen;
+            const movimientoCreado = await MovimientosConfig.postMovimiento(fk_motivo_por_tipo_de_movimiento, fk_deposito_origen_API, fk_deposito_destino_API, movimientoActual).then(() => {
                 Swal.fire('Guardado', 'El movimiento fue creado exitosamente.', 'success');
             });
-
+            navigate.push('/movimientos');
 
         } catch (error) {
             console.error('Error al enviar los datos del formulario: ', error);
@@ -226,9 +289,21 @@ export default function FormularioMovimientos() {
     //const motivos = tipoMovimiento === 'transferencia' ? motivosTransferencia : ('ingreso' ? motivosIngreso : motivosEgreso);
 
 
-    const esTransferencia = fk_tipo_de_movimiento === 3;
-    const mostrarDepositoOrigen = fk_tipo_de_movimiento === 2 || fk_tipo_de_movimiento === 3;
-    const mostrarDepositoDestino = fk_tipo_de_movimiento === 1 || fk_tipo_de_movimiento === 3;
+    //const esTransferencia = fk_tipo_de_movimiento === 3;
+    const [isDepositoOrigenVisible, setIsDepositoOrigenVisible] = useState(false);
+    const [isDepositoDestinoVisible, setIsDepositoDestinoVisible] = useState(false);
+    const [isTransferencia, setIsTransferencia] = useState(false);
+    useEffect(() => {
+        // Actualiza la visibilidad del depósito origen basado en el motivo seleccionado
+        const selectedMotivo = motivosPorTipoDeMovimiento.find(motivo => motivo.id === fk_motivo_por_tipo_de_movimiento);
+        const tipoMovimientoId = selectedMotivo ? selectedMotivo.tipodemovimientoId : null;
+        setIsDepositoOrigenVisible(tipoMovimientoId === 2 || tipoMovimientoId === 3);
+        setIsDepositoDestinoVisible(tipoMovimientoId === 1 || tipoMovimientoId === 3);
+        setIsTransferencia(tipoMovimientoId === 3);
+        setEsCompra(tipoMovimientoId === 1);
+        setEsEgreso(tipoMovimientoId === 2);
+        setEsIngreso(tipoMovimientoId === 1);
+    }, [fk_motivo_por_tipo_de_movimiento, motivosPorTipoDeMovimiento]);
 
     return (
         <>
@@ -264,102 +339,52 @@ export default function FormularioMovimientos() {
 
                             <div>
                                 <label
-                                    htmlFor="fk_tipo_de_movimiento"
+                                    htmlFor="fk_motivo_por_tipo_de_movimiento"
                                     className="block text-sm font-medium text-gray-700"
                                 >
-                                    Tipo de Movimiento
+                                    Motivo por Tipo de Movimiento
                                 </label>
-                                {/*<select
-                                    id="fk_tipo_de_movimiento"
-                                    name="fk_tipo_de_movimiento"
-                                    value={fk_tipo_de_movimiento}
-                                    onChange={(e) => {
-                                        setFk_tipo_de_movimiento(e.target.value);
-                                        setMotivo('');
-                                    }}
-                                    className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-                                    required
-                                >
-                                    <option value="" disabled>
-                                        Seleccione un tipo
-                                    </option>
-                                    <option value="ingreso">Ingreso</option>
-                                    <option value="egreso">Egreso</option>
-                                    <option value="transferencia">Transferencia</option>
-                                </select>*/}
-                                <SearchSelect id="fk_tipo_de_movimiento" className='mt-2' placeholder='Tipo de Movimiento' value={fk_tipo_de_movimiento} onValueChange={(value) => {
-                                    setFk_tipo_de_movimiento(parseInt(value));
-                                    setMotivo('');
+
+                                <SearchSelect id="fk_motivo_por_tipo_de_movimiento" className='mt-2' placeholder='Motivo por Tipo de Movimiento' value={fk_motivo_por_tipo_de_movimiento} onValueChange={(value) => {
+                                    setFk_motivo_por_tipo_de_movimiento(parseInt(value));
+                                    console.log(fk_motivo_por_tipo_de_movimiento);
+                                    //setMotivo('');
                                 }}>
-                                    {tiposDeMovimientos.map(tiposMovimientos => (
-                                        <SearchSelectItem key={tiposMovimientos.id} value={tiposMovimientos.id}>{tiposMovimientos.str_descripcion}</SearchSelectItem>
+                                    {motivosPorTipoDeMovimiento.map(motivo_por_tipo_de_movimiento => (
+                                        <SearchSelectItem key={motivo_por_tipo_de_movimiento.id} value={motivo_por_tipo_de_movimiento.id}>{motivo_por_tipo_de_movimiento.str_descripcion}</SearchSelectItem>
                                     ))}
                                 </SearchSelect>
                             </div>
 
-                            <div>
+
+
+                            <div className={`mb-4 ${isDepositoOrigenVisible ? 'visible' : 'invisible'}`}>
                                 <label
-                                    htmlFor="motivo"
+                                    htmlFor="depositoOrigen"
                                     className="block text-sm font-medium text-gray-700"
                                 >
-                                    Motivo
+                                    Depósito Origen
                                 </label>
-                                {/*<select
-                                    id="motivo"
-                                    name="motivo"
-                                    value={motivo}
-                                    onChange={(e) => setMotivo(e.target.value)}
-                                    className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-                                    required
-                                >
-                                    <option value="" disabled>
-                                        Seleccione un Motivo
-                                    </option>
-                                    {motivos.map(motivo => (
-                                        <option key={motivo.id} value={motivo.id}>
-                                            {motivo.str}
-                                        </option>
-                                    ))}
-                                </select>*/}
-                                <SearchSelect id="fk_motivoId" className='mt-2' placeholder='Motivo' value={fk_motivoId} onValueChange={(value) => setFk_MotivoId(parseInt(value))}>
-                                    {motivos.map(motivosSeleccionados => (
-                                        <SearchSelectItem key={motivosSeleccionados.id} value={motivosSeleccionados.id}>{motivosSeleccionados.str_motivo}</SearchSelectItem>
+                                <SearchSelect id="fk_deposito_origen" className='mt-2' placeholder='Depósito' value={fk_deposito_origen} onValueChange={(value) => setFk_deposito_origen(parseInt(value))}>
+                                    {depositos.map(deposito => (
+                                        <SearchSelectItem key={deposito.id} value={deposito.id}>{deposito.str_nombre}</SearchSelectItem>
                                     ))}
                                 </SearchSelect>
                             </div>
 
-                            {mostrarDepositoOrigen && (
-                                <div>
-                                    <label
-                                        htmlFor="depositoOrigen"
-                                        className="block text-sm font-medium text-gray-700"
-                                    >
-                                        Depósito Origen
-                                    </label>
-                                    <SearchSelect id="fk_deposito_origen" className='mt-2' placeholder='Depósito' value={fk_deposito_origen} onValueChange={(value) => setFk_deposito_origen(parseInt(value))}>
-                                        {depositos.map(deposito => (
-                                            <SearchSelectItem key={deposito.id} value={deposito.id}>{deposito.str_nombre}</SearchSelectItem>
-                                        ))}
-                                    </SearchSelect>
-                                </div>
-                            )}
+                            <div className={`mb-4 ${isDepositoDestinoVisible ? 'visible' : 'invisible'}`}>
+                                <label htmlFor="fk_deposito_destino" className="block text-sm font-medium text-gray-700">Depósito Destino</label>
+                                <SearchSelect id="fk_deposito_destino" className='mt-2' placeholder='Depósito' value={fk_deposito_destino} onValueChange={(value) => setFk_deposito_destino(parseInt(value))}>
+                                    {opcionesFiltradas.map(depositoDestino => (
 
-                            {mostrarDepositoDestino && (
+                                        <SearchSelectItem key={depositoDestino.id} value={depositoDestino.id}>{depositoDestino.str_nombre}</SearchSelectItem>
+                                    ))}
+                                </SearchSelect>
+                            </div>
+
+                            {isTransferencia && (
                                 <>
-                                    <div>
-                                        <label htmlFor="fk_deposito_destino" className="block text-sm font-medium text-gray-700">Depósito Destino</label>
-                                        <SearchSelect id="fk_deposito_destino" className='mt-2' placeholder='Depósito' value={fk_deposito_destino} onValueChange={(value) => setFk_deposito_destino(parseInt(value))}>
-                                            {opcionesFiltradas.map(depositoDestino => (
 
-                                                <SearchSelectItem key={depositoDestino.id} value={depositoDestino.id}>{depositoDestino.str_nombre}</SearchSelectItem>
-                                            ))}
-                                        </SearchSelect>
-                                    </div>
-                                </>
-                            )}
-
-                            {esTransferencia && (
-                                <>
                                     <div>
                                         <label htmlFor="timbradoRemision" className="block text-sm font-medium text-gray-700">Timbrado</label>
                                         <input
@@ -368,7 +393,7 @@ export default function FormularioMovimientos() {
                                             value={timbradoRemision}
                                             onChange={(e) => setTimbradoRemision(e.target.value)}
                                             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm"
-                                            required={esTransferencia}
+                                            required={isTransferencia}
                                         />
                                     </div>
 
@@ -380,7 +405,7 @@ export default function FormularioMovimientos() {
                                             value={numeroNotaRemision}
                                             onChange={(e) => setNumeroNotaRemision(e.target.value)}
                                             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm"
-                                            required={esTransferencia}
+                                            required={isTransferencia}
                                         />
                                     </div>
 
@@ -391,10 +416,11 @@ export default function FormularioMovimientos() {
                                         <input
                                             type="text"
                                             id="datosVehiculo"
-                                            value={datosVehiculo}
+                                            value={datosVehiculo.modeloVehiculo + datosVehiculo.chapa}
                                             onChange={(e) => setDatosVehiculo(e.target.value)}
                                             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm"
-                                            required={esTransferencia}
+                                            required={isTransferencia}
+                                            disabled
                                         />
                                     </div>
 
@@ -403,10 +429,11 @@ export default function FormularioMovimientos() {
                                         <input
                                             type="text"
                                             id="conductor"
-                                            value={conductor}
+                                            value={conductor.str_nombre_conductor + conductor.str_documento_conductor}
                                             onChange={(e) => setConductor(e.target.value)}
                                             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm"
-                                            required={esTransferencia}
+                                            required={isTransferencia}
+                                            disabled
                                         />
                                     </div>
                                 </>
@@ -433,14 +460,8 @@ export default function FormularioMovimientos() {
                     <div className="grid grid-cols-1 md:grid-cols-6 gap-4 items-end mb-4">
                         <div className="md:col-span-2">
                             <label htmlFor="descripcion" className="block text-sm font-medium text-gray-700">Descripción/Producto</label>
-
-                            {/*<SearchSelect id="descripcion" value={detalleTemp.descripcion} placeholder="Seleccionar Producto" onValueChange={(value) => manejarCambioDetalleTemp('descripcion', value)} className='mt-2'>
-                                {arregloProductos.map(producto => (
-                                    <SearchSelectItem key={producto.id} value={producto.nombre}>{producto.nombre}</SearchSelectItem>
-                                ))}
-                            </SearchSelect>*/}
                             <SearchSelect id="fk_producto" className='mt-2' placeholder='Producto' value={fk_producto} onValueChange={(value) => setFk_producto(parseInt(value))}>
-                                {arregloProductos.map(producto => (
+                                {productosFiltrados.map(producto => (
                                     <SearchSelectItem key={producto.id} value={producto.id}>{producto.str_nombre}</SearchSelectItem>
                                 ))}
                             </SearchSelect>
@@ -467,8 +488,10 @@ export default function FormularioMovimientos() {
                                 value={detalleTemp.precio}
                                 onChange={(e) => manejarCambioDetalleTemp('precio', parseFloat(e.target.value))}
                                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm"
+                                disabled={!esCompra}
                                 min="0"
                                 required
+
                             />
                         </div>
 
@@ -492,6 +515,7 @@ export default function FormularioMovimientos() {
                             >
                                 Agregar
                             </button>
+
                         </div>
                     </div>
                 </form>

@@ -2,6 +2,8 @@
 import React, { useState } from "react";
 import { Button, TextInput } from "@tremor/react";
 import ProveedoresConfig from "../../../controladores/ProveedoresConfig";
+import Swal from "sweetalert2";
+
 import { useRouter } from "next/navigation";
 
 export default function FormularioProveedores({
@@ -20,20 +22,23 @@ export default function FormularioProveedores({
     event.preventDefault();
     try {
       const proveedor = {
-        str_nombre,
-        str_telefono,
-        str_direccion,
-        str_correo,
+        "str_nombre": str_nombre,
+        "str_telefono": str_telefono,
+        "str_direccion": str_direccion,
+        "str_correo": str_correo,
+        "bool_borrado": false
       };
 
       const response = await ProveedoresConfig.postProveedor(proveedor);
-      //console.log(response);
 
+      Swal.fire('Guardado', 'El proveedor fue creado exitosamente.', 'success');
+
+      // Reiniciar los valores de los campos del formulario
       setStr_nombre("");
       setStr_telefono("");
       setStr_direccion("");
       setStr_correo("");
-      
+
       if (type === 'form') {
         router.push("/proveedores");
       } else {
@@ -43,6 +48,11 @@ export default function FormularioProveedores({
       }
     } catch (error) {
       console.error("Error al enviar los datos del formulario: ", error);
+      Swal.fire(
+        'Error',
+        'Oops! ocurrió un error al intentar guardar el movimiento.',
+        'error'
+      );
     }
   };
 

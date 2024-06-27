@@ -10,8 +10,8 @@ export default function Photo({src}) {
       {src ? (
         <Image
           src={src} onError={(e)=>{ e.target.srcset=fallbackSrc; e.target.src=fallbackSrc;}}
-          width={200}
-          height={200}
+          width={300}
+          height={300}
           alt="Producto"
         />
       ) : (

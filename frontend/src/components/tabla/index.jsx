@@ -1,5 +1,5 @@
 "use client";
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import ExportPDF from "../exportpdf";
 import ExportCSV from "../exportcsv";
 
@@ -30,19 +30,16 @@ import {
   TextInput,
 } from "@tremor/react";
 
-//import { Link } from "next/link";
 import { useRouter } from 'next/navigation'
 import Filter from "../FilterFunction";
-//import { SelectData, SelectHero } from "../selectData";
 
-
-function DataTable({ columns, data, pageurl }) {
+function DataTable({ columns, data, pageurl, cantElementos=10, width=150 }) {
   const router = useRouter();
   const [sorting, setSorting] = useState([]);
   const [filtering, setFiltering] = useState("");
   const [columnFilters, setColumnFilters] = React.useState([]);
 
-  const headers = columns.slice(1, 4).map((column) => column.header); //Index 1 al 4, para saltear el index de codigo
+  const headers = columns.slice(1, 4).map((column) => column.header);
   const headerString = headers.join(", ");
   const placeHolder = "Buscar por " + headerString + ", etc.";
 
@@ -63,7 +60,7 @@ function DataTable({ columns, data, pageurl }) {
     onGlobalFilterChange: setFiltering,
     initialState: {
       pagination: {
-        pageSize: 7,
+        pageSize: cantElementos,
       }
     }
   });
@@ -73,6 +70,7 @@ function DataTable({ columns, data, pageurl }) {
     setFiltering("");
   };
 
+  const fechaRegex = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})$/;
 
   const hasFilters = table.getState().columnFilters.length > 0 || table.getState().globalFilter;
 
@@ -82,40 +80,53 @@ function DataTable({ columns, data, pageurl }) {
     const formattedValue = Intl.NumberFormat('es-ES', {
       style: 'currency',
       currency: 'PYG',
-      minimumFractionDigits: 0
+      minimumFractionDigits: 0,
+      useGrouping: true
     }).format(value);
     return formattedValue.replace('PYG', '');
   };
-  
-  const [hoveredRowId, setHoveredRowId] = useState(null); // State to track hovered row
-  const [prevHoveredRowId, setPrevHoveredRowId] = useState(null);
-  useEffect(() => {
-    const btnActions = document.getElementById('btn-actions'+hoveredRowId?.id);
-    if (btnActions) {
 
+  const formatDate = (dateString) => {
+    const options = {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+    };
+
+    const formattedDate = new Date(dateString).toLocaleString('es-ES', options);
+    return formattedDate;
+};
+  
+  const [hoveredRowId, setHoveredRowId] = useState(null);
+  const [prevHoveredRowId, setPrevHoveredRowId] = useState(null);
+  
+  useEffect(() => {
+    const btnActions = document.getElementById('btn-actions' + hoveredRowId?.id);
+    if (btnActions) {
       if (prevHoveredRowId !== null && prevHoveredRowId !== hoveredRowId) {
-        const prevBtnActions = document.getElementById('btn-actions'+prevHoveredRowId);
+        const prevBtnActions = document.getElementById('btn-actions' + prevHoveredRowId);
         if (prevBtnActions) {
           prevBtnActions.classList.add('invisible');
         }
       }
-
       if (hoveredRowId?.action === 'entering') {
         btnActions.classList.remove('invisible');
       } else if (hoveredRowId?.action === 'leaving') {
         btnActions.classList.add('invisible');
       }
     }
-
     setPrevHoveredRowId(hoveredRowId?.id);
   }, [hoveredRowId, prevHoveredRowId]);
 
   return (
     <div>
       <div className="flex justify-end mt-5">
-      <Button onClick={clearAllFilters} variant="light" color="blue" className="mx-3">Limpiar Filtros</Button>
-      <ExportPDF data={filteredData} whatToExport={columns} title={"Detalle de Stock"} fileName="reporte_stock_pdf"></ExportPDF>
-      <ExportCSV data={filteredData} whatToExport={columns} fileName="reporte_stock_pdf"></ExportCSV>
+        <Button onClick={clearAllFilters} variant="light" color="blue" className="mx-3">Limpiar Filtros</Button>
+        <ExportPDF data={filteredData} whatToExport={columns} title={"Detalle de Stock"} fileName="reporte_stock_pdf"></ExportPDF>
+        <ExportCSV data={filteredData} whatToExport={columns} fileName="reporte_stock_scv"></ExportCSV>
       </div>
       <Table>
         <TableHead>
@@ -123,7 +134,7 @@ function DataTable({ columns, data, pageurl }) {
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
                 <TableHeaderCell
-                  className={"p-2 " + columns[header.index].widthClass ?? ""}
+                  className={"p-0 m-0" + (columns[header.index].widthClass ?? "")}
                   key={header.id}
                   onClick={header.column.getToggleSortingHandler()}
                 >
@@ -156,20 +167,17 @@ function DataTable({ columns, data, pageurl }) {
               {headerGroup.headers.map((header) => (
                 <TableHeaderCell
                   key={header.id}
-                  className={"p-2 " + columns[header.index].widthClass ?? ""}
+                  className={"p-2 " + (columns[header.index].widthClass ?? "")}
+                  style={{ maxWidth: header.width }}
                 >
                   <div>
                     <Filter
                       column={header.column}
                       table={table}
-                      numericInputType={
-                        columns[header.index].numericInputType ?? "single"
-                      }
+                      numericInputType={columns[header.index].numericInputType ?? "single"}
                       placeholder={"Filtrar " + columns[header.index].header}
                       display={columns[header.index].search ?? true}
-                      inputClass={
-                        columns[header.index].inputClass ?? "w-fit-content"
-                      }
+                      inputClass={columns[header.index].inputClass ?? "w-fit-content"}
                     />
                   </div>
                 </TableHeaderCell>
@@ -184,23 +192,31 @@ function DataTable({ columns, data, pageurl }) {
               key={row.id} {...row.getRowProps} className="clickable tablerow" 
               onClick={() => router.push(`${pageurl}${row.original.id}`)}
               onMouseEnter={() => setHoveredRowId({ id: row.original.id, action: 'entering' })}
-              onMouseLeave={() => setHoveredRowId({ id: row.original.id, action: 'leaving' })}
+              onMouseLeave={() => setHoveredRowId({ id: row.original.id, action: 'leaving' })}
             >
-              {row.getVisibleCells().map((cell) => (
-                <TableCell className="p-2 text-wrap truncate" key={cell.id}>
-                  <div>
-                    {typeof cell.getValue() === 'number' 
-                        ? formatCurrency(cell.getValue()) 
-                        : flexRender(cell.column.columnDef.cell, cell.getContext())
-                      }
-                  </div>
-                </TableCell>
-              ))}
+              {row.getVisibleCells().map((cell) => {
+                let content;
+
+                if (typeof cell.getValue() === 'number') {
+                    content = formatCurrency(cell.getValue());
+                } else if (fechaRegex.test(cell.getValue())) {
+                    content = formatDate(cell.getValue());
+                } else {
+                    content = flexRender(cell.column.columnDef.cell, cell.getContext());
+                }
+
+                return (
+                    <TableCell className="p-2 text-wrap" key={cell.id}>
+                        <div className="truncate-y"
+                      >{content}</div>
+                    </TableCell>
+                );
+              })}
             </TableRow>
           ))}
         </TableBody>
       </Table>
-      <div className="flex justify-center space-x-5 p-3 pagination-container">
+      <div className="flex justify-center space-x-5 mt-5">
         <Button
           icon={RiArrowLeftSLine}
           iconPosition="left"

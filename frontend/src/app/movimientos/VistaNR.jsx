@@ -15,7 +15,8 @@ const VistaNR = () => {
     <div>
       <Button
         icon={RiTruckLine}
-        type="primary"
+        type="button"
+        variant="light"
         color="blue"
         onClick={(event) => {
           event.stopPropagation(); //para evitar que haga accion por defecto de tablas y otros
@@ -27,7 +28,7 @@ const VistaNR = () => {
       <Dialog open={isOpen} onClose={(val) => setIsOpen(val)} static={true}>
         <DialogPanel className="text-right w-content">
           <div className="text-left">
-            <h1 className="text-lg font-semibold text-tremor-content-strong mb-3">
+            <h1 className="text-xs font-semibold text-tremor-content-strong mb-3">
               Nota de remisión
             </h1>
           </div>
