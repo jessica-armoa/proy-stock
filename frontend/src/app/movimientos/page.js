@@ -28,17 +28,23 @@ const Movimientos = () => {
       search: false,
     },
     {
+      accessorKey: "str_motivoPorTipoDeMovimiento",
+      header: "Motivo",
+      search: false,
+      width: '10px'
+    },
+    {
       accessorKey: "date_fecha",
       header: "Fecha",
       search: false,
     },
     {
-      accessorKey: "depositoOrigenId",
+      accessorKey: "str_depositoOrigen",
       header: "Deposito Origen",
       search: false,
     },
     {
-      accessorKey: "depositoDestinoId",
+      accessorKey: "str_depositoDestino",
       header: "Deposito Destino",
       search: false,
     },

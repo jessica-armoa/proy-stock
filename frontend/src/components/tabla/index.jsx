@@ -33,7 +33,7 @@ import {
 import { useRouter } from 'next/navigation'
 import Filter from "../FilterFunction";
 
-function DataTable({ columns, data, pageurl, cantElementos=10 }) {
+function DataTable({ columns, data, pageurl, cantElementos=10, width=150 }) {
   const router = useRouter();
   const [sorting, setSorting] = useState([]);
   const [filtering, setFiltering] = useState("");
@@ -168,6 +168,7 @@ function DataTable({ columns, data, pageurl, cantElementos=10 }) {
                 <TableHeaderCell
                   key={header.id}
                   className={"p-2 " + (columns[header.index].widthClass ?? "")}
+                  style={{ maxWidth: header.width }}
                 >
                   <div>
                     <Filter
@@ -206,7 +207,8 @@ function DataTable({ columns, data, pageurl, cantElementos=10 }) {
 
                 return (
                     <TableCell className="p-2 text-wrap" key={cell.id}>
-                        <div className="truncate-y">{content}</div>
+                        <div className="truncate-y"
+                      >{content}</div>
                     </TableCell>
                 );
               })}
