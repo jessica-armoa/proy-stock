@@ -16,6 +16,10 @@ class NotasDeRemisionConfig {
         return axios.post(api, notaDeRemision);
     }
 
+    getNotaDeRemisionSiguiente(){
+        return axios.get(api, 'getSiguienteNumero')
+    }
+
 
     putNotaDeRemision(id, notaDeRemision) {
         return axios.put(`${api}/${id}`, notaDeRemision, {
