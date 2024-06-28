@@ -117,7 +117,7 @@ namespace api.Controllers
             depositoExistente.Str_direccion = updateDto.Str_direccion;
             depositoExistente.Str_telefono = updateDto.Str_telefono;
             depositoExistente.EncargadoId = encargado?.Id ?? depositoExistente.EncargadoId;
-            depositoExistente.Bool_borrado = updateDto.Bool_borrado;
+            depositoExistente.Bool_borrado = false;
 
             await _context.SaveChangesAsync();
 
