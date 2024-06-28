@@ -121,6 +121,8 @@ namespace api.Controllers
                         var detalle = detalleDto.ToDetalleFromCreate(movimientoModel.Id, detalleDto.ProductoId);
 
                         var producto = await _productoRepo.GetByIdAsync(detalle.ProductoId);
+
+                        if (motivo == null) return null;
                         if (producto == null)
                         {
                             return BadRequest();
@@ -174,7 +176,7 @@ namespace api.Controllers
                             await _asientoRepo.CreateAsync(asiento3);
                         }
 
-                        else if (tipoDeMovimiento.Str_tipo.ToLower() == "egreso")
+                        else if (tipoDeMovimiento.Str_tipo.ToLower() == "egreso" && motivo.Bool_perdida == false)
                         {
                             if (producto.Int_cantidad_actual < detalle.Int_cantidad)
                             {
@@ -218,6 +220,16 @@ namespace api.Controllers
                             await _asientoRepo.CreateAsync(asiento1);
                             await _asientoRepo.CreateAsync(asiento2);
                             await _asientoRepo.CreateAsync(asiento3);
+                        }
+
+                        else if(tipoDeMovimiento.Str_tipo.ToLower() == "egreso" && motivo.Bool_perdida == true)
+                        {
+                            if (producto.Int_cantidad_actual < detalle.Int_cantidad)
+                            {
+                                return BadRequest("Cantidad insuficiente del producto!!");
+                            }
+                            
+                            await _detalleRepo.CreateAsync(detalle);
                         }
 
                         else if (tipoDeMovimiento.Str_tipo.ToLower() == "transferencia")
