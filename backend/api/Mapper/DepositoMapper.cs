@@ -48,7 +48,6 @@ namespace api.Mapper
                 Str_nombre = depositoDto.Str_nombre,
                 Str_direccion = depositoDto.Str_direccion,
                 Str_telefono = depositoDto.Str_telefono,
-                Str_EncargadoUsername = depositoDto.Str_EncargadoUsername,
                 Bool_borrado = depositoDto.Bool_borrado
             };
         }
