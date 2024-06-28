@@ -3,29 +3,22 @@ import axios from "axios";
 const api = process.env.NEXT_PUBLIC_API_URL+"reporte";
 
 class ReportesConfig{
-    getReportes(){
-        return axios.get(api);
+    getMasVendidos(){
+        return axios.get(api+'/top5productosMasVendidos');
     }
 
-    getReporteId(id){
-        return axios.get(`${api}/${id}`);
+    getMenosVendidos(id){
+        return axios.get(api+'/top5productosMenosVendidos');
     }
 
-    postReporte(ferreteriaId, deposito){
-        return axios.post(`${api}/${ferreteriaId}`, deposito);
+    getPerdidas(){
+        return axios.get(api+'/perdidas');
     }
 
-    putReporte(id, deposito) {
-        console.log("en el put", deposito)
-        return axios.put(`${api}/${id}`, deposito, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
+    getStockCritico() {
+        return axios.get(api+'/productosConCantidadMinima')
     }
-    deleteReporte(id){
-        return axios.delete(`${api}/${id}`);
-    }
+    
 }
 
 export default new ReportesConfig();

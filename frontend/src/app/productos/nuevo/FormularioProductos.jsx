@@ -487,14 +487,16 @@ export default function FormularioProductos() {
         static={true}
         className="z-[100]"
       >
-        <DialogPanel className="sm:max-w-md">
-          <button>
-            <RiCloseLine
-              className="h-5 w-5 shrink-0"
-              aria-hidden={true}
-              onClick={handleCloseModal}
-            />
-          </button>
+        <DialogPanel>
+          <div className="w-full text-right">
+            <button>
+              <RiCloseLine
+                className="h-5 w-5 shrink-0 text-right"
+                aria-hidden={true}
+                onClick={handleCloseModal}
+              />
+            </button>
+          </div>
 
           <FormularioMarcas
             type={"modal"}
