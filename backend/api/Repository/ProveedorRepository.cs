@@ -41,7 +41,8 @@ namespace api.Repository
         {
             return await _context.proveedores
             .Where(p => p.Bool_borrado != true)
-            .Include(p => p.Productos)
+            .Include(p => p.Productos).ThenInclude(p => p.Deposito)
+            .Include(p => p.Productos).ThenInclude(p => p.DetallesDeMovimientos).ThenInclude(d => d.Movimiento)
             .Include(p => p.Categorias)
             .Include(p => p.Marcas)
             .ToListAsync();
@@ -51,7 +52,8 @@ namespace api.Repository
         {
             return await _context.proveedores
             .Where(p => p.Bool_borrado != true)
-            .Include(p => p.Productos)
+            .Include(p => p.Productos).ThenInclude(p => p.Deposito)
+            .Include(p => p.Productos).ThenInclude(p => p.DetallesDeMovimientos).ThenInclude(d => d.Movimiento)
             .Include(p => p.Categorias)
             .Include(p => p.Marcas)
             .FirstOrDefaultAsync(p => p.Id == id);

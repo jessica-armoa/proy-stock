@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from 'react';
 import { Button, NumberInput, TextInput } from '@tremor/react';
-import FerreteriasConfig from '../FerreteriasConfig';
+import FerreteriasConfig from '../../../controladores/FerreteriasConfig';
 
 import { useRouter } from 'next/navigation';
 
@@ -119,7 +119,7 @@ export default function FormularioFerreteria() {
                 setStr_ruc('');
                 setStr_telefono('');
                 router.push('/ferreterias');
-            }}>Descartar</Button>    
+            }}>Cancelar</Button>    
         </form >
     )
 }

@@ -25,16 +25,50 @@ namespace api.Mapper
                 Int_iva = productoModel.Int_iva,
                 Dec_precio_mayorista = productoModel.Dec_precio_mayorista,
                 Dec_precio_minorista = productoModel.Dec_precio_minorista,
+                DepositoId = productoModel.DepositoId,
+                DepositoNombre = productoModel.Deposito.Str_nombre,
+                ProveedorId = productoModel.ProveedorId,
+                ProveedorNombre = productoModel.Proveedor.Str_nombre,
+                MarcaId = productoModel.MarcaId,
+                MarcaNombre = productoModel.Marca.Str_nombre,
+                Bool_borrado = productoModel.Bool_borrado,
                 DetallesDeMovimientos = productoModel.DetallesDeMovimientos
                     .Where(d => d.Bool_borrado != true)
-                    .Select(d => d.ToDetalleDeMovimientoDto()).ToList(),
+                    .Select(d => d.ToDetalleDeMovimientoDto()).ToList()    
+            };
+        }
+
+        public static ProductoDto ToProductoDtoFromEdit(this Producto productoModel)
+        {
+            return new ProductoDto
+            {
+                Id = productoModel.Id,
+                Str_ruta_imagen = productoModel.Str_ruta_imagen,
+                Str_nombre = productoModel.Str_nombre,
+                Str_descripcion = productoModel.Str_descripcion,
+                Int_cantidad_actual = productoModel.Int_cantidad_actual,
+                Int_cantidad_minima = productoModel.Int_cantidad_minima,
+                Dec_costo = productoModel.Dec_costo,
+                Dec_costo_PPP = productoModel.Dec_costo_PPP,
+                Int_iva = productoModel.Int_iva,
+                Dec_precio_mayorista = productoModel.Dec_precio_mayorista,
+                Dec_precio_minorista = productoModel.Dec_precio_minorista,
                 DepositoId = productoModel.DepositoId,
-                DepositoNombre = productoModel.Deposito?.Str_nombre,
                 ProveedorId = productoModel.ProveedorId,
-                ProveedorNombre = productoModel.Proveedor?.Str_nombre,
                 MarcaId = productoModel.MarcaId,
-                MarcaNombre = productoModel.Marca?.Str_nombre,
-                Bool_borrado = productoModel.Bool_borrado
+                Bool_borrado = productoModel.Bool_borrado,
+                DetallesDeMovimientos = productoModel.DetallesDeMovimientos
+                    .Where(d => d.Bool_borrado != true)
+                    .Select(d => d.ToDetalleDeMovimientoDto()).ToList()    
+            };
+        }
+
+        public static ProductoDto ToProductoDtoFromMarca(this Producto productoModel)
+        {
+            return new ProductoDto
+            {
+                Id = productoModel.Id,
+                Str_nombre = productoModel.Str_nombre
             };
         }
 
@@ -45,9 +79,10 @@ namespace api.Mapper
                 Str_ruta_imagen = productoDto.Str_ruta_imagen,
                 Str_nombre = productoDto.Str_nombre,
                 Str_descripcion = productoDto.Str_descripcion,
+                Int_cantidad_actual = 0,
                 Int_cantidad_minima = productoDto.Int_cantidad_minima,
-                Dec_costo = productoDto.Dec_costo,
-                Dec_costo_PPP = productoDto.Dec_costo_PPP,
+                Dec_costo = 0,
+                Dec_costo_PPP = 0,
                 Int_iva = productoDto.Int_iva,
                 Dec_precio_mayorista = productoDto.Dec_precio_mayorista,
                 Dec_precio_minorista = productoDto.Dec_precio_minorista,

@@ -10,6 +10,7 @@ namespace api.Interfaces
     public interface IProductoRepository
     {
         Task<List<Producto>> GetAllAsync();
+        Task<List<Producto>> ObtenerProductosPorDepositoAsync(int depositoId);
         Task<Producto?> GetByIdAsync(int? id);
         Task<Producto?> GetByNombreAsync(string nombre);
         Task<Producto> CreateAsync(Producto productoModel);
@@ -17,6 +18,6 @@ namespace api.Interfaces
         Task<Producto?> DeleteAsync(int id); 
         Task<bool> ProductoExists(int id);
         Task<bool> ProductoExistsName(string nombreProducto);
-        Task ActualizarCostoPPPAsync();
+        Task<Producto?> ObtenerProductoEnDeposito(string productoNombre, int? depositoId);
     }
 }

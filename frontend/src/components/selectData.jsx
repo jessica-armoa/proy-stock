@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Select, SelectItem } from '@tremor/react';
-import DepositosController from "../libs/DepositosController";
+import DepositosConfig from "../controladores/DepositosConfig";
 
 // Componente que renderiza el selector de depósitos
 export function SelectData({ setFilter }) {
@@ -8,7 +8,7 @@ export function SelectData({ setFilter }) {
 
     useEffect(() => {
         if (depositos.length <= 0) {
-            DepositosController.getDepositos().then((response) => {
+            DepositosConfig.getDepositos().then((response) => {
                 setDepositos(response.data);
             });
         }

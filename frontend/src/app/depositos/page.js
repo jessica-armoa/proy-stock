@@ -4,12 +4,11 @@ import React, { useState, useEffect } from "react";
 import { Button } from "@tremor/react";
 import { useRouter } from 'next/navigation';
 import Swal from 'sweetalert2';
-import DepositosController from "../../libs/DepositosController";
-import dynamic from 'next/dynamic'; 
-import DepositosConfig from "./DepositosConfig";
+import dynamic from 'next/dynamic';
+import DepositosConfig from "../../controladores/DepositosConfig"
 
-const Sidebar = dynamic(() => import("@/components/sidebar/Sidebar"), { ssr: false });
-const DataTable = dynamic(() => import("@/components/table"), { ssr: false });
+const Sidebar = dynamic(() => import("@/components/barraNavegacion/Sidebar"), { ssr: false });
+const DataTable = dynamic(() => import("@/components/tabla"), { ssr: false });
 
 const Depositos = () => {
   const router = useRouter();
@@ -19,7 +18,7 @@ const Depositos = () => {
 
   useEffect(() => {
     if (depositos.length <= 0) {
-      DepositosController.getDepositos().then((response) => {
+      DepositosConfig.getDepositos().then((response) => {
         setDepositos(response.data);
       });
     }
@@ -66,8 +65,17 @@ const Depositos = () => {
   };
 
   const handleSave = () => {
-    DepositosController.updateDeposito(currentDeposito.id, currentDeposito)
-    //console.log('current', currentDeposito)
+    const deposito = {
+      "str_nombre": currentDeposito.str_nombre,
+      "str_direccion": currentDeposito.str_direccion,
+      "str_telefono": currentDeposito.str_telefono,
+      "encargadoUsername": currentDeposito.encargadoUsername,
+      "bool_borrado": false
+    };
+
+    console.log("enviado: ", deposito);
+
+    DepositosConfig.putDeposito(currentDeposito.id, deposito)
       .then(() => {
         setDepositos(depositos.map(deposito => (deposito.id === currentDeposito.id ? currentDeposito : deposito)));
         setModalIsOpen(false);
@@ -78,7 +86,6 @@ const Depositos = () => {
         );
       })
       .catch((error) => {
-        //console.log(depositos)
         console.error("Error updating deposito:", error);
         Swal.fire(
           'Error!',
@@ -100,8 +107,8 @@ const Depositos = () => {
       search: true
     },
     {
-      accessorKey: "str_encargado",
-      header: "Encargado",
+      accessorKey: "encargadoUsername",
+      header: "Nombre de usuario del encargado",
     },
     {
       accessorKey: "str_telefono",
@@ -117,7 +124,7 @@ const Depositos = () => {
       header: "Acciones",
       search: false,
       cell: ({ row }) => (
-        <div id={"btn-actions"+row.original.id} className="flex justify-evenly invisible">
+        <div id={"btn-actions" + row.original.id} className="flex justify-evenly invisible">
           <button
             className="text-cyan-400 rounded  hover:text-blue-500"
             onClick={(event) => handleEdit(row.original, event)}
@@ -126,12 +133,12 @@ const Depositos = () => {
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 20 20"
               fill="currentColor"
-              class="size-5"
+              className="size-5"
             >
               <path d="m5.433 13.917 1.262-3.155A4 4 0 0 1 7.58 9.42l6.92-6.918a2.121 2.121 0 0 1 3 3l-6.92 6.918c-.383.383-.84.685-1.343.886l-3.154 1.262a.5.5 0 0 1-.65-.65Z" />
               <path d="M3.5 5.75c0-.69.56-1.25 1.25-1.25H10A.75.75 0 0 0 10 3H4.75A2.75 2.75 0 0 0 2 5.75v9.5A2.75 2.75 0 0 0 4.75 18h9.5A2.75 2.75 0 0 0 17 15.25V10a.75.75 0 0 0-1.5 0v5.25c0 .69-.56 1.25-1.25 1.25h-9.5c-.69 0-1.25-.56-1.25-1.25v-9.5Z" />
             </svg>
-         
+
           </button>
           <button
             className="text-red-400 rounded hover:text-red-700"
@@ -141,12 +148,12 @@ const Depositos = () => {
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 20 20"
               fill="currentColor"
-              class="size-5"
+              className="size-5"
             >
               <path
-                fill-rule="evenodd"
+                fillRule="evenodd"
                 d="M8.75 1A2.75 2.75 0 0 0 6 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 1 0 .23 1.482l.149-.022.841 10.518A2.75 2.75 0 0 0 7.596 19h4.807a2.75 2.75 0 0 0 2.742-2.53l.841-10.52.149.023a.75.75 0 0 0 .23-1.482A41.03 41.03 0 0 0 14 4.193V3.75A2.75 2.75 0 0 0 11.25 1h-2.5ZM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69-.56-1.25-1.25-1.25h-2.5c-.69 0-1.25.56-1.25 1.25v.325C8.327 4.025 9.16 4 10 4ZM8.58 7.72a.75.75 0 0 0-1.5.06l.3 7.5a.75.75 0 1 0 1.5-.06l-.3-7.5Zm4.34.06a.75.75 0 1 0-1.5-.06l-.3 7.5a.75.75 0 1 0 1.5.06l.3-7.5Z"
-                clip-rule="evenodd"
+                clipRule="evenodd"
               />
             </svg>
           </button>
@@ -158,7 +165,7 @@ const Depositos = () => {
   return (
     <div className="flex h-screen w-full bg-ui-background p-2 text-ui-text">
       <Sidebar />
-      <div className="flex flex-col w-full h-full p-5 rounded-lg bg-ui-cardbg">
+      <div className="flex flex-col w-full h-full p-5 rounded-lg bg-ui-cardbg overflow-y">
         <h1 className='mb-4 text-l font-semibold normal-case tracking-tight'>Depósitos</h1> 
         <div className="flex items-center justify-end space-x-2">
           <Button
@@ -203,13 +210,13 @@ const Depositos = () => {
                   </div>
                   <div className="mb-4">
                     <label className="block text-sm font-medium text-gray-700">
-                      Encargado:
+                      Nombre de usuario del encargado:
                       <span className="text-red-700">*
                       </span>
                       <input
                         type="text"
-                        name="str_encargado"
-                        value={currentDeposito.str_encargado}
+                        name="encargadoUsername"
+                        value={currentDeposito.encargadoUsername}
                         onChange={handleChange}
                         className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
                       />
@@ -217,18 +224,32 @@ const Depositos = () => {
                   </div>
                   <div className="mb-4">
                     <label className="block text-sm font-medium text-gray-700">
-                      Teléfono:
+                      Teléfono depósito:
                       <span className="text-red-700">*
                       </span>
                       <input
                         type="text"
-                        name="str_ferreteriaTelefono"
-                        value={currentDeposito.str_ferreteriaTelefono}
+                        name="str_telefono"
+                        value={currentDeposito.str_telefono}
                         onChange={handleChange}
                         className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
                       />
                     </label>
                   </div>
+                  {/*<div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700">
+                      Teléfono encargado:
+                      <span className="text-red-700">*
+                      </span>
+                      <input
+                        type="text"
+                        name="str_telefonoEncargado"
+                        value={currentDeposito.str_telefonoEncargado}
+                        onChange={handleChange}
+                        className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
+                      />
+                    </label>
+                  </div>*/}
                   <div className="mb-4">
                     <label className="block text-sm font-medium text-gray-700">
                       Dirección:

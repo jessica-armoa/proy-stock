@@ -3,7 +3,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import AuthController from '../../libs/UsuariosController';
+import AuthConfig from '../../controladores/UsuariosConfig';
 
 const Login = () => {
   console.log(process.env.NEXT_PUBLIC_API_URL)
@@ -21,7 +21,7 @@ const Login = () => {
     }
 
     try {
-      const response = await AuthController.login({ "username": username, "password": password });
+      const response = await AuthConfig.login({ "username": username, "password": password });
       console.log(response.data);
       localStorage.setItem("Token", response.data.token);
       localStorage.setItem("isAuthenticated", true);
@@ -41,7 +41,7 @@ const Login = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
+      <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full overflow-y">
         <h1 className="text-2xl font-bold mb-6">Inicio De Sesión</h1>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">

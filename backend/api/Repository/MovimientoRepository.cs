@@ -20,13 +20,13 @@ namespace api.Repository
         }
         public async Task<Movimiento> CreateAsync(Movimiento movimientoModel)
         {
-            if(movimientoModel.DetallesDeMovimientos != null && movimientoModel.DetallesDeMovimientos.Any())
+           /* if (movimientoModel.DetallesDeMovimientos != null && movimientoModel.DetallesDeMovimientos.Any())
             {
-                foreach(var detalle in movimientoModel.DetallesDeMovimientos)
+                foreach (var detalle in movimientoModel.DetallesDeMovimientos)
                 {
-                    _context.Entry(detalle).State = EntityState.Added;
+                    await _context.detalles_de_movimientos.AddAsync(detalle);
                 }
-            }
+            }*/
             await _context.movimientos.AddAsync(movimientoModel);
             await _context.SaveChangesAsync();
             return movimientoModel;
@@ -34,10 +34,13 @@ namespace api.Repository
 
         public async Task<Movimiento?> DeleteAsync(int id)
         {
-            var movimientoModel = await _context.movimientos.FirstOrDefaultAsync(p => p.Id == id);
-            if(movimientoModel == null) return null;
+            var movimientoModel = await _context.movimientos
+                .Where(m => m.Bool_borrado != true)
+                .FirstOrDefaultAsync(p => p.Id == id);
 
-            _context.movimientos.Remove(movimientoModel);
+            if (movimientoModel == null) return null;
+
+            movimientoModel.Bool_borrado = true;
             await _context.SaveChangesAsync();
             return movimientoModel;
         }
@@ -45,8 +48,11 @@ namespace api.Repository
         public async Task<List<Movimiento>> GetAllAsync()
         {
             return await _context.movimientos
-            .Where(m => m.Bool_borrado != true)
-            .Include(m => m.DetallesDeMovimientos)
+            .Where(m => m.Bool_borrado != true) 
+            .Include(m => m.MotivoPorTipoDeMovimiento)
+            .Include(m => m.DepositoOrigen)
+            .Include(m => m.DepositoDestino)
+            .Include(m => m.DetallesDeMovimientos).ThenInclude(m => m.Producto)
             .ToListAsync();
         }
 
@@ -54,8 +60,16 @@ namespace api.Repository
         {
             return await _context.movimientos
             .Where(m => m.Bool_borrado != true)
-            .Include(m => m.DetallesDeMovimientos)
+            .Include(m => m.MotivoPorTipoDeMovimiento)
+            .Include(m => m.DepositoOrigen)
+            .Include(m => m.DepositoDestino)
+            .Include(m => m.DetallesDeMovimientos).ThenInclude(m => m.Producto)
             .FirstOrDefaultAsync(m => m.Id == id);
+        }
+
+        public async Task GuardarCambiosAsync()
+        {
+            await _context.SaveChangesAsync();
         }
 
         public async Task<bool> MovimientoExists(int id)
@@ -73,29 +87,35 @@ namespace api.Repository
             .Where(d => d.Bool_borrado != true)
             .FirstOrDefaultAsync(m => m.Id == id);
 
-            if(movimientoExistente == null) return null;
+            if (movimientoExistente == null) return null;
 
             movimientoExistente.Date_fecha = movimientoDto.Date_fecha;
-            movimientoExistente.Bool_borrado = movimientoDto.Bool_borrado;
+            movimientoExistente.Bool_borrado = false;
 
-            if(movimientoDto.DetallesDeMovimientos != null)
+            if (movimientoDto.DetallesDeMovimientos != null)
             {
-                foreach(var detalle in movimientoDto.DetallesDeMovimientos)
+                foreach (var detalle in movimientoDto.DetallesDeMovimientos)
                 {
-                    if(movimientoExistente.DetallesDeMovimientos != null)
+                    if (movimientoExistente.DetallesDeMovimientos != null)
                     {
                         var detalleExistente = movimientoExistente.DetallesDeMovimientos
                             .Where(d => d.Bool_borrado != true)
                             .FirstOrDefault(d => d.Id == detalle.Id);
 
-                        if(detalleExistente != null)
+                        if (detalleExistente == null)
                         {
-                            detalleExistente.Int_cantidad = detalle.Int_cantidad;
+                            return null;
                         }
+                        /*
+                            AQUI REALIZAR CAMBIOS, DEPENDE EL TIPO DE MOVIMIENTO
+                        */
+                        
+                        detalleExistente.Int_cantidad = detalle.Int_cantidad;
+                        detalleExistente.Dec_costo = detalle.Dec_costo;
                     }
                 }
             }
-            
+
             await _context.SaveChangesAsync();
             return movimientoExistente;
         }
