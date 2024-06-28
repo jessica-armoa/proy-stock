@@ -51,19 +51,31 @@ namespace api.Migrations
                     b.HasData(
                         new
                         {
+<<<<<<< HEAD
                             Id = "a7b867b0-aa50-4c7b-8941-2a9e306d0108",
+=======
+                            Id = "f58b8fbd-7bb5-4ba9-8ad0-a549576b19a7",
+>>>>>>> 7a9c24b0fc62c75315ce14e1bcc1c3163bd088e5
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
+<<<<<<< HEAD
                             Id = "940d3c6a-4d09-4196-adfb-f742b2a6b7ab",
+=======
+                            Id = "1d647d85-bd9b-4fb0-8982-0c42f2a440be",
+>>>>>>> 7a9c24b0fc62c75315ce14e1bcc1c3163bd088e5
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
+<<<<<<< HEAD
                             Id = "d4dce078-3ab2-40e1-9c79-3a6238dd5abb",
+=======
+                            Id = "3e20e71e-b931-4fb1-ab72-e7223908c10c",
+>>>>>>> 7a9c24b0fc62c75315ce14e1bcc1c3163bd088e5
                             Name = "Encargado",
                             NormalizedName = "ENCARGADO"
                         });
@@ -250,6 +262,10 @@ namespace api.Migrations
                     b.Property<string>("EncargadoId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("EncargadoUsername")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("FerreteriaId")
                         .HasColumnType("int");

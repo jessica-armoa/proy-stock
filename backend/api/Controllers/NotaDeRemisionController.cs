@@ -23,7 +23,7 @@ namespace api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<NotaDeRemision>>> GetAllAsync()
+        public async Task<IActionResult> GetAllAsync()
         {
             var notasDeRemision = await _notaDeRemisionRepository.GetAllAsync();
             var notasDeRemisionDto = notasDeRemision.Select(n => n.ToNotaDeRemisionDto());
@@ -32,8 +32,9 @@ namespace api.Controllers
 
         [HttpGet]
         [Route("{id:int}")]
-        public async Task<ActionResult<NotaDeRemision>> GetById([FromRoute] int id)
+        public async Task<IActionResult> GetById(int id)
         {
+            Console.WriteLine($"\n\n\nGET BY ID ASYNC...\n\n\n");
             var notaDeRemision = await _notaDeRemisionRepository.GetByIdAsync(id);
             if (notaDeRemision == null)
             {
@@ -43,7 +44,7 @@ namespace api.Controllers
         }
 
         [HttpGet("ultimo")]
-        public async Task<ActionResult<NotaDeRemision>> GetUltimaNotaDeRemisionAsync()
+        public async Task<IActionResult> GetUltimaNotaDeRemisionAsync()
         {
             var notaDeRemision = await _notaDeRemisionRepository.GetUltimaNotaDeRemisionAsync();
             if (notaDeRemision == null)
@@ -54,27 +55,21 @@ namespace api.Controllers
         }
 
         [HttpPost]
-        [Route("{timbradoId:int}/{movimientoId}")]
-        public async Task<ActionResult<NotaDeRemision>> Create([FromBody] CreateNotaDeRemisionDto notaDeRemisionDto, [FromRoute] int timbradoId, [FromRoute] int movimientoId)
+        public async Task<IActionResult> CreateAsync([FromBody] CreateNotaDeRemisionDto notaDeRemisionDto)
         {
             try
             {
-                if(!await _movimientoRepo.MovimientoExists(movimientoId))
-                {
-                    return NotFound("Movimiento ingresado no existe!!");
-                }
-                /*if(!await _timbradoRepo.TimbradoExists(timbradoId))
-                {
-                    return NotFound("Timbrado ingresado no existe!!");
-                }*/
-
                 var notaDeRemision = notaDeRemisionDto.ToNotaDeRemisionFromCreate(timbradoId, movimientoId);
                 await _notaDeRemisionRepository.CreateAsync(notaDeRemision);
-
-                return CreatedAtAction(nameof(GetById), new { id = notaDeRemision.Id }, notaDeRemision.ToNotaDeRemisionDto());
+                return CreatedAtAction(nameof(GetById), new { id = notaDeRemision.Id }, notaDeRemision);
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"\n\n\n\n\nError: {ex.Message}");
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine($"Inner Exception: {ex.InnerException.Message}");
+                }
                 return StatusCode(500, $"Error interno del servidor: {ex.Message}");
             }
         }
@@ -101,7 +96,7 @@ namespace api.Controllers
         }
 
         [HttpGet("getSiguienteNumero")]
-        public async Task<ActionResult<string>> GetSiguienteNumeroAsync()
+        public async Task<IActionResult> GetSiguienteNumeroAsync()
         {
             try
             {
