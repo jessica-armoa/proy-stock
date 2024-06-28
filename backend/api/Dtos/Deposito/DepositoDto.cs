@@ -17,6 +17,7 @@ namespace api.Dtos.Deposito
         public int? FerreteriaId { get; set; }
         public string? Str_ferreteriaNombre { get; set; }
         public string? Str_ferreteriaTelefono { get; set; }
+        public string EncargadoId { get; set; } = string.Empty;
         public string EncargadoUsername { get; set; } = string.Empty;
         public string EncargadoEmail { get; set; } = string.Empty;
         public List<MovimientoDto> Movimientos { get; set; } = new();

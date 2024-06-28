@@ -77,7 +77,7 @@ namespace api.Repository
             depositoExistente.Str_nombre = depositoDto.Str_nombre;
             depositoExistente.Str_direccion = depositoDto.Str_direccion;
             depositoExistente.Str_telefono = depositoDto.Str_telefono;
-            depositoExistente.EncargadoId = depositoDto.EncargadoId;
+            depositoExistente.EncargadoUsername = depositoDto.EncargadoUsername;
             depositoExistente.Bool_borrado = depositoDto.Bool_borrado;
 
             await _context.SaveChangesAsync();

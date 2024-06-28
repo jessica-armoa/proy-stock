@@ -74,13 +74,12 @@ namespace api.Controllers
                 {
                     encargado = await _userManager.Users.FirstOrDefaultAsync(u => u.UserName == depositoDto.EncargadoUsername);
                     if (encargado == null)
-                        if (encargado == null)
                     {
                         return BadRequest("El usuario encargado no existe.");
                     }
                 }
 
-                var depositoModel = depositoDto.ToDepositoFromCreate(ferreteriaId, encargado?.Id);
+                var depositoModel = depositoDto.ToDepositoFromCreate(ferreteriaId, encargado?.UserName, encargado?.Id ?? null);
                 await _depositoRepo.CreateAsync(depositoModel);
                 await transaction.CommitAsync();
 
@@ -100,11 +99,31 @@ namespace api.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var deposito = await _depositoRepo.UpdateAsync(id, updateDto);
-            if (deposito == null) return NotFound("El deposito que desea actualizar no existe!!");
+            Usuarios encargado = null;
 
-            return Ok(deposito.ToDepositoDto());
+            if (!string.IsNullOrEmpty(updateDto.EncargadoUsername))
+            {
+                encargado = await _userManager.Users.FirstOrDefaultAsync(u => u.UserName == updateDto.EncargadoUsername);
+                if (encargado == null)
+                {
+                    return BadRequest("El usuario encargado no existe.");
+                }
+            }
+
+            var depositoExistente = await _depositoRepo.GetByIdAsync(id);
+            if (depositoExistente == null) return NotFound("El deposito que desea actualizar no existe!!");
+
+            depositoExistente.Str_nombre = updateDto.Str_nombre;
+            depositoExistente.Str_direccion = updateDto.Str_direccion;
+            depositoExistente.Str_telefono = updateDto.Str_telefono;
+            depositoExistente.EncargadoId = encargado?.Id ?? depositoExistente.EncargadoId;
+            depositoExistente.Bool_borrado = false;
+
+            await _context.SaveChangesAsync();
+
+            return Ok(depositoExistente.ToDepositoDto());
         }
+
 
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete([FromRoute] int id)

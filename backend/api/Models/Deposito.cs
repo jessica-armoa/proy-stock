@@ -19,6 +19,7 @@ namespace api.Models
         public List<Movimiento> Movimientos { get; set; } = [];
         public List<Producto> Productos { get; set; } = [];
         public string EncargadoId { get; set; }
+        public string EncargadoUsername { get; set; }
         public Usuarios Encargado { get; set; }
     }
 }
