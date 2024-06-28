@@ -82,11 +82,6 @@ namespace api.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if (!await _depositoRepo.DepositoExists(depositoId))
-            {
-                return BadRequest("El deposito ingresado no existe!");
-            }
-
             if (!await _proveedorRepo.ProveedorExists(proveedorId))
             {
                 return BadRequest("El proveedor ingresado no existe!");
@@ -101,22 +96,17 @@ namespace api.Controllers
             {
                 return BadRequest("El producto que desea ingresar ya existe!!");
             }
-            var productoModel = productoDto.ToProductoFromCreate(depositoId, proveedorId, marcaId);
-            await _productoRepo.CreateAsync(productoModel);
+
+            var productos = new List<Producto>();
 
             var depositos = await _depositoRepo.GetAllAsync();
             if (depositos != null)
             {
                 foreach (var deposito in depositos)
                 {
-                    if (deposito.Id != depositoId)
-                    {
-                        if (!deposito.Productos.Any(d => d.Str_nombre != productoDto.Str_nombre))
-                        {
-                            var productoEnDepositos = productoDto.ToProductoFromCreate(deposito.Id, proveedorId, marcaId);
-                            await _productoRepo.CreateAsync(productoEnDepositos);
-                        }
-                    }
+                    var productoEnDepositos = productoDto.ToProductoFromCreate(deposito.Id, proveedorId, marcaId);
+                    productos.Add(productoEnDepositos);
+                    await _productoRepo.CreateAsync(productoEnDepositos);
                 }
             }
             else
@@ -124,6 +114,11 @@ namespace api.Controllers
                 return BadRequest("No existen depositos creados");
             }
 
+            var productoModel = productos.First();
+            if(productoModel == null)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error creando el producto");
+            }
             return CreatedAtAction(nameof(GetById), new { id = productoModel.Id }, productoModel.ToProductoDto());
         }
 
