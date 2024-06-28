@@ -25,7 +25,7 @@ namespace api.Controllers
         public async Task<IActionResult> GetAll()
         {
             var marcas = await _marcaRepo.GetAllAsync();
-            var marcasDto = marcas.Select(m => m.ToMarcaDto());
+            var marcasDto = marcas.Select(m => m.ToOnlyMarcaDto());
             return Ok(marcasDto);
         }
 

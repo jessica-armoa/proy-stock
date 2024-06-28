@@ -25,7 +25,7 @@ namespace api.Controllers
         public async Task<IActionResult> GetAll()
         {
             var ferreterias = await _ferreteriaRepo.GetAllAsync();
-            var ferreteriaDto = ferreterias.Select(f => f.ToFerreteriaDto());
+            var ferreteriaDto = ferreterias.Select(f => f.ToOnlyFerreteriaDto());
             return Ok(ferreteriaDto);
         } 
 

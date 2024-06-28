@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using api.Dtos.DetalleDeMovimiento;
 using api.Dtos.Ferreteria;
 using api.Dtos.Producto;
 using api.Models;
@@ -35,6 +36,31 @@ namespace api.Mapper
                 DetallesDeMovimientos = productoModel.DetallesDeMovimientos
                     .Where(d => d.Bool_borrado != true)
                     .Select(d => d.ToDetalleDeMovimientoDto()).ToList()    
+            };
+        }
+
+        public static OnlyProductoDto ToOnlyProductoDto(this Producto productoModel)
+        {
+            return new OnlyProductoDto
+            {
+                Id = productoModel.Id,
+                Str_ruta_imagen = productoModel.Str_ruta_imagen,
+                Str_nombre = productoModel.Str_nombre,
+                Str_descripcion = productoModel.Str_descripcion,
+                Int_cantidad_actual = productoModel.Int_cantidad_actual,
+                Int_cantidad_minima = productoModel.Int_cantidad_minima,
+                Dec_costo = productoModel.Dec_costo,
+                Dec_costo_PPP = productoModel.Dec_costo_PPP,
+                Int_iva = productoModel.Int_iva,
+                Dec_precio_mayorista = productoModel.Dec_precio_mayorista,
+                Dec_precio_minorista = productoModel.Dec_precio_minorista,
+                DepositoId = productoModel.DepositoId,
+                DepositoNombre = productoModel.Deposito.Str_nombre,
+                ProveedorId = productoModel.ProveedorId,
+                ProveedorNombre = productoModel.Proveedor.Str_nombre,
+                MarcaId = productoModel.MarcaId,
+                MarcaNombre = productoModel.Marca.Str_nombre,
+                Bool_borrado = productoModel.Bool_borrado
             };
         }
 

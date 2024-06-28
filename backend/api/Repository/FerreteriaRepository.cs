@@ -49,7 +49,6 @@ namespace api.Repository
         {
             return await _context.ferreterias
             .Where(f => f.Bool_borrado != true)
-            .Include(f => f.Depositos)
             .ToListAsync();
         }
 

@@ -15,11 +15,9 @@ namespace api.Repository
     public class DetalleDeMovimientosRepository : IDetalleDeMovimientosRepository
     {
         private readonly ApplicationDbContext _context;
-        private readonly IProductoRepository _productoRepo;
-        public DetalleDeMovimientosRepository(ApplicationDbContext context, IProductoRepository productoRepo)
+        public DetalleDeMovimientosRepository(ApplicationDbContext context)
         {
             _context = context;
-            _productoRepo = productoRepo;
         }
 
         public async Task<DetalleDeMovimiento> CreateAsync(DetalleDeMovimiento detalleModel)
@@ -160,11 +158,7 @@ namespace api.Repository
         {
             return await _context.detalles_de_movimientos
                 .Where(d => d.Bool_borrado != true)
-                .Include(d => d.Producto).ThenInclude(d => d.Proveedor)
-                .Include(d => d.Producto).ThenInclude(d => d.Deposito)
-                .Include(d => d.Movimiento).ThenInclude(d => d.MotivoPorTipoDeMovimiento)
-                .Include(d => d.Movimiento).ThenInclude(d => d.DepositoOrigen)
-                .Include(d => d.Movimiento).ThenInclude(d => d.DepositoDestino)
+                .Include(d => d.Producto)
                 .ToListAsync();
         }
 
@@ -172,11 +166,7 @@ namespace api.Repository
         {
             return await _context.detalles_de_movimientos
                 .Where(d => d.Bool_borrado != true)
-                .Include(d => d.Producto).ThenInclude(d => d.Proveedor)
-                .Include(d => d.Producto).ThenInclude(d => d.Deposito)
-                .Include(d => d.Movimiento).ThenInclude(d => d.MotivoPorTipoDeMovimiento)
-                .Include(d => d.Movimiento).ThenInclude(d => d.DepositoOrigen)
-                .Include(d => d.Movimiento).ThenInclude(d => d.DepositoDestino)
+                .Include(d => d.Producto)
                 .FirstOrDefaultAsync(d => d.Id == id);
         }
 

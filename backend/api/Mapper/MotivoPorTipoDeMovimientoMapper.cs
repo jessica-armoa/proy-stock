@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using api.Dtos.MotivoPorTipoDeMovimiento;
+using api.Dtos.Movimiento;
 using api.Models;
 
 namespace api.Mapper
@@ -18,9 +19,7 @@ namespace api.Mapper
                 Bool_borrado = motivoPorTipoDeMovimientoModel.Bool_borrado,
                 MotivoId = motivoPorTipoDeMovimientoModel.MotivoId,
                 TipodemovimientoId = motivoPorTipoDeMovimientoModel.TipodemovimientoId,
-                Movimientos = motivoPorTipoDeMovimientoModel.Movimientos
-                    .Where(m => m.Bool_borrado != true)
-                    .Select(m => m.ToMovimientoDto()).ToList()
+                Movimientos = new List<MovimientoDto>()
             };
         }
     }

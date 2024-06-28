@@ -23,7 +23,7 @@ namespace api.Controllers
         public async Task<IActionResult> GetAll()
         {
             var proveedores = await _proveedorRepo.GetAllAsync();
-            var proveedoresDto = proveedores.Select(p => p.ToProveedorDto());
+            var proveedoresDto = proveedores.Select(p => p.ToOnlyProveedorDto());
             return Ok(proveedoresDto);
         }
 
