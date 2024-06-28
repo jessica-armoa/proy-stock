@@ -230,13 +230,12 @@ export default function FormularioProductos() {
                   <div
                     style={{
                       border: "1px solid #ccc",
-                      padding: "5px",
-                      marginBottom: "15px",
+                      marginBottom: "5px",
                       borderRadius: "4px",
                       minWidth: "300px",
-                      maxWidth: "500px",
+                      maxWidth: "300px",
                       minHeight: "300px",
-                      maxHeight: "500px",
+                      maxHeight: "300px",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",

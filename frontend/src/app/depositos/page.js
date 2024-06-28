@@ -70,7 +70,6 @@ const Depositos = () => {
       "str_direccion": currentDeposito.str_direccion,
       "str_telefono": currentDeposito.str_telefono,
       "encargadoUsername": currentDeposito.encargadoUsername,
-      "str_telefonoEncargado": currentDeposito.str_telefonoEncargado,
       "bool_borrado": false
     };
 

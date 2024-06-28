@@ -14,6 +14,7 @@ import FerreteriasConfig from "../../../controladores/FerreteriasConfig";
 import { useRouter } from "next/navigation";
 import EncargadosConfig from "../../../controladores/EncargadosConfig.jsx";
 import FormularioEncargados from "@/components/formularioEncargados";
+import Swal from "sweetalert2";
 
 export default function FormularioDepositos() {
   const navigate = useRouter();
@@ -26,6 +27,7 @@ export default function FormularioDepositos() {
   const [fk_ferreteria, setFk_ferreteria] = useState(0);
   const [ferreterias, setFerreterias] = useState([]);
   const [showCrearEncargado, setShowCrearEncargado] = useState(false);
+  
 
   const handleCrearEncargado = () => {
     setShowCrearEncargado(true);
@@ -78,7 +80,7 @@ export default function FormularioDepositos() {
         str_nombre: str_nombre,
         str_direccion: str_direccion,
         str_telefono: str_telefono,
-        encargadoUsername: "CosmeFulanito",
+        encargadoUsername: fk_encargado,
       };
 
       console.log(deposito);
@@ -86,9 +88,18 @@ export default function FormularioDepositos() {
       const response = await DepositosConfig.postDeposito(1, deposito);
 
       
-
+      Swal.fire(
+        'Creado!',
+        'El depósito ha sido creado.',
+        'success'
+      );
       navigate.push("/depositos");
     } catch (error) {
+      Swal.fire(
+        'Error!',
+        'Hubo un problema al crear el depósito.',
+        'error'
+      );
       console.error("Error al enviar los datos del formulario: ", error);
     }
   };
@@ -201,6 +212,7 @@ export default function FormularioDepositos() {
             variant="secondary"
             color="blue"
             type="button"
+            onClick={() => navigate.push("/depositos")}
           >
             Cancelar
           </Button>
