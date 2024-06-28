@@ -12,6 +12,7 @@ import MotivosPorTipoDeMovimientoConfig from "@/controladores/MotivosPorTipoDeMo
 import Swal from "sweetalert2";
 import TimbradosConfig from "@/controladores/TimbradosConfig";
 import NotasDeRemisionConfig from "@/controladores/NotasDeRemisionConfig";
+import FerreteriasConfig from "@/controladores/FerreteriasConfig";
 
 let detalleIdCounter = 0;
 
@@ -29,7 +30,7 @@ export default function FormularioMovimientos() {
         timerProgressBar: true,
     })
 
-    
+
 
 
     //Encabezado de Movimientos
@@ -43,6 +44,7 @@ export default function FormularioMovimientos() {
     const [esCompra, setEsCompra] = useState(false);
     const [esEgreso, setEsEgreso] = useState(false);
     const [esIngreso, setEsIngreso] = useState(false);
+    const [ferreteria, setFerreteria] = useState(null);
 
     const [alertaCantidad, setAlertaCantidad] = useState('');
 
@@ -70,15 +72,18 @@ export default function FormularioMovimientos() {
     useEffect(() => {
         const extraccionDepositos = async () => {
             try {
-                const [respuestaDepositos, respuestaProductos] = await Promise.all([
+                const [respuestaDepositos, respuestaProductos, respuestaFerreteria, respuestaSiguienteNotaDeRemision] = await Promise.all([
                     DepositosConfig.getDepositos(),
-                    ProductosConfig.getProductos()
+                    ProductosConfig.getProductos(),
+                    FerreteriasConfig.getFerreteriaId(1),
+                    NotasDeRemisionConfig.getNotaDeRemisionSiguiente()
                 ]);
 
                 setDepositos(respuestaDepositos.data);
                 setDepositosDestinos(respuestaDepositos.data);
                 setArreglo_productos(respuestaProductos.data);
-
+                setFerreteria(respuestaFerreteria.data);
+                setNumeroNotaRemision(respuestaSiguienteNotaDeRemision.data);
 
                 //console.log(respuestaTiposDeMovimientos);
             } catch (error) {
@@ -260,45 +265,59 @@ export default function FormularioMovimientos() {
                     "bool_borrado": false
                 }))
             }
-            
-            const notaDeRemision = {
-                "timbradoId": 1,
-                "str_numero": "001-001-0000003",
-                "date_fecha_de_expedicion": "2024-06-28T03:50:53.616Z",
-                "date_fecha_de_vencimiento": "2025-06-28T03:50:53.616Z",
-                "movimientoId": 8,
-                "empresaNombre": "La Llave Maestra",
-                "empresaDireccion": "Encarnacion",
-                "empresaTelefono": "071202020",
-                "empresaSucursal": "Encarnacion",
-                "empresaActividad": "Construccion",
-                "ruc": "12345678",
-                "destinatarioNombre": "La Llave Maestra",
-                "destinatarioDocumento": "12345678",
-                "puntoPartida": "Encarnacion",
-                "puntoLlegada": "CDE",
-                "trasladoFechaInicio": "string",
-                "trasladoFechaFin": "2024-06-28T03:50:53.616Z",
-                "trasladoVehiculo": "TOYOTA HILUX",
-                "trasladoRua": "ABCD123",
-                "transportistaNombre": "La Llave Maestra",
-                "transportistaRuc": "12345678",
-                "conductorNombre": "Facundo",
-                "conductorDocumento": "14563278",
-                "conductorDireccion": "Encarnacion",
-                "motivo": "Transferencia",
-                "motivoDescripcion": "Transferencia entre depositos",
-                "comprobanteVenta": "001-001-0000003"
-              }
-
+    
             console.log('Movimiento enviado', movimientoActual);
             const fk_deposito_origen_API = fk_deposito_origen ? fk_deposito_origen : fk_deposito_destino;
             const fk_deposito_destino_API = fk_deposito_destino ? fk_deposito_destino : fk_deposito_origen;
-            const movimientoCreado = await MovimientosConfig.postMovimiento(fk_motivo_por_tipo_de_movimiento, fk_deposito_origen_API, fk_deposito_destino_API, movimientoActual).then(() => {
-                Swal.fire('Guardado', 'El movimiento fue creado exitosamente.', 'success');
-            });
+            
+            const movimientoCreado = await MovimientosConfig.postMovimiento(
+                fk_motivo_por_tipo_de_movimiento, 
+                fk_deposito_origen_API, 
+                fk_deposito_destino_API, 
+                movimientoActual
+            );
+    
+            Swal.fire('Guardado', 'El movimiento fue creado exitosamente.', 'success');
+    
+            /*if (isTransferencia) {
+                const movimientoId = movimientoCreado.id;
+                //const notaDeRemisionSiguiente = await NotasDeRemisionConfig.getNotaDeRemisionSiguiente();
+                const notaDeRemision = {
+                    "timbradoId": timbradoRemision.id,
+                    "str_numero": numeroNotaRemision,
+                    "date_fecha_de_expedicion": fecha,
+                    "date_fecha_de_vencimiento": timbradoRemision.date_fin_vigencia,
+                    "movimientoId": movimientoId,
+                    "empresaNombre": ferreteria.str_nombre,
+                    "empresaDireccion": "Encarnacion",
+                    "empresaTelefono": ferreteria.str_telefono,
+                    "empresaSucursal": "Encarnacion",
+                    "empresaActividad": "Construccion",
+                    "ruc": ferreteria.ruc,
+                    "destinatarioNombre": ferreteria.str_nombre,
+                    "destinatarioDocumento": ferreteria.str_ruc,
+                    "puntoPartida": fk_deposito_origen,
+                    "puntoLlegada": fk_deposito_destino,
+                    "trasladoFechaInicio": fecha,
+                    "trasladoFechaFin": fecha,
+                    "trasladoVehiculo": datosVehiculo.modeloVehiculo,
+                    "trasladoRua": datosVehiculo.chapa,
+                    "transportistaNombre": ferreteria.str_nombre,
+                    "transportistaRuc": ferreteria.str_ruc,
+                    "conductorNombre": conductor.str_nombre_conductor,
+                    "conductorDocumento": conductor.str_documento_conductor,
+                    "conductorDireccion": "Encarnacion",
+                    "motivo": "Transferencia",
+                    "motivoDescripcion": "Transferencia entre depositos",
+                    "comprobanteVenta": numeroNotaRemision
+                }
+    
+                console.log('Nota de Remision enviada', notaDeRemision);
+                await NotasDeRemisionConfig.postNotaDeRemision(notaDeRemision);
+            }*/
+    
             navigate.push('/movimientos');
-
+    
         } catch (error) {
             console.error('Error al enviar los datos del formulario: ', error);
             Swal.fire(
@@ -307,8 +326,8 @@ export default function FormularioMovimientos() {
                 'error'
             );
         }
-
     };
+    
 
     const formatNumber = (number) => {
         return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
@@ -332,7 +351,7 @@ export default function FormularioMovimientos() {
     const [isTransferencia, setIsTransferencia] = useState(false);
     useEffect(() => {
         // Actualiza la visibilidad del depósito origen basado en el motivo seleccionado
-        
+
         const selectedMotivo = motivosPorTipoDeMovimiento.find(motivo => motivo.id === fk_motivo_por_tipo_de_movimiento);
         const tipoMovimientoId = selectedMotivo ? selectedMotivo.tipodemovimientoId : null;
         setIsDepositoOrigenVisible(tipoMovimientoId === 2 || tipoMovimientoId === 3);
@@ -341,7 +360,7 @@ export default function FormularioMovimientos() {
         setEsCompra(tipoMovimientoId === 1);
         setEsEgreso(tipoMovimientoId === 2);
         setEsIngreso(tipoMovimientoId === 1);
-        
+
     }, [fk_motivo_por_tipo_de_movimiento, motivosPorTipoDeMovimiento]);
 
     return (
@@ -429,7 +448,7 @@ export default function FormularioMovimientos() {
                                         <input
                                             type="text"
                                             id="timbradoRemision"
-                                            value={timbradoRemision}
+                                            value={timbradoRemision.str_timbrado}
                                             onChange={(e) => setTimbradoRemision(e.target.value)}
                                             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm"
                                             required={isTransferencia}
