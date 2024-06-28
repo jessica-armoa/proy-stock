@@ -109,16 +109,17 @@ export default function FormularioMarcas({
           </SearchSelect>
         </div>
 
-        <div className="col-span-full flex justify-center space-x-4">
+        <div className="col-span-full flex justify-end space-x-4">
           <Button
             className="mt-8"
             variant="secondary"
             type="button"
+            color="blue"
             onClick={handleCancelClick}
           >
             Cancelar
           </Button>
-          <Button className="mt-8" variant="primary" type="submit">
+          <Button className="mt-8" variant="primary" type="submit" color="blue">
             Guardar
           </Button>
         </div>
