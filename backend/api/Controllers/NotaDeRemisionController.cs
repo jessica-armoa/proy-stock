@@ -59,7 +59,7 @@ namespace api.Controllers
         {
             try
             {
-                var notaDeRemision = notaDeRemisionDto.ToNotaDeRemisionFromCreate(timbradoId, movimientoId);
+                var notaDeRemision = notaDeRemisionDto.ToNotaDeRemision();
                 await _notaDeRemisionRepository.CreateAsync(notaDeRemision);
                 return CreatedAtAction(nameof(GetById), new { id = notaDeRemision.Id }, notaDeRemision);
             }

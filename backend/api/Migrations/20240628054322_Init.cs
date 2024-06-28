@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace api.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class Init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -515,15 +515,9 @@ namespace api.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-<<<<<<<< HEAD:backend/api/Migrations/20240628035653_init.cs
-                    { "940d3c6a-4d09-4196-adfb-f742b2a6b7ab", null, "User", "USER" },
-                    { "a7b867b0-aa50-4c7b-8941-2a9e306d0108", null, "Admin", "ADMIN" },
-                    { "d4dce078-3ab2-40e1-9c79-3a6238dd5abb", null, "Encargado", "ENCARGADO" }
-========
-                    { "1d647d85-bd9b-4fb0-8982-0c42f2a440be", null, "User", "USER" },
-                    { "3e20e71e-b931-4fb1-ab72-e7223908c10c", null, "Encargado", "ENCARGADO" },
-                    { "f58b8fbd-7bb5-4ba9-8ad0-a549576b19a7", null, "Admin", "ADMIN" }
->>>>>>>> 7a9c24b0fc62c75315ce14e1bcc1c3163bd088e5:backend/api/Migrations/20240628035016_Initial.cs
+                    { "9b032b29-e73d-4f28-95cc-6e7bd9dbd061", null, "User", "USER" },
+                    { "c626130e-a009-482a-bd50-0e6a1f46220a", null, "Admin", "ADMIN" },
+                    { "f7859063-c322-4d28-9e49-5363394f7936", null, "Encargado", "ENCARGADO" }
                 });
 
             migrationBuilder.CreateIndex(

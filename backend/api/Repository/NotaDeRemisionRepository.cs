@@ -16,10 +16,10 @@ namespace api.Interfaces
       _context = context;
     }
 
-    public async Task<NotaDeRemision> CreateAsync(NotaDeRemision notaDeRemision)
+    public async Task CreateAsync(NotaDeRemision notaDeRemision)
     {
       // Buscar el movimiento correspondiente al MovimientoId proporcionado
-     /* if (notaDeRemision.MovimientoId.HasValue)
+     if (notaDeRemision.MovimientoId.HasValue)
       {
         var movimiento = await _context.movimientos
             .Where(m => m.Bool_borrado != true)
