@@ -16,10 +16,10 @@ namespace api.Interfaces
       _context = context;
     }
 
-    public async Task CreateAsync(NotaDeRemision notaDeRemision)
+    public async Task<NotaDeRemision> CreateAsync(NotaDeRemision notaDeRemision)
     {
       // Buscar el movimiento correspondiente al MovimientoId proporcionado
-      if (notaDeRemision.MovimientoId.HasValue)
+     /* if (notaDeRemision.MovimientoId.HasValue)
       {
         var movimiento = await _context.movimientos
             .FirstOrDefaultAsync(m => m.Id == notaDeRemision.MovimientoId.Value);
@@ -46,20 +46,27 @@ namespace api.Interfaces
       {
         throw new Exception("No se encontró el timbrado");
       }
-
+      */
       // Agregar la nota de remisión al contexto y guardar los cambios
       _context.notas_de_remision.Add(notaDeRemision);
       await _context.SaveChangesAsync();
+      return notaDeRemision;
     }
 
     public async Task<List<NotaDeRemision>> GetAllAsync()
     {
-      return await _context.notas_de_remision.ToListAsync();
+      return await _context.notas_de_remision
+      .Include(n => n.Timbrado)
+      .Include(n => n.Movimiento)
+      .ToListAsync();
     }
 
     public async Task<NotaDeRemision?> GetByIdAsync(int? id)
     {
-      return await _context.notas_de_remision.FirstOrDefaultAsync(n => n.Id == id);
+      return await _context.notas_de_remision
+      .Include(n => n.Timbrado)
+      .Include(n => n.Movimiento)
+      .FirstOrDefaultAsync(n => n.Id == id);
     }
 
     public async Task<NotaDeRemision?> GetUltimaNotaDeRemisionAsync()

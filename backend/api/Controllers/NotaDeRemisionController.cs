@@ -14,28 +14,32 @@ namespace api.Controllers
     public class NotaDeRemisionController : ControllerBase
     {
         private readonly INotaDeRemisionRepository _notaDeRemisionRepository;
+        private readonly IMovimientoRepository _movimientoRepo;
 
-        public NotaDeRemisionController(INotaDeRemisionRepository notaDeRemisionRepository)
+        public NotaDeRemisionController(INotaDeRemisionRepository notaDeRemisionRepository, IMovimientoRepository movimientoRepo)
         {
             _notaDeRemisionRepository = notaDeRemisionRepository;
+            _movimientoRepo = movimientoRepo;
         }
 
         [HttpGet]
         public async Task<ActionResult<List<NotaDeRemision>>> GetAllAsync()
         {
             var notasDeRemision = await _notaDeRemisionRepository.GetAllAsync();
-            return Ok(notasDeRemision);
+            var notasDeRemisionDto = notasDeRemision.Select(n => n.ToNotaDeRemisionDto());
+            return Ok(notasDeRemisionDto);
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<NotaDeRemision>> GetByIdAsync(int? id)
+        [HttpGet]
+        [Route("{id:int}")]
+        public async Task<ActionResult<NotaDeRemision>> GetById([FromRoute] int id)
         {
             var notaDeRemision = await _notaDeRemisionRepository.GetByIdAsync(id);
             if (notaDeRemision == null)
             {
                 return NotFound();
             }
-            return Ok(notaDeRemision);
+            return Ok(notaDeRemision.ToNotaDeRemisionDto());
         }
 
         [HttpGet("ultimo")]
@@ -50,14 +54,24 @@ namespace api.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<NotaDeRemision>> CreateAsync(CreateNotaDeRemisionDto notaDeRemisionDto)
+        [Route("{timbradoId:int}/{movimientoId}")]
+        public async Task<ActionResult<NotaDeRemision>> Create([FromBody] CreateNotaDeRemisionDto notaDeRemisionDto, [FromRoute] int timbradoId, [FromRoute] int movimientoId)
         {
             try
             {
-                var notaDeRemision = notaDeRemisionDto.ToNotaDeRemision();
+                if(!await _movimientoRepo.MovimientoExists(movimientoId))
+                {
+                    return NotFound("Movimiento ingresado no existe!!");
+                }
+                /*if(!await _timbradoRepo.TimbradoExists(timbradoId))
+                {
+                    return NotFound("Timbrado ingresado no existe!!");
+                }*/
+
+                var notaDeRemision = notaDeRemisionDto.ToNotaDeRemisionFromCreate(timbradoId, movimientoId);
                 await _notaDeRemisionRepository.CreateAsync(notaDeRemision);
 
-                return CreatedAtAction(nameof(GetByIdAsync), new { id = notaDeRemision.Id }, notaDeRemision);
+                return CreatedAtAction(nameof(GetById), new { id = notaDeRemision.Id }, notaDeRemision.ToNotaDeRemisionDto());
             }
             catch (Exception ex)
             {
