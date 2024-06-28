@@ -70,7 +70,6 @@ const Depositos = () => {
       "str_direccion": currentDeposito.str_direccion,
       "str_telefono": currentDeposito.str_telefono,
       "encargadoUsername": currentDeposito.encargadoUsername,
-      "str_telefonoEncargado": currentDeposito.str_telefonoEncargado,
       "bool_borrado": false
     };
 
@@ -237,7 +236,7 @@ const Depositos = () => {
                       />
                     </label>
                   </div>
-                  <div className="mb-4">
+                  {/*<div className="mb-4">
                     <label className="block text-sm font-medium text-gray-700">
                       Teléfono encargado:
                       <span className="text-red-700">*
@@ -250,7 +249,7 @@ const Depositos = () => {
                         className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
                       />
                     </label>
-                  </div>
+                  </div>*/}
                   <div className="mb-4">
                     <label className="block text-sm font-medium text-gray-700">
                       Dirección:
