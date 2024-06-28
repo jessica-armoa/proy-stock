@@ -325,10 +325,8 @@ export default function FormularioProductos() {
                     value === "crear" ? false : setFk_marca(parseInt(value));
                   }}
                 >
-                  <SearchSelectItem value="crear" onClick={handleCrearMarca}>
-                    <Button type="button" variant="light" color="blue">
-                      Crear Nueva Marca
-                    </Button>
+                  <SearchSelectItem value="crear" onClick={handleCrearMarca} style={{ color: 'rgb(59, 130, 246)' }}>
+                  Crear Nueva Marca
                   </SearchSelectItem>
                   {marcas.map((marca) => (
                     <SearchSelectItem key={marca.id} value={marca.id}>
@@ -360,11 +358,11 @@ export default function FormularioProductos() {
                   <SearchSelectItem
                     value="crear"
                     onClick={handleCrearProveedor}
+                    style={{ color: 'rgb(59, 130, 246)' }}
                   >
-                    <Button type="button" variant="light" color="blue">
-                      Crear Nuevo Proveedor
-                    </Button>
-                  </SearchSelectItem>
+                    
+                Crear Nuevo Proveedor
+              </SearchSelectItem>
                   {proveedores.map((proveedor) => (
                     <SearchSelectItem key={proveedor.id} value={proveedor.id}>
                       {proveedor.str_nombre}

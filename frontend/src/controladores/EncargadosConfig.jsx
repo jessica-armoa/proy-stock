@@ -7,24 +7,9 @@ class EncargadosConfig{
         return axios.get(api+"/all");
     }
 
-    getDepositoId(id){
-        return axios.get(`${api}/${id}`);
-    }
 
-    postDeposito(ferreteriaId, deposito){
-        return axios.post(`${api}/${ferreteriaId}`, deposito);
-    }
-
-    putDeposito(id, deposito) {
-        console.log("en el put", deposito)
-        return axios.put(`${api}/${id}`, deposito, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-    }
-    deleteDeposito(id){
-        return axios.delete(`${api}/${id}`);
+    postEncargado(encargado){
+        return axios.post(api+"/register-encargado", encargado);
     }
 }
 
