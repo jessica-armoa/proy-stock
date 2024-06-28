@@ -279,7 +279,7 @@ export default function FormularioMovimientos() {
     
             Swal.fire('Guardado', 'El movimiento fue creado exitosamente.', 'success');
     
-            if (isTransferencia) {
+            /*if (isTransferencia) {
                 const movimientoId = movimientoCreado.id;
                 //const notaDeRemisionSiguiente = await NotasDeRemisionConfig.getNotaDeRemisionSiguiente();
                 const notaDeRemision = {
@@ -314,7 +314,7 @@ export default function FormularioMovimientos() {
     
                 console.log('Nota de Remision enviada', notaDeRemision);
                 await NotasDeRemisionConfig.postNotaDeRemision(notaDeRemision);
-            }
+            }*/
     
             navigate.push('/movimientos');
     
