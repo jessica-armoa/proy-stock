@@ -78,13 +78,14 @@ const Detalle = ({ params, cantElementos = 8 }) => {
             ({ movimientos, detalles }) =>
               movimientos.map((movimiento) => ({
                 date_fecha: detalles.date_fecha,
-                tipoDeMovimientoId: detalles.tipoDeMovimientoId,
+                str_motivoPorTipoDeMovimiento: detalles.str_motivoPorTipoDeMovimiento,
                 int_cantidad: movimiento.int_cantidad,
-                depositoOrigenId: detalles.depositoOrigenId,
-                depositoDestinoId: detalles.depositoDestinoId,
+                str_depositoOrigen: detalles.str_depositoOrigen,
+                str_depositoDestino: detalles.str_depositoDestino,
               }))
           );
           setMovimientos(movimientosFiltrados);
+          
         })
         .catch((error) => {
           console.error("Error fetching movimientos:", error);
@@ -108,7 +109,7 @@ const Detalle = ({ params, cantElementos = 8 }) => {
       header: "Fecha",
     },
     {
-      accessorKey: "tipoDeMovimientoId",
+      accessorKey: "str_motivoPorTipoDeMovimiento",
       header: "Movimiento",
     },
     {
@@ -116,11 +117,11 @@ const Detalle = ({ params, cantElementos = 8 }) => {
       header: "Cantidad",
     },
     {
-      accessorKey: "depositoOrigenId",
+      accessorKey: "str_depositoOrigen",
       header: "Depósito Origen",
     },
     {
-      accessorKey: "depositoDestinoId",
+      accessorKey: "str_depositoDestino",
       header: "Depósito Destino",
     },
   ];
@@ -174,6 +175,7 @@ const Detalle = ({ params, cantElementos = 8 }) => {
                 <p>No hay Movimientos</p>
               ) : (
                 <DataTable
+                
                   data={movimientos}
                   columns={columns}
                   cantElementos={cantElementos}

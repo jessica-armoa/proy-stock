@@ -30,9 +30,11 @@ namespace api.Controllers
             return Ok(notasDeRemisionDto);
         }
 
+
         [HttpGet]
         [Route("{id:int}")]
         public async Task<IActionResult> GetById(int id)
+
         {
             Console.WriteLine($"\n\n\nGET BY ID ASYNC...\n\n\n");
             var notaDeRemision = await _notaDeRemisionRepository.GetByIdAsync(id);

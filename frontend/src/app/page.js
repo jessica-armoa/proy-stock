@@ -81,10 +81,54 @@ function CardMasVendidos() {
       <div>
       <Card className="mx-auto max-w-md">
         <h3 className="text-tremor-content-strong dark:text-dark-tremor-content-strong font-medium">
-        Productos Más vendidos
+        {titulo}
         </h3>
         <List className="mt-2">
           {masVendidos.map((item) => (
+            <ListItem key={item.id}>
+              <span>{item.str_nombre}</span>
+              <span>{item.int_cantidad_actual}</span>
+              <span>{item.depositoNombre ?? "Depósito Central"}</span>
+            </ListItem>
+          ))}
+        </List>
+      </Card>
+      </div>
+    </div>
+  );
+}
+
+function CardMenosVendidos() {
+  let titulo = "Productos menos vendidos";
+
+  const [menosVendidos, setMenosVendidos] = useState([]);
+
+  const listaMenosvendidos = async () => {
+    try {
+      const respuesta = await ReportesConfig.getMenosVendidos();
+      setMenosVendidos(respuesta.data);
+      console.log(respuesta.data);
+    } catch (error) {
+      console.error("Error al obtener lista de productos: ", error);
+    }
+  };
+
+  useEffect(() => {
+    listaMenosvendidos();
+  }, []);
+
+ 
+
+  return (
+    <div>
+         
+      <div>
+      <Card className="mx-auto max-w-auto">
+        <h3 className="text-tremor-content-strong dark:text-dark-tremor-content-strong font-medium">
+        {titulo}
+        </h3>
+        <List className="mt-2">
+          {menosVendidos.map((item) => (
             <ListItem key={item.id}>
               <span>{item.str_nombre}</span>
               <span>{item.int_cantidad_actual}</span>
@@ -105,7 +149,7 @@ function ProgressCard() {
   let valor_objetivo = 200000;
 
   return (
-    <Card className="mx-auto max-w-md">
+    <Card className="mx-auto max-w-md max-h-auto">
       <h4 className="text-tremor-default text-tremor-content dark:text-dark-tremor-content">
         {titulo}
       </h4>
@@ -151,7 +195,7 @@ function ProgressCard() {
   function DonutChartUsageExample() {
     return (
       <>
-      <Card className="mx-auto max-w-xl">
+      <Card className="mx-auto max-w-xl max-h-auto">
         <div className="flex items-center justify-center space-x-6">
           <DonutChart
             data={sales}
@@ -177,10 +221,14 @@ const Dashboard = () => {
   return (
     <div className="flex h-screen w-full bg-ui-background p-2 text-ui-text">
       <Sidebar />
-      <div className="flex flex-col justify-between w-full h-full p-5 rounded-lg bg-ui-cardbg overflow-y">
-      <ProgressCard></ProgressCard>
+      <div className="w-full h-full p-5 rounded-lg bg-ui-cardbg overflow-y">
+        <div className="flex justify-around">
+        
           <CardMasVendidos></CardMasVendidos>
+          <CardMenosVendidos></CardMenosVendidos>
           <CardStockCritico></CardStockCritico>
+        </div>
+      
           
       </div>
     </div>
