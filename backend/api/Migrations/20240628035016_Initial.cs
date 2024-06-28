@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace api.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -251,7 +251,8 @@ namespace api.Migrations
                     Str_telefono = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Bool_borrado = table.Column<bool>(type: "bit", nullable: false),
                     FerreteriaId = table.Column<int>(type: "int", nullable: true),
-                    EncargadoId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    EncargadoId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    EncargadoUsername = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -514,9 +515,9 @@ namespace api.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "00638019-c0fd-4ff0-a3d7-e1be076364ac", null, "Encargado", "ENCARGADO" },
-                    { "22978c14-c103-4093-8542-23e579a8deaa", null, "User", "USER" },
-                    { "806f672d-e7d7-42ae-bc28-ed11080dbbc3", null, "Admin", "ADMIN" }
+                    { "1d647d85-bd9b-4fb0-8982-0c42f2a440be", null, "User", "USER" },
+                    { "3e20e71e-b931-4fb1-ab72-e7223908c10c", null, "Encargado", "ENCARGADO" },
+                    { "f58b8fbd-7bb5-4ba9-8ad0-a549576b19a7", null, "Admin", "ADMIN" }
                 });
 
             migrationBuilder.CreateIndex(

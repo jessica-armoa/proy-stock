@@ -28,15 +28,16 @@ namespace api.Mapper
             };
         }
 
-        public static Deposito ToDepositoFromCreate(this CreateDepositoRequestDto depositoDto, int ferreteriaId, string encargadoId)
+        public static Deposito ToDepositoFromCreate(this CreateDepositoRequestDto depositoDto, int ferreteriaId, string Encargado_Username, string? encargadoId)
         {
             return new Deposito
             {
                 Str_nombre = depositoDto.Str_nombre,
                 Str_direccion = depositoDto.Str_direccion,
                 Str_telefono = depositoDto.Str_telefono,
-                EncargadoId = encargadoId,
                 FerreteriaId = ferreteriaId,
+                EncargadoUsername = Encargado_Username,
+                EncargadoId = encargadoId,
                 Bool_borrado = false
             };
         }

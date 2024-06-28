@@ -12,8 +12,8 @@ using api.Data;
 namespace api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240627154437_init")]
-    partial class init
+    [Migration("20240628035016_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -54,19 +54,19 @@ namespace api.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "806f672d-e7d7-42ae-bc28-ed11080dbbc3",
+                            Id = "f58b8fbd-7bb5-4ba9-8ad0-a549576b19a7",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "22978c14-c103-4093-8542-23e579a8deaa",
+                            Id = "1d647d85-bd9b-4fb0-8982-0c42f2a440be",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "00638019-c0fd-4ff0-a3d7-e1be076364ac",
+                            Id = "3e20e71e-b931-4fb1-ab72-e7223908c10c",
                             Name = "Encargado",
                             NormalizedName = "ENCARGADO"
                         });
@@ -253,6 +253,10 @@ namespace api.Migrations
                     b.Property<string>("EncargadoId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("EncargadoUsername")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("FerreteriaId")
                         .HasColumnType("int");
