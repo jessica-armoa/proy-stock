@@ -16,10 +16,10 @@ namespace api.Interfaces
       _context = context;
     }
 
-    public async Task CreateAsync(NotaDeRemision notaDeRemision)
+    public async Task<NotaDeRemision> CreateAsync(NotaDeRemision notaDeRemision)
     {
       // Buscar el movimiento correspondiente al MovimientoId proporcionado
-      if (notaDeRemision.MovimientoId.HasValue)
+     /* if (notaDeRemision.MovimientoId.HasValue)
       {
         var movimiento = await _context.movimientos
             .FirstOrDefaultAsync(m => m.Id == notaDeRemision.MovimientoId.Value);
@@ -30,7 +30,7 @@ namespace api.Interfaces
         }
         else
         {
-          throw new Exception("No se encontró un movimiento adecuado para asignar.");
+          throw new Exception("No se encontró el movimiento");
         }
       }
 
@@ -47,19 +47,33 @@ namespace api.Interfaces
         throw new Exception("No se encontró el timbrado");
       }
 
+      notaDeRemision.Str_numero = await GetSiguienteNumeroAsync();
+
       // Agregar la nota de remisión al contexto y guardar los cambios
       _context.notas_de_remision.Add(notaDeRemision);
       await _context.SaveChangesAsync();
+
+      // Verificar que el ID fue asignado
+      if (notaDeRemision.Id == 0)
+      {
+        throw new Exception("El ID de NotaDeRemision no fue generado correctamente.");
+      }
     }
 
     public async Task<List<NotaDeRemision>> GetAllAsync()
     {
-      return await _context.notas_de_remision.ToListAsync();
+      return await _context.notas_de_remision
+      .Include(n => n.Timbrado)
+      .Include(n => n.Movimiento)
+      .ToListAsync();
     }
 
-    public async Task<NotaDeRemision?> GetByIdAsync(int? id)
+    public async Task<NotaDeRemision?> GetByIdAsync(int id)
     {
-      return await _context.notas_de_remision.FirstOrDefaultAsync(n => n.Id == id);
+      return await _context.notas_de_remision
+      .Include(n => n.Timbrado)
+      .Include(n => n.Movimiento)
+      .FirstOrDefaultAsync(n => n.Id == id);
     }
 
     public async Task<NotaDeRemision?> GetUltimaNotaDeRemisionAsync()
@@ -116,7 +130,7 @@ namespace api.Interfaces
         throw new InvalidOperationException("No existe timbrado activo");
       }
 
-      int siguienteNumero = timbradoActivo.Secuencia_actual;
+      int siguienteNumero = timbradoActivo.Secuencia_actual+1;
 
       // Verifica si el número de secuencia excede la cantidad permitida
       if (siguienteNumero > timbradoActivo.Cantidad)

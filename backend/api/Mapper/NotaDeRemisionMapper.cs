@@ -42,9 +42,8 @@ namespace api.Mapper
     {
       return new NotaDeRemision
       {
-        Id = notaDeRemisionDto.Id,
-        Str_numero = notaDeRemisionDto.Str_numero,
         TimbradoId = notaDeRemisionDto.TimbradoId,
+        Str_numero = notaDeRemisionDto.Str_numero,
         Date_fecha_de_expedicion = notaDeRemisionDto.Date_fecha_de_expedicion,
         Date_fecha_de_vencimiento = notaDeRemisionDto.Date_fecha_de_vencimiento,
         MovimientoId = notaDeRemisionDto.MovimientoId,
@@ -73,6 +72,33 @@ namespace api.Mapper
       {
         Str_numero = createDto.Str_numero,
         TimbradoId = createDto.TimbradoId,
+        Date_fecha_de_expedicion = createDto.Date_fecha_de_expedicion,
+        Date_fecha_de_vencimiento = createDto.Date_fecha_de_vencimiento,
+        EmpresaNombre = createDto.EmpresaNombre,
+        EmpresaDireccion = createDto.EmpresaDireccion,
+        EmpresaTelefono = createDto.EmpresaTelefono,
+        EmpresaSucursal = createDto.EmpresaSucursal,
+        EmpresaActividad = createDto.EmpresaActividad,
+        Ruc = createDto.Ruc,
+        DestinatarioNombre = createDto.DestinatarioNombre,
+        DestinatarioDocumento = createDto.DestinatarioDocumento,
+        PuntoPartida = createDto.PuntoPartida,
+        PuntoLlegada = createDto.PuntoLlegada,
+        TrasladoFechaInicio = createDto.TrasladoFechaInicio,
+        TrasladoFechaFin = createDto.TrasladoFechaFin,
+        Motivo = createDto.Motivo,
+        MotivoDescripcion = createDto.MotivoDescripcion,
+        ComprobanteVenta = createDto.ComprobanteVenta
+      };
+    }
+
+    public static NotaDeRemision ToNotaDeRemisionFromCreate(this CreateNotaDeRemisionDto createDto, int timbradoId, int movimientoId)
+    {
+      return new NotaDeRemision
+      {
+        Str_numero = createDto.Str_numero,
+        TimbradoId = timbradoId,
+        MovimientoId = movimientoId,
         Date_fecha_de_expedicion = createDto.Date_fecha_de_expedicion,
         Date_fecha_de_vencimiento = createDto.Date_fecha_de_vencimiento,
         EmpresaNombre = createDto.EmpresaNombre,

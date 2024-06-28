@@ -24,9 +24,15 @@ public class TimbradoRepository : ITimbradoRepository
 
   public async Task<Timbrado?> GetTimbradoActivoAsync()
   {
-    return await _context.timbrados
-        .Where(t => t.Date_inicio_vigencia <= DateTime.Now && t.Date_fin_vigencia >= DateTime.Now)
+    var now = DateTime.Now;
+    Console.WriteLine($"Current DateTime: {now}");
+
+    var timbrado = await _context.timbrados
+        .Where(t => t.Date_inicio_vigencia <= now && t.Date_fin_vigencia >= now)
         .FirstOrDefaultAsync();
+
+    Console.WriteLine($"Timbrado encontrado: {timbrado}");
+    return timbrado;
   }
 
   public async Task CreateAsync(Timbrado timbrado)
