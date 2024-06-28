@@ -100,6 +100,17 @@ namespace api.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
+            Usuarios encargado = null;
+
+            if (!string.IsNullOrEmpty(updateDto.EncargadoUsername))
+            {
+                encargado = await _userManager.Users.FirstOrDefaultAsync(u => u.UserName == updateDto.EncargadoUsername);
+                    if (encargado == null)
+                    {
+                        return BadRequest("El usuario encargado no existe.");
+                    }
+            }
+            
             var deposito = await _depositoRepo.UpdateAsync(id, updateDto);
             if (deposito == null) return NotFound("El deposito que desea actualizar no existe!!");
 

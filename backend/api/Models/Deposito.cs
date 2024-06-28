@@ -18,7 +18,7 @@ namespace api.Models
         public Ferreteria? Ferreteria { get; set; }
         public List<Movimiento> Movimientos { get; set; } = [];
         public List<Producto> Productos { get; set; } = [];
-        public string EncargadoId { get; set; }
+        public string Str_EncargadoUsername { get; set; } = String.Empty;
         public Usuarios Encargado { get; set; }
     }
 }
