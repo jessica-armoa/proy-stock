@@ -28,7 +28,7 @@ namespace api.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<NotaDeRemision>> GetByIdAsync(int? id)
+        public async Task<ActionResult<NotaDeRemision>> GetByIdAsync(int id)
         {
             var notaDeRemision = await _notaDeRemisionRepository.GetByIdAsync(id);
             if (notaDeRemision == null)
