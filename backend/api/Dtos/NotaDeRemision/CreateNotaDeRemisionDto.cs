@@ -8,8 +8,9 @@ namespace api.Dtos.NotaDeRemision
 {
   public class CreateNotaDeRemisionDto
   {
-    public string Str_numero { get; set; } = string.Empty;
+
     public int TimbradoId { get; set; }
+    public string Str_numero { get; set; } = string.Empty;
     public DateTime Date_fecha_de_expedicion { get; set; }
     public DateTime Date_fecha_de_vencimiento { get; set; }
     public int MovimientoId { get; set; }

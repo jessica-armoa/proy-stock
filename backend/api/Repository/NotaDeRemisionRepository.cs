@@ -30,7 +30,7 @@ namespace api.Interfaces
         }
         else
         {
-          throw new Exception("No se encontró un movimiento adecuado para asignar.");
+          throw new Exception("No se encontró el movimiento");
         }
       }
 
@@ -46,11 +46,18 @@ namespace api.Interfaces
       {
         throw new Exception("No se encontró el timbrado");
       }
-      */
+
+      notaDeRemision.Str_numero = await GetSiguienteNumeroAsync();
+
       // Agregar la nota de remisión al contexto y guardar los cambios
       _context.notas_de_remision.Add(notaDeRemision);
       await _context.SaveChangesAsync();
-      return notaDeRemision;
+
+      // Verificar que el ID fue asignado
+      if (notaDeRemision.Id == 0)
+      {
+        throw new Exception("El ID de NotaDeRemision no fue generado correctamente.");
+      }
     }
 
     public async Task<List<NotaDeRemision>> GetAllAsync()
@@ -61,7 +68,7 @@ namespace api.Interfaces
       .ToListAsync();
     }
 
-    public async Task<NotaDeRemision?> GetByIdAsync(int? id)
+    public async Task<NotaDeRemision?> GetByIdAsync(int id)
     {
       return await _context.notas_de_remision
       .Include(n => n.Timbrado)
@@ -123,7 +130,7 @@ namespace api.Interfaces
         throw new InvalidOperationException("No existe timbrado activo");
       }
 
-      int siguienteNumero = timbradoActivo.Secuencia_actual;
+      int siguienteNumero = timbradoActivo.Secuencia_actual+1;
 
       // Verifica si el número de secuencia excede la cantidad permitida
       if (siguienteNumero > timbradoActivo.Cantidad)

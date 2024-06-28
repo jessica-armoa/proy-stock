@@ -42,9 +42,8 @@ namespace api.Mapper
     {
       return new NotaDeRemision
       {
-        Id = notaDeRemisionDto.Id,
-        Str_numero = notaDeRemisionDto.Str_numero,
         TimbradoId = notaDeRemisionDto.TimbradoId,
+        Str_numero = notaDeRemisionDto.Str_numero,
         Date_fecha_de_expedicion = notaDeRemisionDto.Date_fecha_de_expedicion,
         Date_fecha_de_vencimiento = notaDeRemisionDto.Date_fecha_de_vencimiento,
         MovimientoId = notaDeRemisionDto.MovimientoId,

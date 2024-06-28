@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace api.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -108,11 +108,30 @@ namespace api.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Str_timbrado = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Date_inicio_vigencia = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Date_fin_vigencia = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    Date_fin_vigencia = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Codigo_establecimiento = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Punto_de_expedicion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Cantidad = table.Column<int>(type: "int", nullable: false),
+                    Secuencia_actual = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_timbrados", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "tipos_de_movimientos",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Str_tipo = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Bool_operacion = table.Column<bool>(type: "bit", nullable: false),
+                    Bool_borrado = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tipos_de_movimientos", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -230,38 +249,23 @@ namespace api.Migrations
                     Str_nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Str_direccion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Str_telefono = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Str_encargado = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Str_telefonoEncargado = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Bool_borrado = table.Column<bool>(type: "bit", nullable: false),
-                    FerreteriaId = table.Column<int>(type: "int", nullable: true)
+                    FerreteriaId = table.Column<int>(type: "int", nullable: true),
+                    EncargadoId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_depositos", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_depositos_AspNetUsers_EncargadoId",
+                        column: x => x.EncargadoId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
                         name: "FK_depositos_ferreterias_FerreteriaId",
                         column: x => x.FerreteriaId,
                         principalTable: "ferreterias",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "tipos_de_movimientos",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Str_descripcion = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    MotivoId = table.Column<int>(type: "int", nullable: true),
-                    Bool_borrado = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_tipos_de_movimientos", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_tipos_de_movimientos_motivos_MotivoId",
-                        column: x => x.MotivoId,
-                        principalTable: "motivos",
                         principalColumn: "Id");
                 });
 
@@ -305,41 +309,27 @@ namespace api.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "movimientos",
+                name: "motivos_por_tipo_de_movimiento",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Date_fecha = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    TipoDeMovimientoId = table.Column<int>(type: "int", nullable: true),
-                    DepositoOrigenId = table.Column<int>(type: "int", nullable: true),
-                    DepositoDestinoId = table.Column<int>(type: "int", nullable: true),
+                    Str_descripcion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Bool_borrado = table.Column<bool>(type: "bit", nullable: false),
-                    DepositoId = table.Column<int>(type: "int", nullable: true)
+                    MotivoId = table.Column<int>(type: "int", nullable: true),
+                    TipodemovimientoId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_movimientos", x => x.Id);
+                    table.PrimaryKey("PK_motivos_por_tipo_de_movimiento", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_movimientos_depositos_DepositoDestinoId",
-                        column: x => x.DepositoDestinoId,
-                        principalTable: "depositos",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_movimientos_depositos_DepositoId",
-                        column: x => x.DepositoId,
-                        principalTable: "depositos",
+                        name: "FK_motivos_por_tipo_de_movimiento_motivos_MotivoId",
+                        column: x => x.MotivoId,
+                        principalTable: "motivos",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_movimientos_depositos_DepositoOrigenId",
-                        column: x => x.DepositoOrigenId,
-                        principalTable: "depositos",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_movimientos_tipos_de_movimientos_TipoDeMovimientoId",
-                        column: x => x.TipoDeMovimientoId,
+                        name: "FK_motivos_por_tipo_de_movimiento_tipos_de_movimientos_TipodemovimientoId",
+                        column: x => x.TipodemovimientoId,
                         principalTable: "tipos_de_movimientos",
                         principalColumn: "Id");
                 });
@@ -386,16 +376,104 @@ namespace api.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "movimientos",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Date_fecha = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Bool_borrado = table.Column<bool>(type: "bit", nullable: false),
+                    MotivoPorTipodeMovimientoId = table.Column<int>(type: "int", nullable: true),
+                    DepositoOrigenId = table.Column<int>(type: "int", nullable: true),
+                    DepositoDestinoId = table.Column<int>(type: "int", nullable: true),
+                    DepositoId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_movimientos", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_movimientos_depositos_DepositoDestinoId",
+                        column: x => x.DepositoDestinoId,
+                        principalTable: "depositos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_movimientos_depositos_DepositoId",
+                        column: x => x.DepositoId,
+                        principalTable: "depositos",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_movimientos_depositos_DepositoOrigenId",
+                        column: x => x.DepositoOrigenId,
+                        principalTable: "depositos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_movimientos_motivos_por_tipo_de_movimiento_MotivoPorTipodeMovimientoId",
+                        column: x => x.MotivoPorTipodeMovimientoId,
+                        principalTable: "motivos_por_tipo_de_movimiento",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "asientos",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    movimientoId = table.Column<int>(type: "int", nullable: true),
+                    Str_cuenta = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Str_concepto = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Str_descripcion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Dec_debe = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Dec_haber = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Bool_borrado = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_asientos", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_asientos_movimientos_movimientoId",
+                        column: x => x.movimientoId,
+                        principalTable: "movimientos",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "detalles_de_movimientos",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Int_cantidad = table.Column<int>(type: "int", nullable: false),
+                    Dec_costo = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    MovimientoId = table.Column<int>(type: "int", nullable: true),
+                    ProductoId = table.Column<int>(type: "int", nullable: true),
+                    Bool_borrado = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_detalles_de_movimientos", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_detalles_de_movimientos_movimientos_MovimientoId",
+                        column: x => x.MovimientoId,
+                        principalTable: "movimientos",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_detalles_de_movimientos_productos_ProductoId",
+                        column: x => x.ProductoId,
+                        principalTable: "productos",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "notas_de_remision",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Str_numero = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Str_timbrado = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Str_numero_de_comprobante_inicial = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Str_numero_de_comprobante_final = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Str_numero_de_comprobante_actual = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TimbradoId = table.Column<int>(type: "int", nullable: false),
                     Date_fecha_de_expedicion = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Date_fecha_de_vencimiento = table.Column<DateTime>(type: "datetime2", nullable: false),
                     MovimientoId = table.Column<int>(type: "int", nullable: true),
@@ -423,32 +501,12 @@ namespace api.Migrations
                         column: x => x.MovimientoId,
                         principalTable: "movimientos",
                         principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "detalles_de_movimientos",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Int_cantidad = table.Column<int>(type: "int", nullable: false),
-                    MovimientoId = table.Column<int>(type: "int", nullable: true),
-                    ProductoId = table.Column<int>(type: "int", nullable: true),
-                    Bool_borrado = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_detalles_de_movimientos", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_detalles_de_movimientos_movimientos_MovimientoId",
-                        column: x => x.MovimientoId,
-                        principalTable: "movimientos",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_detalles_de_movimientos_productos_ProductoId",
-                        column: x => x.ProductoId,
-                        principalTable: "productos",
-                        principalColumn: "Id");
+                        name: "FK_notas_de_remision_timbrados_TimbradoId",
+                        column: x => x.TimbradoId,
+                        principalTable: "timbrados",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.InsertData(
@@ -456,10 +514,15 @@ namespace api.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "32ad10d4-d5de-4792-8335-72ef64d9775f", null, "User", "USER" },
-                    { "dd3eed36-3702-4c01-9043-7d679bcf85c9", null, "Encargado", "ENCARGADO" },
-                    { "e59c3450-5d85-4dff-bfae-7e0379c921a7", null, "Admin", "ADMIN" }
+                    { "00638019-c0fd-4ff0-a3d7-e1be076364ac", null, "Encargado", "ENCARGADO" },
+                    { "22978c14-c103-4093-8542-23e579a8deaa", null, "User", "USER" },
+                    { "806f672d-e7d7-42ae-bc28-ed11080dbbc3", null, "Admin", "ADMIN" }
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_asientos_movimientoId",
+                table: "asientos",
+                column: "movimientoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -506,6 +569,11 @@ namespace api.Migrations
                 column: "ProveedorId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_depositos_EncargadoId",
+                table: "depositos",
+                column: "EncargadoId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_depositos_FerreteriaId",
                 table: "depositos",
                 column: "FerreteriaId");
@@ -526,6 +594,16 @@ namespace api.Migrations
                 column: "ProveedorId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_motivos_por_tipo_de_movimiento_MotivoId",
+                table: "motivos_por_tipo_de_movimiento",
+                column: "MotivoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_motivos_por_tipo_de_movimiento_TipodemovimientoId",
+                table: "motivos_por_tipo_de_movimiento",
+                column: "TipodemovimientoId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_movimientos_DepositoDestinoId",
                 table: "movimientos",
                 column: "DepositoDestinoId");
@@ -541,14 +619,19 @@ namespace api.Migrations
                 column: "DepositoOrigenId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_movimientos_TipoDeMovimientoId",
+                name: "IX_movimientos_MotivoPorTipodeMovimientoId",
                 table: "movimientos",
-                column: "TipoDeMovimientoId");
+                column: "MotivoPorTipodeMovimientoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_notas_de_remision_MovimientoId",
                 table: "notas_de_remision",
                 column: "MovimientoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_notas_de_remision_TimbradoId",
+                table: "notas_de_remision",
+                column: "TimbradoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_productos_DepositoId",
@@ -564,16 +647,14 @@ namespace api.Migrations
                 name: "IX_productos_ProveedorId",
                 table: "productos",
                 column: "ProveedorId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_tipos_de_movimientos_MotivoId",
-                table: "tipos_de_movimientos",
-                column: "MotivoId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "asientos");
+
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
@@ -599,13 +680,7 @@ namespace api.Migrations
                 name: "notas_de_remision");
 
             migrationBuilder.DropTable(
-                name: "timbrados");
-
-            migrationBuilder.DropTable(
                 name: "AspNetRoles");
-
-            migrationBuilder.DropTable(
-                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "productos");
@@ -614,22 +689,31 @@ namespace api.Migrations
                 name: "movimientos");
 
             migrationBuilder.DropTable(
+                name: "timbrados");
+
+            migrationBuilder.DropTable(
                 name: "marcas");
 
             migrationBuilder.DropTable(
                 name: "depositos");
 
             migrationBuilder.DropTable(
-                name: "tipos_de_movimientos");
+                name: "motivos_por_tipo_de_movimiento");
 
             migrationBuilder.DropTable(
                 name: "proveedores");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "ferreterias");
 
             migrationBuilder.DropTable(
                 name: "motivos");
+
+            migrationBuilder.DropTable(
+                name: "tipos_de_movimientos");
         }
     }
 }
