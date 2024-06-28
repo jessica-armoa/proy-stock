@@ -21,25 +21,27 @@ namespace api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<NotaDeRemision>>> GetAllAsync()
+        public async Task<IActionResult> GetAllAsync()
         {
             var notasDeRemision = await _notaDeRemisionRepository.GetAllAsync();
             return Ok(notasDeRemision);
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<NotaDeRemision>> GetByIdAsync(int id)
+        [HttpGet]
+        [Route("{id:int}")]
+        public async Task<IActionResult> GetById(int id)
         {
+            Console.WriteLine($"\n\n\nGET BY ID ASYNC...\n\n\n");
             var notaDeRemision = await _notaDeRemisionRepository.GetByIdAsync(id);
             if (notaDeRemision == null)
             {
                 return NotFound();
             }
-            return Ok(notaDeRemision);
+            return Ok(notaDeRemision.ToNotaDeRemisionDto());
         }
 
         [HttpGet("ultimo")]
-        public async Task<ActionResult<NotaDeRemision>> GetUltimaNotaDeRemisionAsync()
+        public async Task<IActionResult> GetUltimaNotaDeRemisionAsync()
         {
             var notaDeRemision = await _notaDeRemisionRepository.GetUltimaNotaDeRemisionAsync();
             if (notaDeRemision == null)
@@ -50,17 +52,21 @@ namespace api.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<NotaDeRemision>> CreateAsync(CreateNotaDeRemisionDto notaDeRemisionDto)
+        public async Task<IActionResult> CreateAsync([FromBody] CreateNotaDeRemisionDto notaDeRemisionDto)
         {
             try
             {
                 var notaDeRemision = notaDeRemisionDto.ToNotaDeRemision();
                 await _notaDeRemisionRepository.CreateAsync(notaDeRemision);
-
-                return CreatedAtAction(nameof(GetByIdAsync), new { id = notaDeRemision.Id }, notaDeRemision);
+                return CreatedAtAction(nameof(GetById), new { id = notaDeRemision.Id }, notaDeRemision);
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"\n\n\n\n\nError: {ex.Message}");
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine($"Inner Exception: {ex.InnerException.Message}");
+                }
                 return StatusCode(500, $"Error interno del servidor: {ex.Message}");
             }
         }
@@ -87,7 +93,7 @@ namespace api.Controllers
         }
 
         [HttpGet("getSiguienteNumero")]
-        public async Task<ActionResult<string>> GetSiguienteNumeroAsync()
+        public async Task<IActionResult> GetSiguienteNumeroAsync()
         {
             try
             {

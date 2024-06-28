@@ -22,11 +22,15 @@ namespace api.Interfaces
       if (notaDeRemision.MovimientoId.HasValue)
       {
         var movimiento = await _context.movimientos
-            .FirstOrDefaultAsync(m => m.Id == notaDeRemision.MovimientoId.Value);
+            .Where(m => m.Bool_borrado != true)
+            .FirstOrDefaultAsync(m => m.Id == notaDeRemision.MovimientoId);
+
+        Console.WriteLine($"MOVIMIENTOOOO ID: {movimiento.Id}");
 
         if (movimiento != null)
         {
           notaDeRemision.Movimiento = movimiento;
+          Console.WriteLine($"MOVIMIENTOOOO ASIGNADO");
         }
         else
         {
