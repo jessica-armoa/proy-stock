@@ -10,6 +10,8 @@ import TiposDeMovimientosConfig from "@/controladores/TiposDeMovimientosConfig";
 import MotivosConfig from "@/controladores/MotivosConfig";
 import MotivosPorTipoDeMovimientoConfig from "@/controladores/MotivosPorTipoDeMovimientoConfig";
 import Swal from "sweetalert2";
+import TimbradosConfig from "@/controladores/TimbradosConfig";
+import NotasDeRemisionConfig from "@/controladores/NotasDeRemisionConfig";
 
 let detalleIdCounter = 0;
 
@@ -27,7 +29,7 @@ export default function FormularioMovimientos() {
         timerProgressBar: true,
     })
 
-    const [timbrado, setTimbrado] = useState('');
+    
 
 
     //Encabezado de Movimientos
@@ -128,13 +130,15 @@ export default function FormularioMovimientos() {
     useEffect(() => {
         const extraccionDeMotivosPorTipoDeMovimiento = async () => {
             try {
-
+                const respuestaTimbrado = await TimbradosConfig.getTimbradoActivo();
                 const respuestaTiposDeMovimientos = await TiposDeMovimientosConfig.getTiposDeMovimiento();
                 const respuestaMotivos = await MotivosConfig.getMotivos();
                 const respuestaMotivosPorTipoDeMovimiento = await MotivosPorTipoDeMovimientoConfig.getMotivosPorTipoDeMovimiento();
                 setTiposDeMovimientos(respuestaTiposDeMovimientos.data);
                 setMotivos(respuestaMotivos.data);
                 setMotivosPorTipoDeMovimiento(respuestaMotivosPorTipoDeMovimiento.data);
+                setTimbradoRemision(respuestaTimbrado.data);
+                console.log('Timbrado Activo', respuestaTimbrado.data);
                 console.log(respuestaMotivosPorTipoDeMovimiento.data);
                 console.log(respuestaMotivos.data);
                 console.log(respuestaTiposDeMovimientos.data);
@@ -218,10 +222,12 @@ export default function FormularioMovimientos() {
 
     // Campos adicionales para transferencia
     const [numeroNotaRemision, setNumeroNotaRemision] = useState('');
-    const [timbradoRemision, setTimbradoRemision] = useState('');
+    const [timbradoRemision, setTimbradoRemision] = useState(null);
     const [depositoDestino, setDepositoDestino] = useState('');
     const [datosVehiculo, setDatosVehiculo] = useState({ modeloVehiculo: 'Modelo: HINO 500 1925 -', chapa: ' CHAPA: ABCD123' });
     const [conductor, setConductor] = useState({ str_nombre_conductor: 'Jose Luis Arzamendia Patiño', str_documento_conductor: ' C.I.No.: 7456123' });
+
+
 
 
 
@@ -254,6 +260,37 @@ export default function FormularioMovimientos() {
                     "bool_borrado": false
                 }))
             }
+            
+            const notaDeRemision = {
+                "timbradoId": 1,
+                "str_numero": "001-001-0000003",
+                "date_fecha_de_expedicion": "2024-06-28T03:50:53.616Z",
+                "date_fecha_de_vencimiento": "2025-06-28T03:50:53.616Z",
+                "movimientoId": 8,
+                "empresaNombre": "La Llave Maestra",
+                "empresaDireccion": "Encarnacion",
+                "empresaTelefono": "071202020",
+                "empresaSucursal": "Encarnacion",
+                "empresaActividad": "Construccion",
+                "ruc": "12345678",
+                "destinatarioNombre": "La Llave Maestra",
+                "destinatarioDocumento": "12345678",
+                "puntoPartida": "Encarnacion",
+                "puntoLlegada": "CDE",
+                "trasladoFechaInicio": "string",
+                "trasladoFechaFin": "2024-06-28T03:50:53.616Z",
+                "trasladoVehiculo": "TOYOTA HILUX",
+                "trasladoRua": "ABCD123",
+                "transportistaNombre": "La Llave Maestra",
+                "transportistaRuc": "12345678",
+                "conductorNombre": "Facundo",
+                "conductorDocumento": "14563278",
+                "conductorDireccion": "Encarnacion",
+                "motivo": "Transferencia",
+                "motivoDescripcion": "Transferencia entre depositos",
+                "comprobanteVenta": "001-001-0000003"
+              }
+
             console.log('Movimiento enviado', movimientoActual);
             const fk_deposito_origen_API = fk_deposito_origen ? fk_deposito_origen : fk_deposito_destino;
             const fk_deposito_destino_API = fk_deposito_destino ? fk_deposito_destino : fk_deposito_origen;
@@ -295,6 +332,7 @@ export default function FormularioMovimientos() {
     const [isTransferencia, setIsTransferencia] = useState(false);
     useEffect(() => {
         // Actualiza la visibilidad del depósito origen basado en el motivo seleccionado
+        
         const selectedMotivo = motivosPorTipoDeMovimiento.find(motivo => motivo.id === fk_motivo_por_tipo_de_movimiento);
         const tipoMovimientoId = selectedMotivo ? selectedMotivo.tipodemovimientoId : null;
         setIsDepositoOrigenVisible(tipoMovimientoId === 2 || tipoMovimientoId === 3);
@@ -303,6 +341,7 @@ export default function FormularioMovimientos() {
         setEsCompra(tipoMovimientoId === 1);
         setEsEgreso(tipoMovimientoId === 2);
         setEsIngreso(tipoMovimientoId === 1);
+        
     }, [fk_motivo_por_tipo_de_movimiento, motivosPorTipoDeMovimiento]);
 
     return (

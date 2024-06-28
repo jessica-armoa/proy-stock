@@ -33,6 +33,16 @@ const VisualizarMovimiento = ({ params, cantElementos = 8 }) => {
 
     const { id } = params;
 
+    const formatCurrency = (value) => {
+        const formattedValue = Intl.NumberFormat("es-ES", {
+          style: "currency",
+          currency: "PYG",
+          minimumFractionDigits: 0,
+          useGrouping: true,
+        }).format(value);
+        return formattedValue.replace("PYG", "");
+      };
+
     useEffect(() => {
         const extraccionDeMovimiento = async () => {
             try {
@@ -71,9 +81,28 @@ const VisualizarMovimiento = ({ params, cantElementos = 8 }) => {
     }, [movimiento]);
 
     return (
-        <div className="max-w-4xl mx-auto p-8">
-            <Card>
-                <h2 className="text-2xl font-bold mb-6">Movimiento</h2>
+        <div className="flex h-screen w-full bg-ui-background p-2 text-ui-text">
+            <Sidebar />
+            <div className="flex flex-col w-full h-full p-5 rounded-lg bg-ui-cardbg overflow-y">
+            <nav className="text-sm" aria-label="Breadcrumb">
+              <ol className="list-none p-0 inline-flex space-x-1">
+                <li className="flex items-center">
+                  <div
+                    className="clickable text-gray-500 flex items-center"
+                    onClick={() => router.push("/movimientos")}
+                  >
+                    <span className="material-symbols-outlined">chevron_left</span>{" "}
+                    Movimientos &gt;{" "}
+                  </div>
+                </li>
+                <li className="flex items-center">
+                  <span className="text-gray-500">Detalles del Movimiento</span>
+                </li>
+              </ol>
+            </nav>
+        <div className="">
+            
+                <h2 className="text-2xl my-2">Datos del movimiento</h2>
                 <form className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                         <div>
@@ -208,10 +237,10 @@ const VisualizarMovimiento = ({ params, cantElementos = 8 }) => {
 
 
                 </form>
-            </Card>
+           
 
-
-            <Table className="mt-8">
+                <h2 className="text-2xl mb-2">Detalles del movimiento</h2>
+            <Table className="">
                 <TableHead>
                     <TableRow>
                         <TableHeaderCell>#</TableHeaderCell>
@@ -226,11 +255,11 @@ const VisualizarMovimiento = ({ params, cantElementos = 8 }) => {
                 <TableBody>
                     {detallesMovimientos.map((detalle) => (
                         <TableRow key={detalle.id}>
-                            <TableCell>{detalle.productoId}</TableCell>
+                            <TableCell>{formatCurrency(detalle.productoId)}</TableCell>
                             <TableCell>{detalle.str_producto}</TableCell>
-                            <TableCell>{detalle.int_cantidad}</TableCell>
-                            <TableCell>{detalle.dec_costo}</TableCell>
-                            <TableCell>{detalle.int_cantidad * detalle.dec_costo}</TableCell>
+                            <TableCell>{formatCurrency(detalle.int_cantidad)}</TableCell>
+                            <TableCell>{formatCurrency(detalle.dec_costo)}</TableCell>
+                            <TableCell>{formatCurrency(detalle.int_cantidad * detalle.dec_costo)}</TableCell>
                             {/*<TableCell>
                                 <button
                                     type="button"
@@ -248,7 +277,7 @@ const VisualizarMovimiento = ({ params, cantElementos = 8 }) => {
                 <Button type="button" variant="primary" color="gray" onClick={() => navigate.push('/movimientos')}>Volver</Button>
             </div>
 
-        </div>
+        </div></div></div>
     );
 };
 
