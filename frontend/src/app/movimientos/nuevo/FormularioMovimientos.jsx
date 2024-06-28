@@ -265,19 +265,22 @@ export default function FormularioMovimientos() {
                     "bool_borrado": false
                 }))
             }
-
-
-
+    
             console.log('Movimiento enviado', movimientoActual);
             const fk_deposito_origen_API = fk_deposito_origen ? fk_deposito_origen : fk_deposito_destino;
             const fk_deposito_destino_API = fk_deposito_destino ? fk_deposito_destino : fk_deposito_origen;
-            const movimientoCreado = await MovimientosConfig.postMovimiento(fk_motivo_por_tipo_de_movimiento, fk_deposito_origen_API, fk_deposito_destino_API, movimientoActual).then(() => {
-                Swal.fire('Guardado', 'El movimiento fue creado exitosamente.', 'success');
-            });
-
-
+            
+            const movimientoCreado = await MovimientosConfig.postMovimiento(
+                fk_motivo_por_tipo_de_movimiento, 
+                fk_deposito_origen_API, 
+                fk_deposito_destino_API, 
+                movimientoActual
+            );
+    
+            Swal.fire('Guardado', 'El movimiento fue creado exitosamente.', 'success');
+    
             if (isTransferencia) {
-                const movimientoId = movimientoCreado.data.id;
+                const movimientoId = movimientoCreado.id;
                 //const notaDeRemisionSiguiente = await NotasDeRemisionConfig.getNotaDeRemisionSiguiente();
                 const notaDeRemision = {
                     "timbradoId": timbradoRemision.id,
@@ -308,13 +311,13 @@ export default function FormularioMovimientos() {
                     "motivoDescripcion": "Transferencia entre depositos",
                     "comprobanteVenta": numeroNotaRemision
                 }
-
+    
                 console.log('Nota de Remision enviada', notaDeRemision);
                 await NotasDeRemisionConfig.postNotaDeRemision(notaDeRemision);
             }
-
+    
             navigate.push('/movimientos');
-
+    
         } catch (error) {
             console.error('Error al enviar los datos del formulario: ', error);
             Swal.fire(
@@ -323,8 +326,8 @@ export default function FormularioMovimientos() {
                 'error'
             );
         }
-
     };
+    
 
     const formatNumber = (number) => {
         return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
