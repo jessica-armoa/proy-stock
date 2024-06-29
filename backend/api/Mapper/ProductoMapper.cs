@@ -44,7 +44,6 @@ namespace api.Mapper
             return new OnlyProductoDto
             {
                 Id = productoModel.Id,
-                Str_ruta_imagen = productoModel.Str_ruta_imagen,
                 Str_nombre = productoModel.Str_nombre,
                 Str_descripcion = productoModel.Str_descripcion,
                 Int_cantidad_actual = productoModel.Int_cantidad_actual,

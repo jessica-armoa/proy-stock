@@ -108,7 +108,6 @@ namespace api.Repository
         {
             return await _context.productos
             .Where(p => p.Bool_borrado != true && p.DepositoId == depositoId)
-            .Include(p => p.DetallesDeMovimientos).ThenInclude(d => d.Movimiento)
             .Include(p => p.Deposito)
             .Include(p => p.Proveedor)
             .Include(p => p.Marca)

@@ -8,7 +8,6 @@ namespace api.Dtos.Producto
     public class OnlyProductoDto
     {
         public int Id { get; set; }
-        public string Str_ruta_imagen { get; set; } = String.Empty;
         public string Str_nombre { get; set; } = String.Empty;
         public string Str_descripcion { get; set; } = String.Empty;
         public int? DepositoId { get; set; }

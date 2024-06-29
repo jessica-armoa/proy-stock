@@ -50,7 +50,7 @@ namespace api.Controllers
                 return NotFound("Deposito ingresado no existe!!");
             }
             var productos = await _productoRepo.ObtenerProductosPorDepositoAsync(depositoId);
-            var productosDto = productos.Select(p => p.ToProductoDto());
+            var productosDto = productos.Select(p => p.ToOnlyProductoDto());
             return Ok(productosDto);
         }
 
