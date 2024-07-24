@@ -12,6 +12,7 @@ namespace api.Dtos.Proveedor
         public string Str_telefono { get; set; } = String.Empty;
         public string Str_direccion { get; set; } = String.Empty;
         public string Str_correo { get; set; } = String.Empty;
-        public bool Bool_borrado { get; set; } = false;   
+        public bool Bool_borrado { get; set; } = false;
+        public int TotalCompras { get; set; } // Nueva propiedad para realizar reporte
     }
 }

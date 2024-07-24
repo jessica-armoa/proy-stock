@@ -6,6 +6,7 @@ using api.Dtos.Producto;
 using api.Interfaces;
 using api.Models;
 using api.Dtos.DetalleDeMovimiento;
+using api.Dtos.Movimiento;
 using api.Mapper;
 
 namespace api.Controllers
@@ -70,35 +71,28 @@ namespace api.Controllers
     [Route("perdidas")]
     public async Task<IActionResult> GetPerdidasAsync()
     {
-      var productos = await _reporteRepository.GetPerdidasAsync();
-      var productosDto = productos.Select(p => new ProductoDto
+      var movimientos = await _reporteRepository.GetPerdidasAsync();
+      var movimientosDto = movimientos.Select(m => new MovimientoDto
       {
-        Id = p.Id,
-        Str_nombre = p.Str_nombre,
-        Str_ruta_imagen = p.Str_ruta_imagen,
-        Str_descripcion = p.Str_descripcion,
-        Int_cantidad_actual = p.Int_cantidad_actual,
-        DepositoId = p.Deposito?.Id,
-        DepositoNombre = p.Deposito?.Str_nombre,
-        ProveedorId = p.Proveedor?.Id,
-        ProveedorNombre = p.Proveedor?.Str_nombre,
-        MarcaId = p.Marca?.Id,
-        MarcaNombre = p.Marca?.Str_nombre,
-        Dec_costo = p.Dec_costo,
-        Dec_costo_PPP = p.Dec_costo_PPP,
-        Int_iva = p.Int_iva,
-        Dec_precio_mayorista = p.Dec_precio_mayorista,
-        Dec_precio_minorista = p.Dec_precio_minorista,
-        DetallesDeMovimientos = p.DetallesDeMovimientos.Select(d => new DetalleDeMovimientoDto
+        Id = m.Id,
+        Date_fecha = m.Date_fecha,
+        Str_motivoPorTipoDeMovimiento = m.MotivoPorTipoDeMovimiento?.Str_descripcion ?? string.Empty,
+        DepositoOrigenId = m.DepositoOrigenId,
+        Str_depositoOrigen = m.DepositoOrigen?.Str_nombre ?? string.Empty,
+        DepositoDestinoId = m.DepositoDestinoId,
+        Str_depositoDestino = m.DepositoDestino?.Str_nombre ?? string.Empty,
+        Bool_borrado = m.Bool_borrado,
+        DetallesDeMovimientos = m.DetallesDeMovimientos.Select(d => new DetalleDeMovimientoDto
         {
           Id = d.Id,
           Int_cantidad = d.Int_cantidad,
           MovimientoId = d.MovimientoId,
-          ProductoId = d.ProductoId
+          ProductoId = d.ProductoId,
+          Str_producto = d.Producto?.Str_nombre ?? string.Empty
         }).ToList()
       }).ToList();
 
-      return Ok(productosDto);
+      return Ok(movimientosDto);
     }
 
     [HttpGet]
@@ -135,5 +129,15 @@ namespace api.Controllers
 
       return Ok(productosDto);
     }
+
+    [HttpGet]
+    [Route("proveedores-mas-comprados")]
+    public async Task<IActionResult> GetProveedoresMasCompradosAsync()
+    {
+      var proveedores = await _reporteRepository.GetProveedoresMasCompradosAsync();
+      return Ok(proveedores);
+    }
   }
 }
+
+
