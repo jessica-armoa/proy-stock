@@ -111,8 +111,6 @@ namespace api.Repository
     {
       return await _context.productos
       .Include(p => p.Deposito)
-      .Include(p => p.Proveedor)
-      .Include(p => p.Marca)
       .Where(p => p.Int_cantidad_actual <= p.Int_cantidad_minima && !p.Bool_borrado)
       .ToListAsync();
     }
