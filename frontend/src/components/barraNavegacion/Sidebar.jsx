@@ -69,7 +69,7 @@ const Sidebar = () => {
           <div className="mb-3 p-3 rounded-lg bg-gray-100">
             <div className="font-bold">{user.userName}</div>
             <div className="text-sm text-gray-600">
-              {user.role === 'Admin' ? user.role : `${user.role} ${user.deposito}`}
+              {user.role === 'Admin' ? user.role : `${user.role} ${/*user.deposito*/""}`}
             </div>
           </div>
         )}

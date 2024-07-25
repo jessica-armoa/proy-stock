@@ -3,8 +3,9 @@ import dynamic from "next/dynamic";
 import withAuth from "@/components/auth/withAuth";
 import ReportesConfig from "@/controladores/ReportesConfig";
 //import VistaNR from "./movimientos/VistaNR";
-import { Card, List, ListItem, ProgressBar, DonutChart, Legend  } from "@tremor/react";
+import { Card, List, ListItem, ProgressBar, DonutChart, Legend, Button} from "@tremor/react";
 import { useState, useEffect } from "react";
+import { useRouter } from 'next/navigation'
 
 // Dynamic imports to prevent build-time errors
 const Sidebar = dynamic(() => import("@/components/barraNavegacion/Sidebar"), {
@@ -12,9 +13,12 @@ const Sidebar = dynamic(() => import("@/components/barraNavegacion/Sidebar"), {
 });
 
 function CardStockCritico() {
-  let titulo = "Productos en Stock Critico";
+  const titulo = "Productos en Stock Crítico";
 
   const [stockCritico, setStockCritico] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 15; // Número de elementos por página
+  const router = useRouter();
 
   const listaStockCritico = async () => {
     try {
@@ -30,34 +34,81 @@ function CardStockCritico() {
     listaStockCritico();
   }, []);
 
- 
+  // Calcular los datos paginados
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = stockCritico.slice(indexOfFirstItem, indexOfLastItem);
+
+  const totalPages = Math.ceil(stockCritico.length / itemsPerPage);
 
   return (
-    <div>
-      <div>
-      <Card className="mx-auto max-w-md">
-        <h3 className="text-tremor-content-strong dark:text-dark-tremor-content-strong font-medium">
-       {titulo}
-        </h3>
-        <List className="mt-2">
-          {stockCritico.map((item) => (
-            <ListItem key={item.id}>
-              <span>{item.str_nombre}</span>
-              <span>{item.int_cantidad_actual}</span>
-              <span>{item.depositoNombre ?? "Depósito Central"}</span>
+    <div className="max-w-4xl mx-auto">
+      <Card className="shadow-lg rounded-lg border border-gray-200 p-3" style={{ width: '450px' }}>
+        <h3 className="text-xl font-bold text-gray-800 mb-4">{titulo}</h3>
+        <div className="overflow-x-auto">
+          <List className="mt-2 divide-y divide-gray-200">
+            <ListItem 
+              className="grid grid-cols-3 py-2 font-semibold text-gray-700"
+              style={{ gridTemplateColumns: '3fr 1fr 2fr' }} 
+            >
+              <span className="font-medium">Producto</span>
+              <span className="font-medium text-center">Cant.</span>
+              <span className="font-medium">Depósito</span>
             </ListItem>
-          ))}
-        </List>
+            {currentItems.map((item) => (
+              <ListItem 
+                key={item.id} 
+                className="grid grid-cols-3 py-2 hover:bg-gray-50"
+                style={{ gridTemplateColumns: '3fr 1fr 2fr' }} 
+              >
+                <span className="text-gray-800">{item.str_nombre}</span>
+                <span className="font-semibold text-center">
+                  {item.int_cantidad_actual}
+                </span>
+                <span className="text-gray-600">{item.depositoNombre ?? "Depósito Central"}</span>
+              </ListItem>
+            ))}
+          </List>
+        </div>
+        <div className="flex justify-between items-center mt-4">
+          <Button
+            variant="light"
+            color="blue"
+            onClick={() => router.push('/productos')}
+          >
+            Ver Productos
+          </Button>
+          <div className="flex space-x-2 items-center">
+            <Button
+              variant="light"
+              color="blue"
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+              disabled={currentPage === 1}
+            >
+              Anterior
+            </Button>
+            <span className="text-gray-700">{currentPage} de {totalPages}</span>
+            <Button
+              variant="light"
+              color="blue"
+              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+              disabled={currentPage === totalPages}
+            >
+              Siguiente
+            </Button>
+          </div>
+        </div>
       </Card>
-      </div>
     </div>
   );
 }
 
 function CardMasVendidos() {
-  let titulo = "Productos más vendidos";
-
+  const titulo = "Productos más vendidos";
   const [masVendidos, setMasVendidos] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 15; // Número de elementos por página
+  const router = useRouter();
 
   const listaMasvendidos = async () => {
     try {
@@ -73,35 +124,81 @@ function CardMasVendidos() {
     listaMasvendidos();
   }, []);
 
- 
+  // Calcular los datos paginados
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = masVendidos.slice(indexOfFirstItem, indexOfLastItem);
+
+  const totalPages = Math.ceil(masVendidos.length / itemsPerPage);
 
   return (
-    <div>
-         
-      <div>
-      <Card className="mx-auto max-w-md">
-        <h3 className="text-tremor-content-strong dark:text-dark-tremor-content-strong font-medium">
-        {titulo}
-        </h3>
-        <List className="mt-2">
-          {masVendidos.map((item) => (
-            <ListItem key={item.id}>
-              <span>{item.str_nombre}</span>
-              <span>{item.int_cantidad_actual}</span>
-              <span>{item.depositoNombre ?? "Depósito Central"}</span>
+    <div className="max-w-4xl mx-auto">
+      <Card className="shadow-lg rounded-lg border border-gray-200 p-3" style={{ width: '350px' }}>
+        <h3 className="text-xl font-bold text-gray-800 mb-4">{titulo}</h3>
+        <div className="overflow-x-auto">
+          <List className="mt-2 divide-y divide-gray-200">
+            <ListItem 
+              className="grid grid-cols-3 py-2 font-semibold text-gray-700"
+              style={{ gridTemplateColumns: '3fr 1fr 2fr' }} 
+            >
+              <span className="font-medium">Producto</span>
+              <span className="font-medium text-center">Cant.</span>
+              <span className="font-medium">Depósito</span>
             </ListItem>
-          ))}
-        </List>
+            {currentItems.map((item) => (
+              <ListItem 
+                key={item.id} 
+                className="grid grid-cols-3 py-2 hover:bg-gray-50"
+                style={{ gridTemplateColumns: '3fr 1fr 2fr' }} 
+              >
+                <span className="text-gray-800">{item.str_nombre}</span>
+                <span className="font-semibold text-center">
+                  {item.int_cantidad_actual}
+                </span>
+                <span className="text-gray-600">{item.depositoNombre ?? "Depósito Central"}</span>
+              </ListItem>
+            ))}
+          </List>
+        </div>
+        <div className="flex justify-between items-center mt-4">
+          <Button
+            variant="light"
+            color="blue"
+            onClick={() => router.push('/productos')}
+          >
+            Ver Productos
+          </Button>
+          <div className="flex space-x-2 items-center">
+            <Button
+              variant="light"
+              color="blue"
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+              disabled={currentPage === 1}
+            >
+              Anterior
+            </Button>
+            <span className="text-gray-700">{currentPage} de {totalPages}</span>
+            <Button
+              variant="light"
+              color="blue"
+              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+              disabled={currentPage === totalPages}
+            >
+              Siguiente
+            </Button>
+          </div>
+        </div>
       </Card>
-      </div>
     </div>
   );
 }
 
 function CardMenosVendidos() {
-  let titulo = "Productos menos vendidos";
-
+  const titulo = "Productos menos vendidos";
   const [menosVendidos, setMenosVendidos] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 15; // Número de elementos por página
+  const router = useRouter();
 
   const listaMenosvendidos = async () => {
     try {
@@ -117,27 +214,71 @@ function CardMenosVendidos() {
     listaMenosvendidos();
   }, []);
 
- 
+  // Calcular los datos paginados
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = menosVendidos.slice(indexOfFirstItem, indexOfLastItem);
+
+  const totalPages = Math.ceil(menosVendidos.length / itemsPerPage);
 
   return (
-    <div>
-         
-      <div>
-      <Card className="mx-auto max-w-auto">
-        <h3 className="text-tremor-content-strong dark:text-dark-tremor-content-strong font-medium">
-        {titulo}
-        </h3>
-        <List className="mt-2">
-          {menosVendidos.map((item) => (
-            <ListItem key={item.id}>
-              <span>{item.str_nombre}</span>
-              <span>{item.int_cantidad_actual}</span>
-              <span>{item.depositoNombre ?? "Depósito Central"}</span>
+    <div className="max-w-4xl mx-auto">
+      <Card className="shadow-lg rounded-lg border border-gray-200 p-3" style={{ width: '450' }}>
+        <h3 className="text-xl font-bold text-gray-800 mb-4">{titulo}</h3>
+        <div className="overflow-x-auto">
+          <List className="mt-2 divide-y divide-gray-200">
+            <ListItem 
+              className="grid grid-cols-3 py-2 font-semibold text-gray-700"
+              style={{ gridTemplateColumns: '3fr 1fr 2fr' }} 
+            >
+              <span className="font-medium">Producto</span>
+              <span className="font-medium text-center">Cant.</span>
+              <span className="font-medium">Depósito</span>
             </ListItem>
-          ))}
-        </List>
+            {currentItems.map((item) => (
+              <ListItem 
+                key={item.id} 
+                className="grid grid-cols-3 py-2 hover:bg-gray-50"
+                style={{ gridTemplateColumns: '3fr 1fr 2fr' }} 
+              >
+                <span className="text-gray-800">{item.str_nombre}</span>
+                <span className="font-semibold text-center">
+                  {item.int_cantidad_actual}
+                </span>
+                <span className="text-gray-600">{item.depositoNombre ?? "Depósito Central"}</span>
+              </ListItem>
+            ))}
+          </List>
+        </div>
+        <div className="flex justify-between items-center mt-4">
+          <Button
+            variant="light"
+            color="blue"
+            onClick={() => router.push('/productos')}
+          >
+            Ver Productos
+          </Button>
+          <div className="flex space-x-2 items-center">
+            <Button
+              variant="light"
+              color="blue"
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+              disabled={currentPage === 1}
+            >
+              Anterior
+            </Button>
+            <span className="text-gray-700">{currentPage} de {totalPages}</span>
+            <Button
+              variant="light"
+              color="blue"
+              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+              disabled={currentPage === totalPages}
+            >
+              Siguiente
+            </Button>
+          </div>
+        </div>
       </Card>
-      </div>
     </div>
   );
 }
@@ -196,7 +337,7 @@ function ProgressCard() {
     return (
       <>
       <Card className="mx-auto max-w-xl max-h-auto">
-        <div className="flex items-center justify-center space-x-6">
+        <div className="flex justify-between space-x-6">
           <DonutChart
             data={sales}
             category="sales"
@@ -222,7 +363,7 @@ const Dashboard = () => {
     <div className="flex h-screen w-full bg-ui-background p-2 text-ui-text">
       <Sidebar />
       <div className="w-full h-full p-5 rounded-lg bg-ui-cardbg overflow-y">
-        <div className="flex justify-around">
+        <div className="flex justify-between">
         
           <CardMasVendidos></CardMasVendidos>
           <CardMenosVendidos></CardMenosVendidos>

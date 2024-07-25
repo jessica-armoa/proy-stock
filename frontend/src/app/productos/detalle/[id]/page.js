@@ -15,7 +15,7 @@ const Sidebar = dynamic(() => import("@/components/barraNavegacion/Sidebar"), {
 const DataTable = dynamic(() => import("@/components/tabla"), { ssr: false });
 const Photo = dynamic(() => import("@/components/productos"), { ssr: false });
 
-const Detalle = ({ params, cantElementos = 8 }) => {
+const Detalle = ({ params, cantElementos = 6 }) => {
   const [movimientosDetalle, setMovimientosDetalle] = useState([]);
   const [movimientos, setMovimientos] = useState([]);
   const router = useRouter();
@@ -170,7 +170,7 @@ const Detalle = ({ params, cantElementos = 8 }) => {
               </div>
             </div>
             <div>
-              <span className="text-l tracking-tight">Historial de movimientos del producto</span>
+              <span className="text-l">Historial de movimientos del producto</span>
               {movimientosDetalle.length <= 0 ? (
                 <p>No hay Movimientos</p>
               ) : (
@@ -180,6 +180,7 @@ const Detalle = ({ params, cantElementos = 8 }) => {
                   columns={columns}
                   cantElementos={cantElementos}
                   pageurl={`/movimientos/detalle/`}
+                  clickable='true'
                 />
               )}
             </div>

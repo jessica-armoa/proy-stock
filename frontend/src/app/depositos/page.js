@@ -180,7 +180,7 @@ const Depositos = () => {
           {depositos.length <= 0 ? (
             <p>No hay depósitos</p>
           ) : (
-            <DataTable data={depositos} columns={columns} />
+            <DataTable data={depositos} columns={columns}/>
           )}
         </div>
       </div>

@@ -68,7 +68,47 @@ namespace api.Controllers
     }
 
     [HttpGet]
-    [Route("perdidas")]
+    [Route("perdidasPorDeposito")]
+    public async Task<IActionResult> GetPerdidasDepositoAsync()
+    {
+      var movimientos = await _reporteRepository.GetPerdidasAsync();
+
+      // Calculate total quantity
+      var totalQuantity = movimientos
+          .SelectMany(m => m.DetallesDeMovimientos)
+          .Sum(d => d.Int_cantidad);
+
+      // Group by DepositoOrigen and then by MotivoPorTipoDeMovimiento
+      var perdidasGroupedByDeposito = movimientos
+          .GroupBy(m => m.DepositoOrigen?.Str_nombre)
+          .Select(g => new
+          {
+            Name = g.Key,
+            Quantity = g.SelectMany(m => m.DetallesDeMovimientos)
+                           .Sum(d => d.Int_cantidad),
+            Details = g.GroupBy(m => m.MotivoPorTipoDeMovimiento?.Str_descripcion)
+                         .Select(subGroup => new
+                         {
+                           Motivo = subGroup.Key,
+                           Cantidad = subGroup.SelectMany(m => m.DetallesDeMovimientos)
+                                                 .Sum(d => d.Int_cantidad)
+                         }).ToList()
+          }).ToList();
+
+      // Prepare the final result
+      var result = new
+      {
+        Total = totalQuantity,
+        Depositos = perdidasGroupedByDeposito
+      };
+
+      return Ok(result);
+    }
+
+
+    [HttpGet]
+    [Route("perdidasPorProducto")]
+    /*
     public async Task<IActionResult> GetPerdidasAsync()
     {
       var movimientos = await _reporteRepository.GetPerdidasAsync();
@@ -94,6 +134,36 @@ namespace api.Controllers
 
       return Ok(movimientosDto);
     }
+    */
+    public async Task<IActionResult> GetPerdidasAsync()
+    {
+      var movimientos = await _reporteRepository.GetPerdidasAsync();
+
+      // Calculate total quantity
+      var totalQuantity = movimientos
+          .SelectMany(m => m.DetallesDeMovimientos)
+          .Sum(d => d.Int_cantidad);
+
+      // Group by motivoPorTipoDeMovimiento and calculate quantities
+      var perdidasGrouped = movimientos
+          .GroupBy(m => m.MotivoPorTipoDeMovimiento?.Str_descripcion)
+          .Select(g => new
+          {
+            motivo = g.Key,
+            Quantity = g.SelectMany(m => m.DetallesDeMovimientos)
+                          .Sum(d => d.Int_cantidad)
+          }).ToList();
+
+      // Prepare the final result
+      var result = new
+      {
+        Total = totalQuantity,
+        Perdidas = perdidasGrouped
+      };
+
+      return Ok(result);
+    }
+    //reporte de perdidas por deposito
 
     [HttpGet]
     [Route("productosConCantidadMinima")]
