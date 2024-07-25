@@ -11,8 +11,12 @@ class ReportesConfig{
         return axios.get(api+'/top5productosMenosVendidos');
     }
 
-    getPerdidas(){
-        return axios.get(api+'/perdidas');
+    getPerdidasPorProducto(){
+        return axios.get(api+'/perdidasPorProducto');
+    }
+
+    getPerdidasPorDeposito(){
+        return axios.get(api+'/perdidasPorDeposito');
     }
 
     getStockCritico() {
