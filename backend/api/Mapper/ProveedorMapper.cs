@@ -2,6 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using api.Dtos.Categoria;
+using api.Dtos.Marca;
+using api.Dtos.Producto;
 using api.Dtos.Proveedor;
 using api.Models;
 
@@ -27,6 +30,19 @@ namespace api.Mapper
                 Marcas = proveedorModel.Marcas
                     .Where(m => m.Bool_borrado != true)
                     .Select(m => m.ToMarcaDto()).ToList()
+            };
+        }
+
+        public static OnlyProveedorDto ToOnlyProveedorDto(this Proveedor proveedorModel)
+        {
+            return new OnlyProveedorDto
+            {
+                Id = proveedorModel.Id,
+                Str_nombre = proveedorModel.Str_nombre,
+                Str_telefono = proveedorModel.Str_telefono,
+                Str_direccion = proveedorModel.Str_direccion,
+                Str_correo = proveedorModel.Str_correo,
+                Bool_borrado = proveedorModel.Bool_borrado
             };
         }
 

@@ -1,4 +1,6 @@
 using api.Dtos.Deposito;
+using api.Dtos.Movimiento;
+using api.Dtos.Producto;
 using api.Models;
 
 namespace api.Mapper
@@ -25,6 +27,23 @@ namespace api.Mapper
                 Productos = depositoModel.Productos
                     .Where(p => !p.Bool_borrado)
                     .Select(p => p.ToProductoDto()).ToList()
+            };
+        }
+
+        public static OnlyDepositoDto ToOnlyDepositoDto(this Deposito depositoModel)
+        {
+            return new OnlyDepositoDto
+            {
+                Id = depositoModel.Id,
+                Str_nombre = depositoModel.Str_nombre,
+                Str_direccion = depositoModel.Str_direccion,
+                Str_telefono = depositoModel.Str_telefono,
+                EncargadoUsername = depositoModel.Encargado?.UserName,
+                EncargadoEmail = depositoModel.Encargado?.Email,
+                FerreteriaId = depositoModel.FerreteriaId,
+                Str_ferreteriaNombre = depositoModel.Ferreteria?.Str_nombre,
+                Str_ferreteriaTelefono = depositoModel.Ferreteria?.Str_telefono,
+                Bool_borrado = depositoModel.Bool_borrado
             };
         }
 

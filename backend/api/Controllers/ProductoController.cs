@@ -37,7 +37,7 @@ namespace api.Controllers
         public async Task<IActionResult> GetAll()
         {
             var productos = await _productoRepo.GetAllAsync();
-            var productosDto = productos.Select(p => p.ToProductoDto());
+            var productosDto = productos.Select(p => p.ToOnlyProductoDto());
             return Ok(productosDto);
         }
 
@@ -50,7 +50,7 @@ namespace api.Controllers
                 return NotFound("Deposito ingresado no existe!!");
             }
             var productos = await _productoRepo.ObtenerProductosPorDepositoAsync(depositoId);
-            var productosDto = productos.Select(p => p.ToProductoDto());
+            var productosDto = productos.Select(p => p.ToOnlyProductoDto());
             return Ok(productosDto);
         }
 

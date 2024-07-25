@@ -5,7 +5,7 @@ import { Button } from "@tremor/react";
 import ProductosConfig from "@/controladores/ProductosConfig";
 import withAuth from "@/components/auth/withAuth";
 import ExportPDF from "@/components/exportpdf";
-import { useRouter } from "next/navigation";
+import { useRouter,useSearchParams } from "next/navigation";
 import Swal from "sweetalert2";
 import dynamic from "next/dynamic"; // Dynamic imports
 import { formatearPrecio } from "@/utils/format";
@@ -20,6 +20,11 @@ const Productos = () => {
   const [products, setProducts] = useState([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [currentProduct, setCurrentProduct] = useState(null);
+  
+  const searchParams = useSearchParams();
+  const filterValue = searchParams.get('filter') || null;
+
+  //console.log('Filter Value:', filterValue);
 
   useEffect(() => {
     if (products.length <= 0) {
@@ -75,20 +80,24 @@ const Productos = () => {
     {
       accessorKey: "str_nombre",
       header: "Producto",
+      width: 150
     },
     {
       accessorKey: "str_descripcion",
       header: "Descripción",
       widthClass: "w-large",
+      width: 150
     },
     {
       accessorKey: "marcaNombre",
       header: "Marca",
       widthClass: "w-medium",
+      width: 150
     },
     {
       accessorKey: "proveedorNombre",
       header: "Proveedor",
+      width: 150
     },
     {
       accessorKey: "int_cantidad_actual",
@@ -96,10 +105,12 @@ const Productos = () => {
       numericInputType: "range",
       inputClass: "w-small",
       widthClass: "w-medium",
+      width: 150
     },
     {
       accessorKey: "depositoNombre",
       header: "Depósito",
+      width: 150
     },
     {
       accessorKey: "dec_costo_PPP",
@@ -184,6 +195,9 @@ const Productos = () => {
                 data={products}
                 columns={columns}
                 pageurl={`/productos/detalle/`}
+                cantElementos={14}
+                showButtons='true'
+                clickable='true'
               />
             )}
           </div>

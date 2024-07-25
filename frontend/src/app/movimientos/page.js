@@ -140,7 +140,7 @@ const Movimientos = () => {
           {movimientos.length <= 0 ? (
             <p>No hay movimientos</p>
           ) : (
-            <DataTable data={movimientos} columns={columns} pageurl={`/movimientos/visualizarMovimiento/`} />
+            <DataTable data={movimientos} columns={columns} pageurl={`/movimientos/visualizarMovimiento/`} cantElementos={14} clickable='true'/>
           )}
         </div>
       </div>

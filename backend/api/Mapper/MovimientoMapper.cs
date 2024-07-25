@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using api.Dtos.DetalleDeMovimiento;
 using api.Dtos.Movimiento;
 using api.Models;
 
@@ -25,6 +26,22 @@ namespace api.Mapper
                 DetallesDeMovimientos = movimientoModel.DetallesDeMovimientos
                     .Where(d => d.Bool_borrado != true)
                     .Select(d => d.ToDetalleDeMovimientoDto()).ToList()
+            };
+        }
+
+        public static OnlyMovimientoDto ToOnlyMovimientoDto(this Movimiento movimientoModel)
+        {
+            return new OnlyMovimientoDto
+            {
+                Id = movimientoModel.Id,
+                Date_fecha = movimientoModel.Date_fecha,
+                MotivoportipodemovimientoId = movimientoModel.MotivoPorTipodeMovimientoId,
+                Str_motivoPorTipoDeMovimiento = movimientoModel.MotivoPorTipoDeMovimiento.Str_descripcion,
+                DepositoOrigenId = movimientoModel.DepositoOrigenId,
+                Str_depositoOrigen = movimientoModel.DepositoDestino.Str_nombre,
+                DepositoDestinoId= movimientoModel.DepositoDestinoId,
+                Str_depositoDestino = movimientoModel.DepositoOrigen.Str_nombre,
+                Bool_borrado = movimientoModel.Bool_borrado
             };
         }
 

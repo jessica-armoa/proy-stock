@@ -33,7 +33,7 @@ import {
 import { useRouter } from 'next/navigation'
 import Filter from "../FilterFunction";
 
-function DataTable({ columns, data, pageurl, cantElementos=10, width=150 }) {
+function DataTable({ columns, data, pageurl, cantElementos=10, width=150, showButtons = false, clickable=false }) {
   const router = useRouter();
   const [sorting, setSorting] = useState([]);
   const [filtering, setFiltering] = useState("");
@@ -70,11 +70,11 @@ function DataTable({ columns, data, pageurl, cantElementos=10, width=150 }) {
     setFiltering("");
   };
 
-  const fechaRegex = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})$/;
+  
 
   const hasFilters = table.getState().columnFilters.length > 0 || table.getState().globalFilter;
 
-  const filteredData = hasFilters ? table.getRowModel().rows.map(row => row.original) : data;
+  const filteredData = hasFilters ? table.getPrePaginationRowModel().rows.map(row => row.original) : data;
 
   const formatCurrency = (value) => {
     const formattedValue = Intl.NumberFormat('es-ES', {
@@ -86,6 +86,9 @@ function DataTable({ columns, data, pageurl, cantElementos=10, width=150 }) {
     return formattedValue.replace('PYG', '');
   };
 
+  const fechaRegex = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})$/;
+  const fechaRegex2 = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})\.(\d{3})$/;
+  
   const formatDate = (dateString) => {
     const options = {
         year: 'numeric',
@@ -123,11 +126,12 @@ function DataTable({ columns, data, pageurl, cantElementos=10, width=150 }) {
 
   return (
     <div>
+      {showButtons && (
       <div className="flex justify-end mt-5">
         <Button onClick={clearAllFilters} variant="light" color="blue" className="mx-3">Limpiar Filtros</Button>
         <ExportPDF data={filteredData} whatToExport={columns} title={"Detalle de Stock"} fileName="reporte_stock_pdf"></ExportPDF>
         <ExportCSV data={filteredData} whatToExport={columns} fileName="reporte_stock_scv"></ExportCSV>
-      </div>
+      </div>)}
       <Table>
         <TableHead>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -168,7 +172,6 @@ function DataTable({ columns, data, pageurl, cantElementos=10, width=150 }) {
                 <TableHeaderCell
                   key={header.id}
                   className={"p-2 " + (columns[header.index].widthClass ?? "")}
-                  style={{ maxWidth: header.width }}
                 >
                   <div>
                     <Filter
@@ -189,8 +192,8 @@ function DataTable({ columns, data, pageurl, cantElementos=10, width=150 }) {
         <TableBody>
           {table.getRowModel().rows.map((row) => (
             <TableRow 
-              key={row.id} {...row.getRowProps} className="clickable tablerow" 
-              onClick={() => router.push(`${pageurl}${row.original.id}`)}
+            key={row.id} {...row.getRowProps} className="clickable tablerow" 
+            onClick={() => clickable && router.push(`${pageurl}${row.original.id}`)}
               onMouseEnter={() => setHoveredRowId({ id: row.original.id, action: 'entering' })}
               onMouseLeave={() => setHoveredRowId({ id: row.original.id, action: 'leaving' })}
             >
@@ -199,14 +202,14 @@ function DataTable({ columns, data, pageurl, cantElementos=10, width=150 }) {
 
                 if (typeof cell.getValue() === 'number') {
                     content = formatCurrency(cell.getValue());
-                } else if (fechaRegex.test(cell.getValue())) {
+                } else if (fechaRegex.test(cell.getValue()) || fechaRegex2.test(cell.getValue())) {
                     content = formatDate(cell.getValue());
                 } else {
                     content = flexRender(cell.column.columnDef.cell, cell.getContext());
                 }
 
                 return (
-                    <TableCell className="p-2 text-wrap" key={cell.id}>
+                    <TableCell className="p-2 text-wrap" key={cell.id} style={{ maxWidth: cell.width ?? width }}>
                         <div className="truncate-y"
                       >{content}</div>
                     </TableCell>

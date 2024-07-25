@@ -24,6 +24,18 @@ namespace api.Mapper
             };
         }
 
+        public static MarcaDto ToOnlyMarcaDto(this Marca marcaModel)
+        {
+            return new MarcaDto
+            {
+                Id = marcaModel.Id,
+                Str_nombre = marcaModel.Str_nombre,
+                ProveedorId = marcaModel.ProveedorId,
+                Bool_borrado = marcaModel.Bool_borrado,
+                Productos = new List<ProductoDto>()
+            };
+        }
+
         public static Marca ToMarcaFromCreate(this CreateMarcaRequestDto marcaDto, int proveedorId)
         {
             return new Marca

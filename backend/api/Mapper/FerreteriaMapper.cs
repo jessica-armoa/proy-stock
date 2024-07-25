@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using api.Dtos.Deposito;
 using api.Dtos.Ferreteria;
 using api.Models;
 
@@ -21,6 +22,18 @@ namespace api.Mapper
                 Depositos = ferreteriaModel.Depositos
                     .Where(d => d.Bool_borrado != true)
                     .Select(d => d.ToDepositoDto()).ToList()
+            };
+        }
+
+        public static OnlyFerreteriaDto ToOnlyFerreteriaDto(this Ferreteria ferreteriaModel)
+        {
+            return new OnlyFerreteriaDto
+            {
+                Id = ferreteriaModel.Id,
+                Str_nombre = ferreteriaModel.Str_nombre,
+                Str_ruc = ferreteriaModel.Str_ruc,
+                Str_telefono = ferreteriaModel.Str_telefono,
+                Bool_borrado = ferreteriaModel.Bool_borrado
             };
         }
 

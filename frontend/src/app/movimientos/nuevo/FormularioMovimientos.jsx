@@ -40,7 +40,7 @@ export default function FormularioMovimientos() {
     const [motivos, setMotivos] = useState([]);
     const [tiposDeMovimientos, setTiposDeMovimientos] = useState([]);
     const [motivosPorTipoDeMovimiento, setMotivosPorTipoDeMovimiento] = useState([]);
-    const [fk_motivo_por_tipo_de_movimiento, setFk_motivo_por_tipo_de_movimiento] = useState(null);
+    const [fk_motivo_por_tipo_de_movimiento, setFk_motivo_por_tipo_de_movimiento] = useState(0);
     const [esCompra, setEsCompra] = useState(false);
     const [esEgreso, setEsEgreso] = useState(false);
     const [esIngreso, setEsIngreso] = useState(false);

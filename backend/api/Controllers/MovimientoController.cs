@@ -59,7 +59,7 @@ namespace api.Controllers
         public async Task<IActionResult> GetAll()
         {
             var movimientos = await _movimientoRepo.GetAllAsync();
-            var movimientosDto = movimientos.Select(m => m.ToMovimientoDto());
+            var movimientosDto = movimientos.Select(m => m.ToOnlyMovimientoDto());
 
             return Ok(movimientosDto);
         }
@@ -116,6 +116,8 @@ namespace api.Controllers
                     var movimientoModel = movimientoDto.ToMovimientoFromCreate(motivoPorTipoMovimientoId, depositoOrigenId, depositoDestinoId);
                     await _movimientoRepo.CreateAsync(movimientoModel);
 
+                    decimal total = 0;
+                    decimal iva = 0;
                     foreach (var detalleDto in movimientoDto.DetallesDeMovimientos)
                     {
                         var detalle = detalleDto.ToDetalleFromCreate(movimientoModel.Id, detalleDto.ProductoId);
@@ -134,46 +136,13 @@ namespace api.Controllers
                             INGRESO DEPOSITO DESTINO
                             EGRESO DEPOSITO ORIGEN
                         */
+
                         if (tipoDeMovimiento.Str_tipo.ToLower() == "ingreso")
                         {
-                            decimal total = detalle.Int_cantidad * detalle.Dec_costo;
-                            decimal iva = (total * producto.Int_iva) / 100;
+                            total += detalle.Int_cantidad * detalle.Dec_costo;
+                            iva += (total * producto.Int_iva) / 100;
 
                             await _detalleRepo.CreateAsync(detalle);
-
-                            var asiento1 = new Asiento
-                            {
-                                movimientoId = movimientoModel.Id,
-                                Str_cuenta = "1.1.1.1",
-                                Str_concepto = "Compra",
-                                Dec_debe = total - iva,
-                                Dec_haber = 0,
-                                Bool_borrado = false
-                            };
-
-                            var asiento2 = new Asiento
-                            {
-                                movimientoId = movimientoModel.Id,
-                                Str_cuenta = "1.1.1.1.1",
-                                Str_concepto = $" I.V.A {producto.Int_iva}%",
-                                Dec_debe = iva,
-                                Dec_haber = 0,
-                                Bool_borrado = false
-                            };
-
-                            var asiento3 = new Asiento
-                            {
-                                movimientoId = movimientoModel.Id,
-                                Str_cuenta = "1.1.1.1.2",
-                                Str_concepto = "Cuenta por pagar",
-                                Dec_debe = 0,
-                                Dec_haber = total,
-                                Bool_borrado = false
-                            };
-
-                            await _asientoRepo.CreateAsync(asiento1);
-                            await _asientoRepo.CreateAsync(asiento2);
-                            await _asientoRepo.CreateAsync(asiento3);
                         }
 
                         else if (tipoDeMovimiento.Str_tipo.ToLower() == "egreso" && motivo.Bool_perdida == false)
@@ -184,51 +153,17 @@ namespace api.Controllers
                             }
 
                             var detalleCreado = await _detalleRepo.CreateAsync(detalle);
-                            decimal total = detalleCreado.Int_cantidad * detalleCreado.Dec_costo;
-                            decimal iva = (total * producto.Int_iva) / 100;
-
-                            var asiento1 = new Asiento
-                            {
-                                movimientoId = movimientoModel.Id,
-                                Str_cuenta = "1.1.1.1.3",
-                                Str_concepto = "Cuentas por cobrar",
-                                Dec_debe = total,
-                                Dec_haber = 0,
-                                Bool_borrado = false
-                            };
-
-                            var asiento2 = new Asiento
-                            {
-                                movimientoId = movimientoModel.Id,
-                                Str_cuenta = "1.1.1.1.4",
-                                Str_concepto = "Ventas",
-                                Dec_debe = 0,
-                                Dec_haber = total - iva,
-                                Bool_borrado = false
-                            };
-
-                            var asiento3 = new Asiento
-                            {
-                                movimientoId = movimientoModel.Id,
-                                Str_cuenta = "1.1.1.1.5",
-                                Str_concepto = $" I.V.A {producto.Int_iva}%",
-                                Dec_debe = 0,
-                                Dec_haber = iva,
-                                Bool_borrado = false
-                            };
-
-                            await _asientoRepo.CreateAsync(asiento1);
-                            await _asientoRepo.CreateAsync(asiento2);
-                            await _asientoRepo.CreateAsync(asiento3);
+                            total = detalleCreado.Int_cantidad * detalleCreado.Dec_costo;
+                            iva = (total * producto.Int_iva) / 100;
                         }
 
-                        else if(tipoDeMovimiento.Str_tipo.ToLower() == "egreso" && motivo.Bool_perdida == true)
+                        else if (tipoDeMovimiento.Str_tipo.ToLower() == "egreso" && motivo.Bool_perdida == true)
                         {
                             if (producto.Int_cantidad_actual < detalle.Int_cantidad)
                             {
                                 return BadRequest("Cantidad insuficiente del producto!!");
                             }
-                            
+
                             await _detalleRepo.CreateAsync(detalle);
                         }
 
@@ -331,6 +266,80 @@ namespace api.Controllers
                         {
                             return BadRequest();
                         }
+                    }
+
+                    if(tipoDeMovimiento.Str_tipo.ToLower() == "ingreso")
+                    {
+                        var asiento1 = new Asiento
+                            {
+                                movimientoId = movimientoModel.Id,
+                                Str_cuenta = "1.1.1.1",
+                                Str_concepto = "Compra",
+                                Dec_debe = total - iva,
+                                Dec_haber = 0,
+                                Bool_borrado = false
+                            };
+
+                            var asiento2 = new Asiento
+                            {
+                                movimientoId = movimientoModel.Id,
+                                Str_cuenta = "1.1.1.1.1",
+                                Str_concepto = $" I.V.A %",
+                                Dec_debe = iva,
+                                Dec_haber = 0,
+                                Bool_borrado = false
+                            };
+
+                            var asiento3 = new Asiento
+                            {
+                                movimientoId = movimientoModel.Id,
+                                Str_cuenta = "1.1.1.1.2",
+                                Str_concepto = "Cuenta por pagar",
+                                Dec_debe = 0,
+                                Dec_haber = total,
+                                Bool_borrado = false
+                            };
+
+                            await _asientoRepo.CreateAsync(asiento1);
+                            await _asientoRepo.CreateAsync(asiento2);
+                            await _asientoRepo.CreateAsync(asiento3);
+                    }
+
+                    if(tipoDeMovimiento.Str_tipo.ToLower() == "egreso")
+                    {
+                        var asiento1 = new Asiento
+                            {
+                                movimientoId = movimientoModel.Id,
+                                Str_cuenta = "1.1.1.1.3",
+                                Str_concepto = "Cuentas por cobrar",
+                                Dec_debe = total,
+                                Dec_haber = 0,
+                                Bool_borrado = false
+                            };
+
+                            var asiento2 = new Asiento
+                            {
+                                movimientoId = movimientoModel.Id,
+                                Str_cuenta = "1.1.1.1.4",
+                                Str_concepto = "Ventas",
+                                Dec_debe = 0,
+                                Dec_haber = total - iva,
+                                Bool_borrado = false
+                            };
+
+                            var asiento3 = new Asiento
+                            {
+                                movimientoId = movimientoModel.Id,
+                                Str_cuenta = "1.1.1.1.5",
+                                Str_concepto = $" I.V.A %",
+                                Dec_debe = 0,
+                                Dec_haber = iva,
+                                Bool_borrado = false
+                            };
+
+                            await _asientoRepo.CreateAsync(asiento1);
+                            await _asientoRepo.CreateAsync(asiento2);
+                            await _asientoRepo.CreateAsync(asiento3);
                     }
                     await _context.SaveChangesAsync();
                     await transaction.CommitAsync();

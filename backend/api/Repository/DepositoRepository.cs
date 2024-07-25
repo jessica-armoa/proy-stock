@@ -46,10 +46,6 @@ namespace api.Repository
         {
             return await _context.depositos
             .Where(d => d.Bool_borrado != true)
-            .Include(d => d.Movimientos)
-            .Include(d => d.Productos).ThenInclude(d => d.Proveedor)
-            .Include(d => d.Productos).ThenInclude(d => d.Marca)
-            .Include(d => d.Ferreteria)
             .Include(d => d.Encargado)
             .ToListAsync();
         }

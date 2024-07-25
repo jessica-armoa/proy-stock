@@ -41,7 +41,6 @@ namespace api.Repository
         {
             return await _context.motivos
             .Where(m => m.Bool_borrado != true)
-            .Include(m => m.MotivosPorTipoDeMovimiento)
             .ToListAsync(); 
         }
 
