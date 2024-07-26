@@ -268,7 +268,7 @@ namespace api.Controllers
                         }
                     }
 
-                    if(tipoDeMovimiento.Str_tipo.ToLower() == "ingreso")
+                    if(motivoPorTipoMovimiento.Id == 1)
                     {
                         var asiento1 = new Asiento
                             {
@@ -305,7 +305,7 @@ namespace api.Controllers
                             await _asientoRepo.CreateAsync(asiento3);
                     }
 
-                    if(tipoDeMovimiento.Str_tipo.ToLower() == "egreso")
+                    if(motivoPorTipoMovimiento.Id == 3)
                     {
                         var asiento1 = new Asiento
                             {

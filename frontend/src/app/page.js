@@ -445,7 +445,7 @@ function GraficoPerdidasProductos() {
       {!data.length ? (
         <div>Cargando...</div>
       ) : (
-        <div className="max-w-xl mx-auto">
+        <div className="max-w-xl mx-auto p-5">
           <Card className="shadow-lg rounded-lg border border-gray-200 p-3">
             <h3 className="text-xl font-bold text-gray-800 mb-4">{titulo}</h3>
             <div className="flex-col justify-between space-x-6 w-full flex mt-1 justify-center items-center">
