@@ -10,10 +10,11 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
+Env.Load();
 
 var builder = WebApplication.CreateBuilder(args);
-
-DotNetEnv.Env.Load();
+builder.Configuration.AddEnvironmentVariables(); //para que funcione el .env
+var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING"); //de aca trae local
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -54,8 +55,7 @@ builder.Services.AddControllers().AddNewtonsoftJson(options => {
 });
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>{
-    string connectionString = "Data Source=stockdb.clakio4kgb5y.us-east-2.rds.amazonaws.com;Initial Catalog=stockdb;User ID=admin;Password=adminstockdb;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
-
+    //string connectionString = "Data Source=stockdb.clakio4kgb5y.us-east-2.rds.amazonaws.com;Initial Catalog=stockdb;User ID=admin;Password=adminstockdb;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
     options.UseSqlServer(connectionString);
 });
 
