@@ -94,14 +94,19 @@ export default function FormularioMovimientos() {
     }, []);
 
     useEffect(() => {
+        console.log('fk_deposito_origen:', fk_deposito_origen);
+        console.log('esIngreso:', esIngreso);
+        console.log('arregloProductos:', arregloProductos);
         // Filtra los productos en base al depósito de origen seleccionado
         if (fk_deposito_origen !== null && !esIngreso) {
             const productosEnDeposito = arregloProductos.filter(producto => producto.depositoId === fk_deposito_origen);
             setProductosFiltrados(productosEnDeposito);
+            console.log("productosFiltradosssss: ",productosFiltrados);
         } else {
             const productosEnDepositoDestino = arregloProductos.filter(producto => producto.depositoId === 1);
             setProductosFiltrados(productosEnDepositoDestino);
         }
+        console.log("productosFiltrados: ",productosFiltrados);
     }, [fk_deposito_origen, arregloProductos, esIngreso]);
 
     const [userDepositoId, setUserDepositoId] = useState(null);
@@ -217,8 +222,8 @@ export default function FormularioMovimientos() {
     };
 
     useEffect(() => {
-        console.log(detallesMovimientos);
-        console.log(fk_motivo_por_tipo_de_movimiento);
+        //console.log(detallesMovimientos);
+        //console.log(fk_motivo_por_tipo_de_movimiento);
     }, [detallesMovimientos]);
 
     const manejarQuitarDetalle = (id) => {
